@@ -1,0 +1,19 @@
+package ModelPackage;
+
+public class Model {
+	//verify user and return the user's type
+	public int verify(String [] input) {
+		String id = input[0];
+		String pw = input[1];
+		//if(id == id){
+		
+			//if(pw ==)
+		return 1;
+	}
+	
+	
+	
+	public boolean selectSemester(int num) {
+		return (num > 10 && num < 1) ? false : true;
+	}
+}

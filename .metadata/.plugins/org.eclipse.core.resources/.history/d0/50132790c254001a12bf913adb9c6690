@@ -1,0 +1,29 @@
+package ControllerPackage;
+import ModelPackage.Model;
+import GUIPackage.View;
+
+public class Controller {
+	protected Model model;
+	protected View view;	
+	
+	
+	public Controller(Model model, View view) {
+		// TODO Auto-generated constructor stub
+		this.model = model;
+		this.view = view;
+		selectSemesterStage();
+	}
+	
+	public void selectSemesterStage() {
+		boolean result = false;
+		while(!result) { //continually ask user to input a correct semester
+			int semester = view.askSelectSemester(model.getlatestSem());
+			result = model.selectSemester(semester);
+		}
+		commandStage();
+	}
+	
+	public void commandStage() {
+		System.out.println("2");
+	}
+}

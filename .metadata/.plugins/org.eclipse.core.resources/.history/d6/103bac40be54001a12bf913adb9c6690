@@ -1,0 +1,11 @@
+package ControllerPackage;
+import ModelPackage.Model;
+
+public class CDController extends Controller {
+
+	public CDController(Model model) {
+		// TODO Auto-generated constructor stub
+		super(model);
+	}
+
+}

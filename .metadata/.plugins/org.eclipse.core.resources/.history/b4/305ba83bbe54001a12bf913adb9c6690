@@ -1,0 +1,12 @@
+package ControllerPackage;
+import ModelPackage.Model;
+public class Controller {
+	protected Model model;
+	
+	
+	
+	public Controller(Model model) {
+		// TODO Auto-generated constructor stub
+		this.model = model;
+	}
+}

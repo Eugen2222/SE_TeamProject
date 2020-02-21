@@ -1,0 +1,32 @@
+package GUIPackage;
+
+public class View {
+	
+	
+	
+	
+	
+	public String[] askLogin() {
+		String key [] = new String [2];
+		
+		// set which swing component to be displayed
+		
+		
+		
+		
+		key[0] = "007";
+		key[1] = "hey baby";
+		
+		return key;
+	}
+	
+	
+	public int askSelectSemester(int currentSemester) {
+		int semester = 0;
+		// set which swing component to be displayed
+		//display currentSemester to user
+		
+		return semester;
+	}
+	
+}
