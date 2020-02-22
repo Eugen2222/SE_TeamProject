@@ -27,7 +27,7 @@ public class View {
 		//continually ask user to input a correct semester
 		int input = 0;
 		while(input > latestSemester || input < 1) {
-			input = 1; //get semester from user
+			input = 4; //get semester from user
 		}
 		
 		return input;

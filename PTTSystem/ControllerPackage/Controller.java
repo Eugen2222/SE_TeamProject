@@ -15,13 +15,9 @@ public class Controller {
 	}
 	
 	public void selectSemesterStage() {
-
 		int semester = view.askSelectSemester(model.getlatestSem());
 		model.selectSemester(semester);
-		commandStage();
 	}
 	
-	public void commandStage() {
-		System.out.println("2");
-	}
+	
 }
