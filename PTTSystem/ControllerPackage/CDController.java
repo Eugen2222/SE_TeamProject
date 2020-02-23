@@ -1,6 +1,8 @@
 package ControllerPackage;
 import ModelPackage.Model;
 import javax.swing.*;
+
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,13 +17,17 @@ public class CDController extends Controller implements ActionListener{
 		
 	}
 	
-	public void mainPage() {
-		view.add(view.getCDBar());
-		view.logoutBN.addActionListener(this);
-		view.getCDBar().setVisible(true);
+	public void defaultPage() {
+		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
+		view.frame.buildMainPanel();
+		view.framePanel.add(view.barPanel, BorderLayout.WEST);
+		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
 		System.out.println("add"+view.logoutBN.getActionListeners()[0]);
-		view.pList.add(view.getCDBar());
+		view.main.buildCreateClassPanel();
+		view.framePanel.add(view.createClassPanel, BorderLayout.CENTER);
+		view.add(view.framePanel);
+		view.pList.add(view.framePanel);
 	}
 	
 	public void createClass() {
@@ -39,9 +45,6 @@ public class CDController extends Controller implements ActionListener{
 		
 		
 	}
-	
-	
-	
 	
 	
 	

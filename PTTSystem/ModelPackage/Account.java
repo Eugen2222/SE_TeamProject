@@ -29,4 +29,17 @@ public class Account {
 	public String getPW() {
 		return this.PW;
 	}
+	
+	public int getType(){
+		if(this.type.equals("CD")) {
+			return 1;
+		}
+		else if(this.type.equals("A")) {
+			return 2;
+		}
+		else if(this.type.equals("PD")) {
+			return 3;
+		}
+		return -1;
+	}
 }

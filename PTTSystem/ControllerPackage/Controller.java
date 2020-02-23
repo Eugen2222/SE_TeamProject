@@ -36,7 +36,7 @@ public class Controller implements ActionListener{
 		view.pList.add(view.semester.getSemesterPanel());
 	}
 	
-	public void mainPage() {
+	public void defaultPage() {
 	
 	}
 	
@@ -49,7 +49,7 @@ public class Controller implements ActionListener{
 
 			if(model.selectSemester(semester)) {
 				view.cleanAllPanel();
-				this.mainPage();
+				this.defaultPage();
 			}
 		}
 		

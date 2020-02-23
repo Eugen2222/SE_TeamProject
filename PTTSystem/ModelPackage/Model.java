@@ -26,9 +26,15 @@ public class Model {
 	
 	private List<CDClass> classList = new ArrayList<CDClass>();
 	protected List<Account> accountList =  new ArrayList<Account>();
-	private int currentUserID = 1010102;
-	private String currentUserName = "hey";
-
+	private String currentUserID = "";
+	private String currentUserName = "";
+	
+	public String[] getUser() {
+		String [] s = new String[2];
+		s[0] = currentUserID;
+		s[1] = currentUserName;
+		return s;
+	}
 	
 	
 	public Model() {
@@ -44,7 +50,9 @@ public class Model {
 		for(Account a : accountList) {
 			if(id.equals(a.getID())){
 				if(pw.equals(a.getPW())) {
-					return 1;
+					this.currentUserID = id;
+					this.currentUserName = a.getName();
+					return a.getType();
 				}
 			}
 		}
@@ -78,7 +86,7 @@ public class Model {
 		cls.add(Integer.toString(classID));
 		cls.add(className);
 		cls.add(classRequirements);
-		cls.add(Integer.toString(currentUserID));
+		cls.add(currentUserID);
 		cls.add(currentUserName);
 		classList.add(new CDClass(cls));
 	}
@@ -159,7 +167,7 @@ public class Model {
 	}
 	
 	
-	public List<String> getWordInQuotes(String s) {
+	private List<String> getWordInQuotes(String s) {
 		Pattern p = Pattern.compile("\"([^\"]*)\"");
 		Matcher m = p.matcher(s);
 		List<String> tem = new ArrayList<String>();
