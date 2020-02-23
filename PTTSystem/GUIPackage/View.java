@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import javax.swing.SwingConstants;
 
 public class View extends JFrame{
 //	JLabel title,courseDirctor; 
-	public JButton loginBN,logoutBN,semesterBN,courseList,teacherList,requestList,createCourse,ok,cancel;
+	public JButton loginBN,logoutBN,semesterBN,courseList,teacherList,requestList,createCourse,createClassOKBN,cancel;
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new java.awt.Color(135,206,250);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, createClassPanel;
@@ -38,7 +39,7 @@ public class View extends JFrame{
 		cleanAllPanel();
 		pList.clear();
 		this.setTitle("PTT Manage System");
-		this.setSize(600,400);
+		this.setSize(900,400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(400,240);
 		semester = new Semester();
@@ -85,7 +86,6 @@ public class View extends JFrame{
 				loginBN = new JButton("ENTER");
 				loginBN.setBackground(blue);
 				loginBN.setFocusPainted(false);
-				System.out.println("123");
 		
 				loginPanel.add(title);
 				loginPanel.add(usernameTF);
@@ -168,13 +168,19 @@ public class View extends JFrame{
 	}
 	
 	public class Main{
+		String defaultClassName = "class name";
+		String defaultClassRequirements = "requirment";
+		
 		public void buildCreateClassPanel() {
 			JPanel center = new JPanel(new GridLayout(5,1,0,10));
 			center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
 			JPanel buttonPanel = new JPanel(new FlowLayout());
-			
+			JLabel classNameL = new JLabel("Class name:     ");
+			JLabel reqL1 = new JLabel("Requirement 1:  ");
+			JLabel reqL2 = new JLabel("Requirement 2:  ");
 			center.setBackground(Color.white);
 			buttonPanel.setBackground(Color.white);
+			GridBagConstraints gbc = new GridBagConstraints();
 			
 			JLabel label = new JLabel("create new course", SwingConstants.CENTER);
 			Font f = new Font("TimesRoman",Font.PLAIN,23);
@@ -184,36 +190,99 @@ public class View extends JFrame{
 			requirment1TF= new JTextField();
 			requirment2TF= new JTextField();
 			
-			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, "class name"));
-			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, "requirment 1"));
-			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, "requirment 2"));
+			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, defaultClassRequirements));
+			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
 			
 			courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
 			requirment1TF.setBorder(BorderFactory.createLineBorder(blue));
 			requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
-			
 //			add = new JButton("add a new requirement");
-			ok = new JButton("Ok");
-			cancel = new JButton("Cancel");
+			createClassOKBN = new JButton("Ok");
+			//cancel = new JButton("Reset");
 			
-			ok.setBackground(blue);
-			ok.setFocusPainted(false);
+			createClassOKBN.setBackground(blue);
+			createClassOKBN.setFocusPainted(false);
 		
 			
-			cancel.setBackground(blue);
-			cancel.setFocusPainted(false);
+			//cancel.setBackground(blue);
+			//cancel.setFocusPainted(false);
 
 			
-			buttonPanel.add(ok);
-			buttonPanel.add(cancel);
+			buttonPanel.add(createClassOKBN);
+			//buttonPanel.add(cancel);
+			JPanel rowPanel1 = new JPanel(new BorderLayout());
+			JPanel rowPanel2 = new JPanel(new BorderLayout());
+			JPanel rowPanel3 = new JPanel(new BorderLayout());
+			JPanel rowPanel4 = new JPanel(new BorderLayout());
 			
-			center.add(label);
-			center.add(courseNameTF);
-			center.add(requirment1TF);
-			center.add(requirment2TF);
+			rowPanel1.setBackground(Color.white);
+			rowPanel2.setBackground(Color.white);
+			rowPanel3.setBackground(Color.white);
+			rowPanel4.setBackground(Color.white);
+			
+			
+			rowPanel1.add(label, BorderLayout.CENTER);
+			rowPanel2.add(classNameL, BorderLayout.WEST);
+			rowPanel2.add(courseNameTF, BorderLayout.CENTER);
+			rowPanel3.add(reqL1, BorderLayout.WEST);
+			rowPanel3.add(requirment1TF, BorderLayout.CENTER);
+			rowPanel4.add(reqL2, BorderLayout.WEST);
+			rowPanel4.add(requirment2TF, BorderLayout.CENTER);
 //			center.add(add);
+			center.add(rowPanel1);
+			center.add(rowPanel2);
+			center.add(rowPanel3);
+			center.add(rowPanel4);
+			
 			center.add(buttonPanel);
 			createClassPanel = center;
+		}
+		
+		public String getCreateClassString() {
+			String s = "";
+			if(courseNameTF.getText().equals(defaultClassName)|| courseNameTF.getText().equals("")) {
+				return null;
+			}
+			s += encodeString(courseNameTF.getText());
+			String req ="";
+			if(requirment1TF.getText().equals(defaultClassRequirements)|| requirment1TF.getText().equals("")) {
+				return null;
+			}
+			req += requirment1TF.getText() + ", ";
+			if(requirment2TF.getText().equals(defaultClassRequirements)|| requirment2TF.getText().equals("")) {
+				return null;
+			}
+			req += requirment2TF.getText();
+			s += encodeString(req);
+			return s;
+		}
+		
+		public void cleanCreateClassText() {
+			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, defaultClassRequirements));
+			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		public String encodeString(String s) {
+			if(s!=null) {
+				return (!s.equals("")) ? "\""+ s + "\"" : "";
+			}
+			return null;
 		}
 		
 	}
@@ -397,59 +466,74 @@ public class View extends JFrame{
 	
 	
 	
-	
-	
-	
-	// Create course
-	public JPanel CreateCoursePanel() {
-		JPanel center = new JPanel(new GridLayout(5,1,0,10));
-		center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		
-		center.setBackground(Color.white);
-		buttonPanel.setBackground(Color.white);
-		
-		JLabel label = new JLabel("create new course", SwingConstants.CENTER);
-		Font f = new Font("TimesRoman",Font.PLAIN,23);
-		label.setFont(f);
-		
-		courseNameTF = new JTextField();
-		requirment1TF= new JTextField();
-		requirment2TF= new JTextField();
-		
-		courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, "class name"));
-		requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, "requirment 1"));
-		requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, "requirment 2"));
-		
-		courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
-		requirment1TF.setBorder(BorderFactory.createLineBorder(blue));
-		requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
-		
-//		add = new JButton("add a new requirement");
-		ok = new JButton("Ok");
-		cancel = new JButton("Cancel");
-		
-		ok.setBackground(blue);
-		ok.setFocusPainted(false);
-	
-		
-		cancel.setBackground(blue);
-		cancel.setFocusPainted(false);
-
-		
-		buttonPanel.add(ok);
-		buttonPanel.add(cancel);
-		
-		center.add(label);
-		center.add(courseNameTF);
-		center.add(requirment1TF);
-		center.add(requirment2TF);
-//		center.add(add);
-		center.add(buttonPanel);
-		return center;
-	}
-	
-	
+//	
+//	
+//	
+//	public JPanel centerPanel() {
+//		JPanel centerPanel = new JPanel(new BorderLayout());
+//		JPanel centerTop = new JPanel(new BorderLayout());
+//		centerPanel.setBackground(Color.white);
+//		centerTop.setBackground(Color.white);
+//		
+//		createCourse = new JButton("create new course");
+//		createCourse.setFocusPainted(false);
+//	
+//		centerTop.setBorder(BorderFactory.createEmptyBorder(20,10,10,50));
+//		centerTop.add(createCourse,BorderLayout.EAST);
+//		centerPanel.add(centerTop,BorderLayout.NORTH);
+//		return centerPanel;
+//	}
+//	
+//	// Create course
+//	public JPanel CreateCoursePanel() {
+//		JPanel center = new JPanel(new GridLayout(5,1,0,10));
+//		center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
+//		JPanel buttonPanel = new JPanel(new FlowLayout());
+//		
+//		center.setBackground(Color.white);
+//		buttonPanel.setBackground(Color.white);
+//		
+//		JLabel label = new JLabel("create new course", SwingConstants.CENTER);
+//		Font f = new Font("TimesRoman",Font.PLAIN,23);
+//		label.setFont(f);
+//		
+//		courseNameTF = new JTextField();
+//		requirment1TF= new JTextField();
+//		requirment2TF= new JTextField();
+//		
+//		courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, "class name"));
+//		requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, "requirment 1"));
+//		requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, "requirment 2"));
+//		
+//		courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
+//		requirment1TF.setBorder(BorderFactory.createLineBorder(blue));
+//		requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
+//		
+////		add = new JButton("add a new requirement");
+//		ok = new JButton("Ok");
+//		cancel = new JButton("Cancel");
+//		
+//		ok.setBackground(blue);
+//		ok.setFocusPainted(false);
+//	
+//		
+//		cancel.setBackground(blue);
+//		cancel.setFocusPainted(false);
+//
+//		
+//		buttonPanel.add(ok);
+//		buttonPanel.add(cancel);
+//		
+//		center.add(label);
+//		center.add(courseNameTF);
+//		center.add(requirment1TF);
+//		center.add(requirment2TF);
+////		center.add(add);
+//		center.add(buttonPanel);
+//		return center;
+//	}
+//	
+//	
 	
 	
 	

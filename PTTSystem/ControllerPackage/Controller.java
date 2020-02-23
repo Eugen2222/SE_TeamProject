@@ -23,7 +23,6 @@ public class Controller implements ActionListener{
 		this.logC = logC;
 		view.loginPanel.setVisible(false);
 		view.remove(view.loginPanel);
-		System.out.println(this);
 		selectSemesterPage();
 	}
 	

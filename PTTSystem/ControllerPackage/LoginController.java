@@ -20,12 +20,9 @@ public class LoginController implements ActionListener{
 	}
 		
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(this);
 		if(e.getSource() == view.loginBN) {
-			System.out.println("login");
 			String [] testUser = view.login.getAccount();
 			if(testUser!=null) {
-				System.out.println(this);
 				int usertype = model.verify(testUser); //for testing only return 1 Class director
 				if(usertype==-1) {
 					view.login.cleanLogin();
@@ -42,7 +39,6 @@ public class LoginController implements ActionListener{
 			}
 		}	
 		if(e.getSource() == view.logoutBN) {
-			System.out.println("click  "+this);
 			if(view.login.logout()==0) {
 				initilise();
 				view.cleanAllPanel();

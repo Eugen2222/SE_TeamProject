@@ -76,7 +76,7 @@ public class Model {
 	
 	public void createClass(String s) {
 		int classID = 0;
-		classID = (this.classList.isEmpty()) ?  1 : classList.get(classList.size()).getID() + 1;
+		classID = (this.classList.isEmpty()) ?  1 : classList.get(classList.size()-1).getID() + 1;
 		List<String> tem = this.getWordInQuotes(s);
 		String className = tem.get(0);
 		String classRequirements = tem.get(1);
@@ -87,8 +87,13 @@ public class Model {
 		cls.add(className);
 		cls.add(classRequirements);
 		cls.add(currentUserID);
-		cls.add(currentUserName);
-		classList.add(new CDClass(cls));
+		CDClass tClass = new CDClass(cls);
+		tClass.setClassDirectorName(currentUserName);
+		classList.add(tClass);
+		for(int i=0 ; i < tClass.getSummary().length ; i++) {
+			System.out.print(tClass.getSummary()[i]+ ", ");
+		}
+		System.out.print("\nSuccessfully created a class");
 	}
 	
 	public String[][] getClassDetialList() {
@@ -172,7 +177,6 @@ public class Model {
 		Matcher m = p.matcher(s);
 		List<String> tem = new ArrayList<String>();
 		while (m.find()) {
-			System.out.println(m.group(1));
 			tem.add(m.group(1));
 		}
 		return tem;

@@ -23,20 +23,16 @@ public class CDController extends Controller implements ActionListener{
 		view.framePanel.add(view.barPanel, BorderLayout.WEST);
 		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
-		System.out.println("add"+view.logoutBN.getActionListeners()[0]);
-		view.main.buildCreateClassPanel();
-		view.framePanel.add(view.createClassPanel, BorderLayout.CENTER);
+		createClass();
 		view.add(view.framePanel);
 		view.pList.add(view.framePanel);
 	}
 	
 	public void createClass() {
-		String class1 = "\"CS\", \"English, Math, French\"";
-		String class2 = "\"Programming\", \"JAVA, Math, French\"";
-		String class3 = "\"Playlol\", \"LOL\"";
-		this.model.createClass(class1);
-		this.model.createClass(class2);
-		this.model.createClass(class3);
+		view.main.buildCreateClassPanel();
+		view.framePanel.add(view.createClassPanel, BorderLayout.CENTER);
+		view.createClassOKBN.addActionListener(this);
+		
 		
 	}
 	
@@ -50,5 +46,18 @@ public class CDController extends Controller implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
+		if(e.getSource() == view.createClassOKBN) {
+			String class1 = view.main.getCreateClassString();
+			if(class1==null) {
+				view.main.cleanCreateClassText();
+			}else{
+				this.model.createClass(class1);
+			}
+			
+			String class2 = "\"Programming\", \"JAVA, Math, French\"";
+			String class3 = "\"Playlol\", \"LOL\"";
+
+		
+		}
 	}
 }
