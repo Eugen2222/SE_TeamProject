@@ -4,8 +4,8 @@ import ModelPackage.Model;
 
 public class AController extends Controller {
 
-	public AController(Model model, View view) {
-		super(model, view);
+	public AController(Model model, View view, LoginController logc) {
+		super(model, view, logc);
 		// TODO Auto-generated constructor stub
 	}
 

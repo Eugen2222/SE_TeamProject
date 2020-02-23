@@ -13,7 +13,7 @@ public class test {
 		Model model = new Model();
 		String [] testUser = view.askLogin();
 		CDController controller = new CDController(model, view);
-		controller.selectSemesterStage();
+		//controller.selectSemesterStage();
 		controller.createClass();
 		String[][] t = model.getClassDetialList();
 		for(int i = 0 ; i<t.length;i++) {
