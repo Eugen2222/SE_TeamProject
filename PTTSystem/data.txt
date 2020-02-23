@@ -2,9 +2,9 @@
 <USER ACCOUNT TABLE>
 ID, Password, Type, Name
 -------------------------------------------------
-"0001", "888", "CD", "John Wick"
+"0001", "1", "CD", "John Wick"
 "0002", "6666", "A", "PoPo"
-"0003", "1", "A", "PoPo"
+"0003", "888", "PD", "Cat"
 -------------------------------------------------
 <CLASS TABLE>
 Semester, ClassID, Name, Requirements, ClassDirectorID 
