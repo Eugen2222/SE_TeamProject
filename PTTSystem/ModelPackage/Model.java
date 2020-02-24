@@ -80,7 +80,7 @@ public class Model {
 	
 	public void createClass(String s) {
 		int classID = 0;
-		classID = (this.classList.isEmpty()) ?  1 : classList.get(classList.size()-1).getID() + 1;
+		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 		List<String> tem = this.getWordInQuotes(s);
 		String className = tem.get(0);
 		String classRequirements = tem.get(1);
@@ -106,32 +106,33 @@ public class Model {
 		String [] header = {"Semester", "ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName"};
 		return header;
 	}
-	public String[][] getClassDetialList() {
+	public <T extends Populated> String[][] getClassDetialList() {
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {
 			String [][] tem = new String [classList.size()][];
 			for(int i=0 ; i < tem.length ; i++) {
 				List<String> tem2 = null; 
-				for(Account a : this.accountList) {
-					System.out.println("1"+this.classList.get(i).getClassDirectorID()+", "+ a.getID()+ this.classList.get(i).getClassDirectorID().equals(a.getID()));
-					if(this.classList.get(i).getClassDirectorID().equals(a.getID())) {
-						tem2 = this.classList.get(i).getSummary();
-						tem2.add(a.getName()); //append CD's name;
-						for(String s: tem2) {
-							System.out.print(s);
-						}
-						System.out.println();
-						break;
-					}
-						
+				tem2 = this.classList.get(i).getSummary();
+				tem2.add(this.getNameOfForiegnKey((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
+				for(String s: tem2) {
+						System.out.print(s);
 				}
+				System.out.println();
 				tem[i] = tem2.toArray(new String[ tem2.size()]);
 			}
 			return tem;
 		}
 	}
 	
+	public <T extends Populated> String getNameOfForiegnKey(T a, List<T> FKTable) {
+		for(T fk : FKTable) {
+			if(a.getFKID().equals(fk.getPKID())) {				
+				return fk.getName();
+			}
+		}
+		return null;
+	}
 	
 	private class ManageFile{	
 		public void readFile() {

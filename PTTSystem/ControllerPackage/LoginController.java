@@ -16,10 +16,13 @@ public class LoginController implements ActionListener{
 		
 	public void initilise() {
 		view.initialise();
+		view.login.buildLoginPanel();
+		view.login.displayLoginPanel();
 		view.loginBN.addActionListener(this);
 	}
 		
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("controller");
 		if(e.getSource() == view.loginBN) {
 			String [] testUser = view.login.getAccount();
 			if(testUser!=null) {
@@ -39,9 +42,9 @@ public class LoginController implements ActionListener{
 			}
 		}	
 		if(e.getSource() == view.logoutBN) {
-			if(view.login.logout()==0) {
+			if(view.login.logOutCheck()==0) {
 				initilise();
-				view.cleanAllPanel();
+				view.login.cleanLogin();
 			}	
 		}
 	}	

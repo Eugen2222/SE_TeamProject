@@ -21,12 +21,20 @@ public class Account implements Populated{
 		return (ID +", "+ PW +", "+ type +", "+ name);
 	}
 	
-	protected String getName() {
+	public String getName() {
 		return this.name;
 	}
 	
-	protected String getID() {
+	public String getPKID() {
 		return this.ID;
+	}
+	
+	public String getID() {
+		return this.ID;
+	}
+	
+	public String getFKID() {
+		return null;
 	}
 	
 	protected String getPW() {

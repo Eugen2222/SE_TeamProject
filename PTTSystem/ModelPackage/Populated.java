@@ -7,4 +7,7 @@ public interface Populated {
 	public String getTableTitle();
 	public String getTableHeader();
 	public void setTableTitle(String s);
+	public String getFKID();
+	public String getPKID();
+	public String getName();
 }

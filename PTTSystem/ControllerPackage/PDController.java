@@ -12,17 +12,14 @@ public class PDController extends Controller {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void defaultPage() {
+	public void initialisePage() {
 		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
-		view.frame.buildMainPanel();
-		view.framePanel.add(view.barPanel, BorderLayout.WEST);
-		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
-		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList() );
-		view.mainPanel.add(view.classListPanel);
-		view.framePanel.add(view.mainPanel, BorderLayout.CENTER);
-		view.add(view.framePanel);
-		view.pList.add(view.framePanel);
-
+		view.frame.buildFramePanel(view.barPanel);
+		view.frame.displayFramePanel();
+		//setup all available pages
+		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+		//add all action listeners
+		
 	}
 }

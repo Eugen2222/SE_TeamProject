@@ -1,7 +1,7 @@
 package ModelPackage;
 import java.util.*;
 public class CDClass  implements Populated{
-	private int classID;
+	private String classID;
 	private String name;
 //	private List<String> requirementList = new ArrayList<String>(); 
 //	//for easy to add an edit function, we use an arraylist
@@ -17,7 +17,7 @@ public class CDClass  implements Populated{
 	
 	public CDClass(List<String> s) {
 		this.semester = s.get(0);
-		this.classID = Integer.parseInt(s.get(1));
+		this.classID = s.get(1);
 		this.name = s.get(2);
 		setRequirement(s.get(3));
 		this.setTeacherStatus(s.get(4));
@@ -103,14 +103,18 @@ public class CDClass  implements Populated{
 //		}
 //	}
 	
-	public int getID() {
+	public String getID() {
+		return this.classID;
+	}
+	
+	public String getPKID() {
 		return this.classID;
 	}
 	
 	public List<String> getData() {
 		List<String> s = new LinkedList<String>();
 		s.add(this.semester);
-		s.add(Integer.toString(this.classID));
+		s.add(this.classID);
 		s.add(this.name);
 		s.add(this.requirement);
 		s.add(this.teacherStatus);
@@ -132,7 +136,9 @@ public class CDClass  implements Populated{
 		this.tableTitle = s;
 	}
 	
-	public String getClassDirectorID() {
+	
+	//FK
+	public String getFKID() {
 		return this.classDirectorID;
 	}
 	
@@ -151,6 +157,11 @@ public class CDClass  implements Populated{
 			this.teacherStatus = "Approved";
 		}
 		
+	}
+
+	
+	public String getName() {
+		return this.name;
 	}
 	
 }

@@ -15,37 +15,23 @@ public class CDController extends Controller implements ActionListener{
 		// TODO Auto-generated constructor stub
 		super(model, view, logC);	
 		
+		
 	}
 	
-	public void defaultPage() {
+	public void initialisePage() {
 		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
-		view.frame.buildMainPanel();
-		view.framePanel.add(view.barPanel, BorderLayout.WEST);
-		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
-		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList() );
-		view.mainPanel.add(view.classListPanel);
-		view.framePanel.add(view.mainPanel, BorderLayout.CENTER);
-		view.add(view.framePanel);
-		view.pList.add(view.framePanel);
+		view.frame.buildFramePanel(view.barPanel);
+		view.frame.displayFramePanel();
+		//setup all available pages
+		view.main.buildCreateClassPanel();
+		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+		//add all action listeners
 		view.createClassBN.setVisible(true);
 		view.createClassBN.addActionListener(this);
-	}
-	
-	public void createClassPage() {
-		view.main.buildCreateClassPanel();
-		view.main.cleanMainArea();
-		view.mainPanel.add(view.createClassPanel, BorderLayout.CENTER);
-		view.createClassPanel.setVisible(true);
 		view.createClassOKBN.addActionListener(this);
+		view.main.displayClassListPanel();
 	}
-	
-	public void setAllInvisibla() {
-		
-		
-		
-	}
-	
 	
 	
 	public void actionPerformed(ActionEvent e) {
@@ -60,9 +46,5 @@ public class CDController extends Controller implements ActionListener{
 			}
 		}
 		
-		if(e.getSource() == view.createClassBN) {
-			System.out.println("yo");
-			createClassPage();
-		}
 	}
 }

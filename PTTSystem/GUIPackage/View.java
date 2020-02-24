@@ -1,6 +1,7 @@
 package GUIPackage;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -19,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -28,24 +31,26 @@ import javax.swing.event.ListSelectionListener;
 
 public class View extends JFrame  implements ActionListener{
 //	JLabel title,courseDirctor; 
-	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,teacherList,requestList,createCourse,createClassOKBN,cancel;
+	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,teacherList,requestList,createCourse,createClassOKBN,createClassCBN;
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new java.awt.Color(135,206,250);
-	public JPanel barPanel, loginPanel, semesterPanel, framePanel, mainPanel, createClassPanel, classListPanel;
+	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, classListPanel, rootPanel;
 	public JTable classListTable;
+	public JTextArea requirmentTA;
 	public Semester semester;
 	public Login login;
 	public Bar bar;
 	public Main main;
 	public Frame frame;
-	public List<JPanel> pList = new ArrayList<JPanel>();
+	private CardLayout page;
+	private CardLayout centerPage;	
 	public View(){
 		//Set Frame title, size, the location where execution occurs, and action to close a window;
 	
 	}
 	public void initialise() {
-		cleanAllPanel();
-		pList.clear();
+		this.getContentPane().removeAll();
+
 		this.setTitle("PTT Manage System");
 		this.setSize(900,400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,32 +60,41 @@ public class View extends JFrame  implements ActionListener{
 		bar = new Bar();
 		main = new Main();
 		frame = new Frame();
-		
-		login.buildLoginPanel();
-		loginPanel=login.getLoginPanel();
-		this.add(loginPanel);
-		this.setVisible(true);
-		
+		loginPanel=null;
 		barPanel=null;
+		rootPanel = new JPanel();
+		page = new CardLayout();
+		rootPanel.setLayout(page);
+		this.add(rootPanel);
+		this.setVisible(true);
+		refresh();
+		
+		System.out.println("initilase");
 	}
 	//clean all registered panel
-	public void cleanAllPanel() {
-		for(JPanel p : this.pList) {
-			p.setVisible(false);
-			this.remove(p);
-		}
-	}
+	
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == classListBN) {
-			main.cleanMainArea();
-			mainPanel.add(this.classListPanel);
-			this.classListPanel.setVisible(true);
+			centerPage.show(centerPanel, "classListPanel");
+			this.refresh();
 		}
+		if(e.getSource()==this.createClassBN) {
+			centerPage.show(centerPanel, "createClassPanel");
+			this.refresh();
+		}
+		if(e.getSource()==this.createClassCBN) {
+			centerPage.show(centerPanel, "classListPanel");
+			this.refresh();
+		}
+//		
 	}
 	
 	
-	
+	public void refresh() {
+		this.revalidate();
+		this.repaint();
+	}
 	
 	
 	
@@ -111,6 +125,7 @@ public class View extends JFrame  implements ActionListener{
 				loginPanel.add(usernameTF);
 				loginPanel.add(passwordTF);
 				loginPanel.add(loginBN);
+				View.this.rootPanel.add(loginPanel,"LoginPage");
 		}
 		
 		public JPanel getLoginPanel() {
@@ -131,9 +146,14 @@ public class View extends JFrame  implements ActionListener{
 			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, "password"));
 		}
 		
-		public int logout() {
+		public int logOutCheck() {
 			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "wanring",JOptionPane.YES_NO_OPTION);
 			return n;
+		}
+		
+		public void displayLoginPanel() {
+			View.this.page.show(rootPanel, "LoginPage");
+			refresh();
 		}
 	}
 	
@@ -160,14 +180,10 @@ public class View extends JFrame  implements ActionListener{
 				semesterPanel.add(title);
 				semesterPanel.add(semesterTF);
 				semesterPanel.add(semesterBN);
+				View.this.rootPanel.add(semesterPanel,"SemesterPage");
 		}
 		
-		
-		public JPanel getSemesterPanel(){
-			return semesterPanel;
-		}
-		
-		public void diplayLatestSemester(int num) {
+		public void displayLatestSemester(int num) {
 			semesterTF.addFocusListener(new JTextFieldHintListener(semesterTF, ""+num));
 		}
 		
@@ -175,65 +191,78 @@ public class View extends JFrame  implements ActionListener{
 			return Integer.parseInt(semesterTF.getText());
 		}
 		
+		public void displaySemesterPanel() {
+			View.this.page.show(rootPanel, "SemesterPage");
+			View.this.refresh();
+		}
 		
 	}
 	
 	
 	public class Frame{
-		public void buildMainPanel() {
+		public void buildFramePanel(JPanel bar) {
 			framePanel = new JPanel(new BorderLayout());
+			framePanel.add(bar, BorderLayout.WEST);
+			framePanel.add(View.this.centerPanel, BorderLayout.CENTER);
+			rootPanel.add(framePanel, "mainPage");
 			
-		
+		}
+		public void displayFramePanel() {
+			page.show(rootPanel, "mainPage");
+			View.this.refresh();
 		}
 	}
 	
 	public class Main{
 		String defaultClassName = "class name";
 		String defaultClassRequirements = "requirment";
+		
 		Main(){
-			mainPanel = new JPanel(new BorderLayout());
-			mainPanel.setBackground(Color.white);
+			centerPage =new CardLayout();
+			centerPanel = new JPanel(centerPage);
+			centerPanel.setBackground(Color.white);
 		}
+		
+		
 		public void buildCreateClassPanel() {
 			JPanel center = new JPanel(new GridLayout(5,1,0,10));
 			center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
 			JPanel buttonPanel = new JPanel(new FlowLayout());
 			JLabel classNameL = new JLabel("Class name:     ");
-			JLabel reqL1 = new JLabel("Requirement 1:  ");
-			JLabel reqL2 = new JLabel("Requirement 2:  ");
+			JLabel reqL1 = new JLabel("Requirement:  ");
+//			JLabel reqL2 = new JLabel("Requirement 2:  ");
 			center.setBackground(Color.white);
 			buttonPanel.setBackground(Color.white);
-			GridBagConstraints gbc = new GridBagConstraints();
+	
 			
 			JLabel label = new JLabel("Create new class", SwingConstants.CENTER);
 			Font f = new Font("TimesRoman",Font.PLAIN,23);
 			label.setFont(f);
 			
 			courseNameTF = new JTextField();
-			requirment1TF= new JTextField();
-			requirment2TF= new JTextField();
+			requirmentTA= new JTextArea();
+//			requirment2TF= new JTextField();
 			
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, defaultClassRequirements));
-			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
+//			requirment.addFocusListener(new JTextFieldHintListener(requirment, defaultClassRequirements));
+//			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
 			
 			courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
-			requirment1TF.setBorder(BorderFactory.createLineBorder(blue));
-			requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
+			requirmentTA.setBorder(BorderFactory.createLineBorder(blue));
+//			requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
 //			add = new JButton("add a new requirement");
 			createClassOKBN = new JButton("Ok");
-			//cancel = new JButton("Reset");
-			
+			createClassCBN = new JButton("Cancel");
+			createClassCBN.addActionListener(View.this);
 			createClassOKBN.setBackground(blue);
 			createClassOKBN.setFocusPainted(false);
 		
-			
-			//cancel.setBackground(blue);
-			//cancel.setFocusPainted(false);
+			createClassCBN.setBackground(blue);
+			createClassCBN.setFocusPainted(false);
 
 			
 			buttonPanel.add(createClassOKBN);
-			//buttonPanel.add(cancel);
+			buttonPanel.add(createClassCBN);
 			JPanel rowPanel1 = new JPanel(new BorderLayout());
 			JPanel rowPanel2 = new JPanel(new BorderLayout());
 			JPanel rowPanel3 = new JPanel(new BorderLayout());
@@ -249,18 +278,22 @@ public class View extends JFrame  implements ActionListener{
 			rowPanel2.add(classNameL, BorderLayout.WEST);
 			rowPanel2.add(courseNameTF, BorderLayout.CENTER);
 			rowPanel3.add(reqL1, BorderLayout.WEST);
-			rowPanel3.add(requirment1TF, BorderLayout.CENTER);
-			rowPanel4.add(reqL2, BorderLayout.WEST);
-			rowPanel4.add(requirment2TF, BorderLayout.CENTER);
+			rowPanel3.add(requirmentTA, BorderLayout.CENTER);
+//			rowPanel4.add(reqL2, BorderLayout.WEST);
+//			rowPanel4.add(requirment2TF, BorderLayout.CENTER);
 //			center.add(add);
 			center.add(rowPanel1);
 			center.add(rowPanel2);
 			center.add(rowPanel3);
-			center.add(rowPanel4);
+//			center.add(rowPanel4);
 			
 			center.add(buttonPanel);
 			createClassPanel = center;
+			centerPanel.add(createClassPanel, "createClassPanel");
+			
 		}
+		
+		
 		
 		public String getCreateClassString() {
 			String s = "";
@@ -269,14 +302,10 @@ public class View extends JFrame  implements ActionListener{
 			}
 			s += encodeString(courseNameTF.getText());
 			String req ="";
-			if(requirment1TF.getText().equals(defaultClassRequirements)|| requirment1TF.getText().equals("")) {
+			if(requirmentTA.getText().equals(" ")|| requirmentTA.getText().equals("")) {
 				return null;
 			}
-			req += requirment1TF.getText() + ", ";
-			if(requirment2TF.getText().equals(defaultClassRequirements)|| requirment2TF.getText().equals("")) {
-				return null;
-			}
-			req += requirment2TF.getText();
+			req += requirmentTA.getText();
 			s += encodeString(req);
 			return s;
 		}
@@ -285,8 +314,11 @@ public class View extends JFrame  implements ActionListener{
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
 			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, defaultClassRequirements));
 			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
-			
 		}
+		
+	
+	
+		
 		
 		
 		public void buildClassListPanel(String[] header, String[][] list) {
@@ -296,6 +328,7 @@ public class View extends JFrame  implements ActionListener{
 			createClassBN = new JButton("Create a class");
 			createClassBN.setVisible(false);
 			createClassBN.setBackground(blue);
+			createClassBN.addActionListener(View.this);
 			classListSubP.setBackground(Color.white);
 			classListPanel.setBackground(Color.white);
 			classListSubP.add(space, BorderLayout.CENTER);
@@ -303,6 +336,7 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel.add(classListSubP, BorderLayout.NORTH);
 			classListPanel.add(createListTable(header, list), BorderLayout.CENTER);
 			classListPanel.setVisible(true);
+			centerPanel.add(classListPanel, "classListPanel");
 		}
 		
 		
@@ -327,26 +361,18 @@ public class View extends JFrame  implements ActionListener{
 	        return sp;
 		}
 		
-		
-		public void cleanMainArea() {
-			classListPanel.setVisible(false);
-			View.this.createClassPanel.setVisible(false);
+		public void displayClassListPanel() {	
+			centerRefresh();
+			View.this.refresh();
+			centerPage.show(centerPanel, "classListPanel");
+			
+			
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		public void centerRefresh() {
+			View.this.centerPanel.revalidate();
+			View.this.centerPanel.repaint();
+		}
 		
 		public String encodeString(String s) {
 			if(s!=null) {
@@ -357,8 +383,9 @@ public class View extends JFrame  implements ActionListener{
 		
 	}
 	
+
 	
-	
+		
 	// Course Director 
 	public class Bar {
 		public void addSelfListener() {
@@ -472,6 +499,7 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(westSouth,BorderLayout.SOUTH);
 			addSelfListener();
 			barPanel =  westPanel;
+
 		}
 		
 		

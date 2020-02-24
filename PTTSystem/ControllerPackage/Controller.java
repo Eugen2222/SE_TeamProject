@@ -21,25 +21,21 @@ public class Controller implements ActionListener{
 		this.model = model;
 		this.view = view;
 		this.logC = logC;
-		view.loginPanel.setVisible(false);
-		view.remove(view.loginPanel);
 		selectSemesterPage();
+		
 	}
 	
 	public void selectSemesterPage() {
 		view.semester.buildSemesterPanel();
-		view.add(view.semester.getSemesterPanel());
 		view.semesterBN.addActionListener(this);
-		view.semester.diplayLatestSemester(model.getlatestSem());
-		view.semesterPanel.setVisible(true);
-		view.pList.add(view.semester.getSemesterPanel());
-	}
-	
-	public void defaultPage() {
-	
+		view.semester.displayLatestSemester(model.getlatestSem());
+		view.semester.displaySemesterPanel();
 	}
 	
 
+	public void initialisePage() {
+		
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 
@@ -47,8 +43,7 @@ public class Controller implements ActionListener{
 			int semester = view.semester.getSelecetedSemester();
 
 			if(model.selectSemester(semester)) {
-				view.cleanAllPanel();
-				this.defaultPage();
+				this.initialisePage();
 			}
 		}
 		
