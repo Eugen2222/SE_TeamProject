@@ -103,7 +103,7 @@ public class Model {
 	
 	
 	public String[] getClassDetailHeader() {
-		String [] header = {"ID", "Name", "Requirements", "DirectorID", "DirectorName", "Semester"};
+		String [] header = {"ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName", "Semester"};
 		return header;
 	}
 	public String[][] getClassDetialList() {
@@ -111,9 +111,6 @@ public class Model {
 			return null;
 		}else {
 			String [][] tem = new String [classList.size()][];
-			for(int i=0 ; i < tem.length ; i++) {
-				tem[i] = this.classList.get(i).getSummary();
-			}
 			return tem;
 		}
 	}
@@ -198,6 +195,7 @@ public class Model {
 				} else {
 					List<String> itemsList = getWordInQuotes(line);				
 					table.add(itemsList);
+				
 				}
 			}
 			if(table.isEmpty()) throw new Exception("Can't find any data of the "+ key +" table");
@@ -225,9 +223,7 @@ public class Model {
 					e.printStackTrace();
 				}
 			}
-			for(T t: list) {
-				System.out.println(t);
-			}
+		
 			
 			return list;
 

@@ -38,11 +38,12 @@ public class CDClass  implements Populated{
 //	
 	
 	public boolean setRequirement(String s) {
-		if(requirement.equals("") || requirement==null) {
+		if(s.equals("") || s==null) {
 				return false;
+		}else {
+			this.requirement = s;
+			return true;
 		}
-		this.requirement = s;
-		return true;
 	}
 	
 	
@@ -72,15 +73,18 @@ public class CDClass  implements Populated{
 	
 	
 	public String [] getSummary() {
-		String []s = new String[6];
-		s[0] = ""+this.classID;
-		s[1] = this.name;
-		s[2] = this.requirement;
-		s[3] = this.teacherStatus;
-		s[4] = ""+this.classDirectorID;
-		s[5] = this.classDirectorName;
-		s[6] = ""+this.semester;
-		return s;
+		List<String> s = new ArrayList<String>() ;
+		s.add(""+this.classID);
+		s.add(this.name);
+		s.add(this.requirement);
+		s.add(this.teacherStatus);
+		s.add(""+this.classDirectorID);
+		s.add(this.classDirectorName);
+		s.add(""+this.semester);
+		for(String ste:s) {
+			System.out.println(this.requirement+"s");
+		}
+		return s.toArray(new String[s.size()]);
 	}
 	
 	
@@ -129,17 +133,17 @@ public class CDClass  implements Populated{
 		this.tableTitle = s;
 	}
 	
-	public void setTeacherStatus(String i) {
-		if(i.equals("1")) {
+	public void setTeacherStatus(String s) {
+		if(s.equals("Pending")||s.equals("")||s==null) {
 			this.teacherStatus = "Pending";
 		}
-		if(i.equals("2")) {
+		if(s.equals("Assigned")) {
 			this.teacherStatus = "Assigned";
 		}
-		if(i.equals("3")) {
+		if(s.equals("Submited")) {
 			this.teacherStatus = "Submited";
 		}
-		if(i.equals("4")) {
+		if(s.equals("Approved")) {
 			this.teacherStatus = "Approved";
 		}
 		
