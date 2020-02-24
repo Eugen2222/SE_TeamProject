@@ -91,6 +91,7 @@ public class Model {
 		cls.add(className);
 		cls.add(classRequirements);
 		cls.add(currentUserID);
+		cls.add("1");
 		CDClass tClass = new CDClass(cls);
 		tClass.setClassDirectorName(currentUserName);
 		classList.add(tClass);
@@ -176,7 +177,7 @@ public class Model {
 			}
 		}
 
-		private <T extends Populated> List<T> createObjectList(Scanner s, Class<?> T, String key) throws Exception {
+		private <T extends Populated> List<T> createObjectList(Scanner s, Class<T> T, String key) throws Exception {
 			
 			//load data
 			String line = s.nextLine();

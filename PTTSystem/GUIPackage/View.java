@@ -533,12 +533,6 @@ public class View extends JFrame  implements ActionListener{
 	
 	
 	
-	
-	
-	
-	
-	
-	
 //	
 //	
 //	
