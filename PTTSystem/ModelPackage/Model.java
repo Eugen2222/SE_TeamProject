@@ -95,15 +95,15 @@ public class Model {
 		CDClass tClass = new CDClass(cls);
 		tClass.setClassDirectorName(currentUserName);
 		classList.add(tClass);
-		for(int i=0 ; i < tClass.getSummary().length ; i++) {
-			System.out.print(tClass.getSummary()[i]+ ", ");
+		for(int i=0 ; i < tClass.getSummary().size() ; i++) {
+			System.out.print(tClass.getSummary().get(i)+ ", ");
 		}
 		System.out.print("\nSuccessfully created a class");
 	}
 	
 	
 	public String[] getClassDetailHeader() {
-		String [] header = {"ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName", "Semester"};
+		String [] header = {"Semester", "ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName"};
 		return header;
 	}
 	public String[][] getClassDetialList() {
@@ -111,6 +111,23 @@ public class Model {
 			return null;
 		}else {
 			String [][] tem = new String [classList.size()][];
+			for(int i=0 ; i < tem.length ; i++) {
+				List<String> tem2 = null; 
+				for(Account a : this.accountList) {
+					System.out.println("1"+this.classList.get(i).getClassDirectorID()+", "+ a.getID()+ this.classList.get(i).getClassDirectorID().equals(a.getID()));
+					if(this.classList.get(i).getClassDirectorID().equals(a.getID())) {
+						tem2 = this.classList.get(i).getSummary();
+						tem2.add(a.getName()); //append CD's name;
+						for(String s: tem2) {
+							System.out.print(s);
+						}
+						System.out.println();
+						break;
+					}
+						
+				}
+				tem[i] = tem2.toArray(new String[ tem2.size()]);
+			}
 			return tem;
 		}
 	}

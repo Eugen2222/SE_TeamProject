@@ -72,19 +72,18 @@ public class CDClass  implements Populated{
 //	}
 	
 	
-	public String [] getSummary() {
+	public  List<String> getSummary() {
 		List<String> s = new ArrayList<String>() ;
+		s.add(""+this.semester);
 		s.add(""+this.classID);
 		s.add(this.name);
 		s.add(this.requirement);
 		s.add(this.teacherStatus);
 		s.add(""+this.classDirectorID);
-		s.add(this.classDirectorName);
-		s.add(""+this.semester);
 		for(String ste:s) {
 			System.out.println(this.requirement+"s");
 		}
-		return s.toArray(new String[s.size()]);
+		return s;
 	}
 	
 	
@@ -132,6 +131,11 @@ public class CDClass  implements Populated{
 	public void setTableTitle(String s) {
 		this.tableTitle = s;
 	}
+	
+	public String getClassDirectorID() {
+		return this.classDirectorID;
+	}
+	
 	
 	public void setTeacherStatus(String s) {
 		if(s.equals("Pending")||s.equals("")||s==null) {
