@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 
 
 import java.lang.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class Model {
 	
@@ -28,7 +30,7 @@ public class Model {
 	protected List<Account> accountList =  new ArrayList<Account>();
 	private String currentUserID = "";
 	private String currentUserName = "";
-	
+	private ManageFile mf;
 	public String[] getUser() {
 		String [] s = new String[2];
 		s[0] = currentUserID;
@@ -38,7 +40,7 @@ public class Model {
 	
 	
 	public Model() {
-		ManageFile mf = new ManageFile();
+		mf = new ManageFile();
 		mf.readFile();
 	}
 	
@@ -47,9 +49,11 @@ public class Model {
 	public int verify(String [] input) {
 		String id = input[0];
 		String pw = input[1];
+		System.out.println(id+", ");
 		for(Account a : accountList) {
 			if(id.equals(a.getID())){
 				if(pw.equals(a.getPW())) {
+					
 					this.currentUserID = id;
 					this.currentUserName = a.getName();
 					return a.getType();
@@ -96,12 +100,17 @@ public class Model {
 		System.out.print("\nSuccessfully created a class");
 	}
 	
+	
+	public String[] getClassDetailHeader() {
+		String [] header = {"ID", "Name", "Requirements", "DirectorID", "DirectorName", "Semester"};
+		return header;
+	}
 	public String[][] getClassDetialList() {
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {
 			String [][] tem = new String [classList.size()][];
-			for(int i=0 ; i < classList.size() ; i++) {
+			for(int i=0 ; i < tem.length ; i++) {
 				tem[i] = this.classList.get(i).getSummary();
 			}
 			return tem;
@@ -112,24 +121,24 @@ public class Model {
 	private class ManageFile{	
 		public void readFile() {
 			FileReader fr = null;
-			int totalLine = 0;
 			try {
 				String fN = "data.txt";
 				fr = new FileReader(fN);
 				Scanner s = new Scanner(fr);
-				List<List<String>> accountTable	= getDataTable(s, "<USER ACCOUNT TABLE>");
-				List<List<String>> classList = getDataTable(s, "<CLASS TABLE>");
-				for(List<String> a : accountTable) {
-					Account tem = new Account(a);
-					Model.this.accountList.add(tem);
-				}
+				accountList= createObjectList(s, Account.class, "<USER ACCOUNT TABLE>");
+				classList= createObjectList(s, CDClass.class, "<CD CLASS TABLE>");
 				
-				for(List<String> a : classList) {
-					CDClass tem = new CDClass(a);
-
-					tem.setClassDirectorName(Model.this.accountList.get(Integer.parseInt(a.get(4))).getName());
-					Model.this.classList.add(tem);
-				}
+//				for(List<String> a : accountTable) {
+//					Account tem = new Account(a);
+//					Model.this.accountList.add(tem);
+//				}
+				
+				
+//				for(List<String> a : classList) {
+//					CDClass tem = new CDClass(a);
+//					tem.setClassDirectorName(Model.this.accountList.get(Integer.parseInt(a.get(4))).getName());
+//					Model.this.classList.add(tem);
+//				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -140,11 +149,36 @@ public class Model {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 		
-		
-		private List<List<String>> getDataTable(Scanner s, String key) throws Exception {
+		public <T extends Populated> void save() {
+			try {
+				File file = new File("data.txt");
+				if (!file.exists()) {
+					file.createNewFile();
+				} else {
+					file.delete();
+					file.createNewFile();
+
+				}
+				FileWriter fw = new FileWriter(file, true);
+				BufferedWriter bw = new BufferedWriter(fw);
+				List<List<T>> dataList = new ArrayList<List<T>>();
+				dataList.add((List<T>)Model.this.accountList);
+				dataList.add((List<T>)Model.this.classList);
+				String data = populateTable(dataList);
+				bw.write(data);
+				bw.close();
+				System.out.println("Test log has been created successfully!");
+			} catch (IOException e) {
+				System.out.println("Exception occurred:");
+				e.printStackTrace();
+			}
+		}
+
+		private <T extends Populated> List<T> createObjectList(Scanner s, Class<?> T, String key) throws Exception {
+			
+			//load data
 			String line = s.nextLine();
 			List<List<String>> table = new ArrayList<List<String>>() ;
 
@@ -166,9 +200,71 @@ public class Model {
 				}
 			}
 			if(table.isEmpty()) throw new Exception("Can't find any data of the "+ key +" table");
-			return table;
+			//Create object
+			List<T> list = new ArrayList<>();
+			for(List<String> a : table) {
+				Constructor<T> constructor;
+				try {
+//					System.out.println(T.getConstructor(new Class[]{List.class}));
+//					System.out.print(i);
+					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class});
+					T object = constructor.newInstance(new Object[]{a });
+					list.add(object);
+					object.setTableTitle(key);
+					
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for(T t: list) {
+				System.out.println(t);
+			}
+			
+			return list;
+
+			
 		}
 		
+		private String encodeString(String s) {
+			if(s!=null) {
+				return (!s.equals("")) ? "\""+ s + "\"" : "";
+			}
+			return null;
+		}
+		
+	
+		
+		
+		
+		public <T extends Populated> String populateTable(List<List<T>> dataList) {
+			String database = "";
+			for(List<T> subList : dataList) {
+				database += "-------------------------------------------------"+"\n";
+				database += subList.get(0).getTableTitle()+"\n";
+				database += subList.get(0).getTableHeader()+"\n";
+				database += "-------------------------------------------------"+"\n";
+				for(T e : subList) {
+					String row =  "";
+					for (String s : e.getData()) {
+						row += encodeString(s) + ", ";
+					}
+					database += row +"\n";
+				}
+			}
+			return database;
+		}
+	}
+	
+	public void save() {
+		this.mf.save();
 	}
 	
 	
@@ -181,7 +277,4 @@ public class Model {
 		}
 		return tem;
 	}
-
-	
-	
 }

@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,26 +17,32 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
-public class View extends JFrame{
+public class View extends JFrame  implements ActionListener{
 //	JLabel title,courseDirctor; 
-	public JButton loginBN,logoutBN,semesterBN,courseList,teacherList,requestList,createCourse,createClassOKBN,cancel;
+	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,teacherList,requestList,createCourse,createClassOKBN,cancel;
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new java.awt.Color(135,206,250);
-	public JPanel barPanel, loginPanel, semesterPanel, framePanel, createClassPanel;
+	public JPanel barPanel, loginPanel, semesterPanel, framePanel, mainPanel, createClassPanel, classListPanel;
+	public JTable classListTable;
 	public Semester semester;
 	public Login login;
 	public Bar bar;
 	public Main main;
 	public Frame frame;
 	public List<JPanel> pList = new ArrayList<JPanel>();
-	public View() {
+	public View(){
 		//Set Frame title, size, the location where execution occurs, and action to close a window;
-	}
 	
+	}
 	public void initialise() {
 		cleanAllPanel();
 		pList.clear();
@@ -62,6 +70,18 @@ public class View extends JFrame{
 			this.remove(p);
 		}
 	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == classListBN) {
+			main.cleanMainArea();
+			mainPanel.add(this.classListPanel);
+			this.classListPanel.setVisible(true);
+		}
+	}
+	
+	
+	
+	
 	
 	
 	public class Login{
@@ -170,7 +190,10 @@ public class View extends JFrame{
 	public class Main{
 		String defaultClassName = "class name";
 		String defaultClassRequirements = "requirment";
-		
+		Main(){
+			mainPanel = new JPanel(new BorderLayout());
+			mainPanel.setBackground(Color.white);
+		}
 		public void buildCreateClassPanel() {
 			JPanel center = new JPanel(new GridLayout(5,1,0,10));
 			center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
@@ -182,7 +205,7 @@ public class View extends JFrame{
 			buttonPanel.setBackground(Color.white);
 			GridBagConstraints gbc = new GridBagConstraints();
 			
-			JLabel label = new JLabel("create new course", SwingConstants.CENTER);
+			JLabel label = new JLabel("Create new class", SwingConstants.CENTER);
 			Font f = new Font("TimesRoman",Font.PLAIN,23);
 			label.setFont(f);
 			
@@ -266,6 +289,53 @@ public class View extends JFrame{
 		}
 		
 		
+		public void buildClassListPanel(String[] header, String[][] list) {
+			classListPanel = new JPanel(new BorderLayout());
+			JPanel classListSubP = new JPanel(new BorderLayout());
+			JLabel space = new JLabel("");
+			createClassBN = new JButton("Create a class");
+			createClassBN.setVisible(false);
+			createClassBN.setBackground(blue);
+			classListSubP.setBackground(Color.white);
+			classListPanel.setBackground(Color.white);
+			classListSubP.add(space, BorderLayout.CENTER);
+			classListSubP.add(createClassBN, BorderLayout.EAST);
+			classListPanel.add(classListSubP, BorderLayout.NORTH);
+			classListPanel.add(createListTable(header, list), BorderLayout.CENTER);
+			classListPanel.setVisible(true);
+		}
+		
+		
+		public JScrollPane createListTable(String[] header, String[][] list) {
+			classListTable = new JTable(list, header);
+			classListTable.setCellSelectionEnabled(true);  
+	        ListSelectionModel select= classListTable.getSelectionModel();  
+	        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
+	        select.addListSelectionListener(new ListSelectionListener() {  
+	        	public void valueChanged(ListSelectionEvent e) {  
+	        		String Data = null;    
+	        		int selectedRow = classListTable.getSelectedRow();  
+	                Data = (String) classListTable.getValueAt(selectedRow, 0);  
+	                System.out.println("Table element selected is: " + Data);    
+	             }       
+	         });  
+	        
+	        classListTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+	        classListTable.setBackground(Color.white);
+	        JScrollPane sp=new JScrollPane(classListTable);
+	        sp.setBackground(Color.white);
+	        return sp;
+		}
+		
+		
+		public void cleanMainArea() {
+			classListPanel.setVisible(false);
+			View.this.createClassPanel.setVisible(false);
+		}
+		
+		
+		
+		
 		
 		
 		
@@ -291,6 +361,9 @@ public class View extends JFrame{
 	
 	// Course Director 
 	public class Bar {
+		public void addSelfListener() {
+			classListBN.addActionListener(View.this);
+		}
 		public void buildCDBar(String ID, String name) {
 			JPanel westPanel = new JPanel(new BorderLayout());
 			JPanel westNorth = new JPanel();
@@ -306,14 +379,14 @@ public class View extends JFrame{
 			
 			JLabel courseDirector = new JLabel("Course Dirctor");
 			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			courseList = new JButton("Course List");
+			classListBN = new JButton("Class List");
 			teacherList = new JButton("Teacher List");
 			requestList = new JButton("Request List");
 			logoutBN = new JButton("Log Out");
 			
 		
-			courseList.setBackground(new java.awt.Color(135,206,250));
-			courseList.setBorder(BorderFactory.createLineBorder(blue));
+			classListBN.setBackground(new java.awt.Color(135,206,250));
+			classListBN.setBorder(BorderFactory.createLineBorder(blue));
 			
 			teacherList.setBackground(new java.awt.Color(135,206,250));
 			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
@@ -322,7 +395,7 @@ public class View extends JFrame{
 			logoutBN.setBackground(new java.awt.Color(135,206,250));
 			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
 			
-			courseList.setFocusPainted(false);
+			classListBN.setFocusPainted(false);
 			teacherList.setFocusPainted(false);
 			requestList.setFocusPainted(false);
 			logoutBN.setFocusPainted(false);
@@ -331,7 +404,7 @@ public class View extends JFrame{
 			Font f = new Font("TimesRoman",Font.PLAIN,15);
 			courseDirector.setFont(f);
 			
-			list.add(courseList);
+			list.add(classListBN);
 			list.add(teacherList);
 			list.add(requestList);
 			westCenter.add(list);
@@ -342,7 +415,7 @@ public class View extends JFrame{
 			westPanel.add(westNorth,BorderLayout.NORTH);
 			westPanel.add(westCenter,BorderLayout.CENTER);
 			westPanel.add(westSouth,BorderLayout.SOUTH);
-			
+			addSelfListener();
 			barPanel = westPanel;
 		}
 		
@@ -361,14 +434,14 @@ public class View extends JFrame{
 			
 			JLabel courseDirector = new JLabel("Administrator");
 			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			courseList = new JButton("Course List");
+			classListBN = new JButton("Course List");
 			teacherList = new JButton("Teacher List");
 			requestList = new JButton("Request List");
 			logoutBN = new JButton("Log Out");
 			
 		
-			courseList.setBackground(new java.awt.Color(135,206,250));
-			courseList.setBorder(BorderFactory.createLineBorder(blue));
+			classListBN.setBackground(new java.awt.Color(135,206,250));
+			classListBN.setBorder(BorderFactory.createLineBorder(blue));
 			
 			teacherList.setBackground(new java.awt.Color(135,206,250));
 			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
@@ -377,7 +450,7 @@ public class View extends JFrame{
 			logoutBN.setBackground(new java.awt.Color(135,206,250));
 			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
 			
-			courseList.setFocusPainted(false);
+			classListBN.setFocusPainted(false);
 			teacherList.setFocusPainted(false);
 			requestList.setFocusPainted(false);
 			logoutBN.setFocusPainted(false);
@@ -386,7 +459,7 @@ public class View extends JFrame{
 			Font f = new Font("TimesRoman",Font.PLAIN,15);
 			courseDirector.setFont(f);
 			
-			list.add(courseList);
+			list.add(classListBN);
 			list.add(teacherList);
 			list.add(requestList);
 			westCenter.add(list);
@@ -397,7 +470,7 @@ public class View extends JFrame{
 			westPanel.add(westNorth,BorderLayout.NORTH);
 			westPanel.add(westCenter,BorderLayout.CENTER);
 			westPanel.add(westSouth,BorderLayout.SOUTH);
-			
+			addSelfListener();
 			barPanel =  westPanel;
 		}
 		
@@ -417,14 +490,14 @@ public class View extends JFrame{
 			
 			JLabel courseDirector = new JLabel("PTT Dirctor");
 			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			courseList = new JButton("Course List");
+			classListBN = new JButton("Course List");
 			teacherList = new JButton("Teacher List");
 			requestList = new JButton("Request List");
 			logoutBN = new JButton("Log Out");
 			
 		
-			courseList.setBackground(new java.awt.Color(135,206,250));
-			courseList.setBorder(BorderFactory.createLineBorder(blue));
+			classListBN.setBackground(new java.awt.Color(135,206,250));
+			classListBN.setBorder(BorderFactory.createLineBorder(blue));
 			
 			teacherList.setBackground(new java.awt.Color(135,206,250));
 			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
@@ -433,7 +506,7 @@ public class View extends JFrame{
 			logoutBN.setBackground(new java.awt.Color(135,206,250));
 			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
 			
-			courseList.setFocusPainted(false);
+			classListBN.setFocusPainted(false);
 			teacherList.setFocusPainted(false);
 			requestList.setFocusPainted(false);
 			logoutBN.setFocusPainted(false);
@@ -442,7 +515,7 @@ public class View extends JFrame{
 			Font f = new Font("TimesRoman",Font.PLAIN,15);
 			courseDirector.setFont(f);
 			
-			list.add(courseList);
+			list.add(classListBN);
 			list.add(teacherList);
 			list.add(requestList);
 			westCenter.add(list);
@@ -453,7 +526,7 @@ public class View extends JFrame{
 			westPanel.add(westNorth,BorderLayout.NORTH);
 			westPanel.add(westCenter,BorderLayout.CENTER);
 			westPanel.add(westSouth,BorderLayout.SOUTH);
-			
+			addSelfListener();
 			barPanel =  westPanel;
 		}
 	}

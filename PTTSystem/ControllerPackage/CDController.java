@@ -23,17 +23,21 @@ public class CDController extends Controller implements ActionListener{
 		view.framePanel.add(view.barPanel, BorderLayout.WEST);
 		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
-		createClass();
+		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList() );
+		view.mainPanel.add(view.classListPanel);
+		view.framePanel.add(view.mainPanel, BorderLayout.CENTER);
 		view.add(view.framePanel);
 		view.pList.add(view.framePanel);
+		view.createClassBN.setVisible(true);
+		view.createClassBN.addActionListener(this);
 	}
 	
-	public void createClass() {
+	public void createClassPage() {
 		view.main.buildCreateClassPanel();
-		view.framePanel.add(view.createClassPanel, BorderLayout.CENTER);
+		view.main.cleanMainArea();
+		view.mainPanel.add(view.createClassPanel, BorderLayout.CENTER);
+		view.createClassPanel.setVisible(true);
 		view.createClassOKBN.addActionListener(this);
-		
-		
 	}
 	
 	public void setAllInvisibla() {
@@ -52,12 +56,13 @@ public class CDController extends Controller implements ActionListener{
 				view.main.cleanCreateClassText();
 			}else{
 				this.model.createClass(class1);
+				this.model.save();
 			}
-			
-			String class2 = "\"Programming\", \"JAVA, Math, French\"";
-			String class3 = "\"Playlol\", \"LOL\"";
-
+		}
 		
+		if(e.getSource() == view.createClassBN) {
+			System.out.println("yo");
+			createClassPage();
 		}
 	}
 }

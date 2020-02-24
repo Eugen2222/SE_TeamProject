@@ -12,16 +12,17 @@ public class AController extends Controller {
 	}
 
 	public void defaultPage() {
-		view.bar.buildABar(model.getUser()[0], model.getUser()[1]);
+		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
 		view.frame.buildMainPanel();
 		view.framePanel.add(view.barPanel, BorderLayout.WEST);
 		view.barPanel.setVisible(true);
 		view.logoutBN.addActionListener(this.logC);
-		System.out.println("add"+view.logoutBN.getActionListeners()[0]);
-		view.main.buildCreateClassPanel();
-		view.framePanel.add(view.createClassPanel, BorderLayout.CENTER);
+		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList() );
+		view.mainPanel.add(view.classListPanel);
+		view.framePanel.add(view.mainPanel, BorderLayout.CENTER);
 		view.add(view.framePanel);
 		view.pList.add(view.framePanel);
+
 	}
 	
 }

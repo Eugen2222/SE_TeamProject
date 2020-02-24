@@ -1,21 +1,22 @@
 package ModelPackage;
 import java.util.*;
-public class CDClass {
+public class CDClass  implements Populated{
 	private int classID;
 	private String name;
 	private List<String> requirementList = new ArrayList<String>(); 
 	//for easy to add an edit function, we use an arraylist
-	private int semester;
-	private int classDirectorID;
+	private String semester;
+	private String classDirectorID;
 	private String classDirectorName;
 	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
+	private String tableTitle = "";
 	
 	public CDClass(List<String> s) {
-		this.semester = Integer.parseInt(s.get(0));
+		this.semester = s.get(0);
 		this.classID = Integer.parseInt(s.get(1));
 		this.name = s.get(2);
 		setRequirement(s.get(3));
-		this.classDirectorID = Integer.parseInt(s.get(4));
+		this.classDirectorID = s.get(4);
 	}
 	
 	public boolean setRequirement(String s) {
@@ -70,5 +71,28 @@ public class CDClass {
 		return this.classID;
 	}
 	
+	public List<String> getData() {
+		List<String> s = new LinkedList<String>();
+		s.add(this.semester);
+		s.add(Integer.toString(this.classID));
+		s.add(this.name);
+		s.add(this.getRequirement());
+		s.add(this.classDirectorID);
+		return s;
+	}
+	
+	public String getTableHeader() {
+		String s = "Semester, ClassID, Name, Requirements, ClassDirectorID";
+		return s;
+	}
+	
+	
+	public String getTableTitle() {
+		return tableTitle;
+	}
+	
+	public void setTableTitle(String s) {
+		this.tableTitle = s;
+	}
 	
 }

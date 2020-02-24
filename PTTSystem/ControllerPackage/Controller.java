@@ -53,34 +53,16 @@ public class Controller implements ActionListener{
 		}
 		
 		
-		if(e.getSource() == view.courseList) {
-			view.courseList.setBackground(Color.white);
-			view.courseList.setBorder(BorderFactory.createLineBorder(Color.white));
-			view.teacherList.setBackground(view.blue);
-			view.teacherList.setBorder(BorderFactory.createLineBorder(view.blue));
-			view.requestList.setBackground(view.blue);
-			view.requestList.setBorder(BorderFactory.createLineBorder(view.blue));
-		}
 		
 		
 		
 		
-		
-		
-		if(e.getSource() == view.courseList) {
-			view.courseList.setBackground(Color.white);
-			view.courseList.setBorder(BorderFactory.createLineBorder(Color.white));
-			view.teacherList.setBackground(view.blue);
-			view.teacherList.setBorder(BorderFactory.createLineBorder(view.blue));
-			view.requestList.setBackground(view.blue);
-			view.requestList.setBorder(BorderFactory.createLineBorder(view.blue));
-		}
 
 		if(e.getSource() == view.teacherList) {
 			view.teacherList.setBackground(Color.white);
 			view.teacherList.setBorder(BorderFactory.createLineBorder(Color.white));
-			view.courseList.setBackground(view.blue);
-			view.courseList.setBorder(BorderFactory.createLineBorder(view.blue));
+			view.classListBN.setBackground(view.blue);
+			view.classListBN.setBorder(BorderFactory.createLineBorder(view.blue));
 			view.requestList.setBackground(view.blue);
 			view.requestList.setBorder(BorderFactory.createLineBorder(view.blue));
 			
@@ -91,8 +73,8 @@ public class Controller implements ActionListener{
 			view.requestList.setBorder(BorderFactory.createLineBorder(Color.white));
 			view.teacherList.setBackground(view.blue);
 			view.teacherList.setBorder(BorderFactory.createLineBorder(view.blue));
-			view.courseList.setBackground(view.blue);
-			view.courseList.setBorder(BorderFactory.createLineBorder(view.blue));
+			view.classListBN.setBackground(view.blue);
+			view.classListBN.setBorder(BorderFactory.createLineBorder(view.blue));
 			
 		}
 		
