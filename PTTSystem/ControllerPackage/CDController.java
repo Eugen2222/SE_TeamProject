@@ -47,7 +47,7 @@ public class CDController extends Controller implements ActionListener{
 			    }
 			});
 //		
-		view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+		view.main.displayClassListPanel(model.getClassListHeader(), model.getClassDetialList());
 	}
 	
 	
@@ -62,19 +62,19 @@ public class CDController extends Controller implements ActionListener{
 			}else{
 				this.model.createClass(class1);
 				this.model.save();
-				view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+				view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 			}
 		}
 		
 		if(e.getSource() == view.classListBN) {
-			view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable()));
 		}
 		
 		if(e.getSource()==view.createClassBN) {
 			view.main.displayCreateClassPanel();
 		}
 		if(e.getSource()==view.createClassCBN) {
-			view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable()));
 		}
 		
 		

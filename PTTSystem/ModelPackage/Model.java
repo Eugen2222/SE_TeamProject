@@ -100,11 +100,11 @@ public class Model {
 	}
 	
 	
-	public String[] getClassDetailHeader() {
+	public String[] getClassListTableHeader() {
 		String [] header = {"Semester", "ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName"};
 		return header;
 	}
-	public <T extends Populated> String[][] getClassDetialList() {
+	public <T extends Populated> String[][] getClassListTable() {
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {

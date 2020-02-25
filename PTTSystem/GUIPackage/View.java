@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -35,6 +36,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -349,6 +351,7 @@ public class View extends JFrame  implements ActionListener{
 			classListSubP.setBackground(Color.white);
 			classListPanel.setBackground(Color.white);
 			classListSubP.add(space, BorderLayout.CENTER);
+			classListSubP.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
 			classListSubP.add(createClassBN, BorderLayout.EAST);
 			classListPanel.add(classListSubP, BorderLayout.NORTH);
 			classListPanel.add(buildListTable(header, list), BorderLayout.CENTER);
@@ -526,15 +529,20 @@ public class View extends JFrame  implements ActionListener{
 			
 			JScrollPane scrollPane_1 = new JScrollPane();
 			scrollPane_1.setBounds(130, 29, 275, 46);
-			panel_1.add(scrollPane_1);
+
 			
 			JTextPane txtpnwindowbuildertable_1 = new JTextPane();
 			txtpnwindowbuildertable_1.setBackground(SystemColor.control);
-			scrollPane_1.setViewportView(txtpnwindowbuildertable_1);
+
 			txtpnwindowbuildertable_1.setText("La Flora, o vero Il natal de' fiori (Flora, or The Birth of Flowers) is an opera in a prologue and five acts composed by Marco da Gagliano and Jacopo Peri to a libretto by Andrea Salvadori. It was first performed on 14 October 1628 at the Teatro Mediceo in Florence to celebrate the marriage of Margherita de' Medici and Odoardo Farnese, Duke of Parma.[1] Based on the story of Chloris and Zephyrus in Book V of Ovid's Fasti, Salvadori's libretto contains many allegorical references to the transfer of political power, the beauty of Tuscany,");
 			txtpnwindowbuildertable_1.setFont(new Font("Arial", Font.PLAIN, 12));
 			txtpnwindowbuildertable_1.setEditable(false);
-			
+			scrollPane_1.setVerticalScrollBar(new JScrollBar() {
+			    public void setValue(int value) {
+			        super.setValue(value);
+			    } 
+			});
+			scrollPane_1.add(txtpnwindowbuildertable_1);
 			JButton btnSubmit = new JButton("Submit");
 			btnSubmit.setBackground(new Color(255, 255, 255));
 			btnSubmit.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -544,20 +552,41 @@ public class View extends JFrame  implements ActionListener{
 			
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(45, 138, 415, 81);
-			classDetailPanel.add(scrollPane);
+			
 			
 			JTextPane txtpnwindowbuildertable = new JTextPane();
-			scrollPane.setViewportView(txtpnwindowbuildertable);
+
 			txtpnwindowbuildertable.setFont(new Font("Arial", Font.PLAIN, 12));
 			txtpnwindowbuildertable.setEditable(false);
 			txtpnwindowbuildertable.setText("La Flora, o vero Il natal de' fiori (Flora, or The Birth of Flowers) is an opera in a prologue and five acts composed by Marco da Gagliano and Jacopo Peri to a libretto by Andrea Salvadori. It was first performed on 14 October 1628 at the Teatro Mediceo in Florence to celebrate the marriage of Margherita de' Medici and Odoardo Farnese, Duke of Parma.[1] Based on the story of Chloris and Zephyrus in Book V of Ovid's Fasti, Salvadori's libretto contains many allegorical references to the transfer of political power, the beauty of Tuscany,");
+			scrollPane.setVerticalScrollBar(new JScrollBar() {
+			    /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void setValue(int value) {
+			        super.setValue(value);
+			    } 
+			});
+			scrollPane.getVerticalScrollBar().setBackground(Color.BLACK);
+			scrollPane.getHorizontalScrollBar().setBackground(Color.BLACK);
+
+			scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+			    @Override
+			    protected void configureScrollBarColors() {
+			        this.thumbColor = Color.white;
+			    }
+			});
+			scrollPane.add(txtpnwindowbuildertable);
 			
 			JLabel lblTeachingRequest = new JLabel("Teaching request");
 			lblTeachingRequest.setBounds(45, 226, 134, 14);
 			classDetailPanel.add(lblTeachingRequest);
 			lblTeachingRequest.setForeground(Color.BLACK);
 			lblTeachingRequest.setFont(new Font("Arial", Font.PLAIN, 12));
-		
+			panel_1.add(scrollPane_1);
+			classDetailPanel.add(scrollPane);
 			
 		}
 		
