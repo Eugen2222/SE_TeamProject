@@ -27,6 +27,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 
 public class View extends JFrame  implements ActionListener{
@@ -75,19 +77,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == classListBN) {
-			centerPage.show(centerPanel, "classListPanel");
-			this.refresh();
-		}
-		if(e.getSource()==this.createClassBN) {
-			centerPage.show(centerPanel, "createClassPanel");
-			this.refresh();
-		}
-		if(e.getSource()==this.createClassCBN) {
-			centerPage.show(centerPanel, "classListPanel");
-			this.refresh();
-		}
-//		
+		
 	}
 	
 	
@@ -293,6 +283,12 @@ public class View extends JFrame  implements ActionListener{
 			
 		}
 		
+		public void displayCreateClassPanel() {
+			centerPage.show(centerPanel, "createClassPanel");
+			View.this.refresh();
+		}
+		
+		
 		
 		
 		public String getCreateClassString() {
@@ -306,14 +302,14 @@ public class View extends JFrame  implements ActionListener{
 				return null;
 			}
 			req += requirmentTA.getText();
+			
 			s += encodeString(req);
+	
 			return s;
 		}
 		
 		public void cleanCreateClassText() {
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, defaultClassRequirements));
-			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
 		}
 		
 	
@@ -361,12 +357,19 @@ public class View extends JFrame  implements ActionListener{
 	        return sp;
 		}
 		
-		public void displayClassListPanel() {	
-			centerRefresh();
-			View.this.refresh();
+
+
+		
+		public void displayClassListPanel(String[] header, String[][] list) {	
+			TableModel m = new DefaultTableModel(list, header) ;
+			for(int i = 0 ; i<header.length; i++) {
+				System.out.print(header[i]);
+			}
+			
+
+			View.this.classListTable.setModel(m);
 			centerPage.show(centerPanel, "classListPanel");
-			
-			
+			refresh();
 		}
 		
 		public void centerRefresh() {

@@ -30,7 +30,9 @@ public class CDController extends Controller implements ActionListener{
 		view.createClassBN.setVisible(true);
 		view.createClassBN.addActionListener(this);
 		view.createClassOKBN.addActionListener(this);
-		view.main.displayClassListPanel();
+		view.createClassCBN.addActionListener(this);
+		view.classListBN.addActionListener(this);
+		view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
 	}
 	
 	
@@ -43,7 +45,19 @@ public class CDController extends Controller implements ActionListener{
 			}else{
 				this.model.createClass(class1);
 				this.model.save();
+				view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
 			}
+		}
+		
+		if(e.getSource() == view.classListBN) {
+			view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+		}
+		
+		if(e.getSource()==view.createClassBN) {
+			view.main.displayCreateClassPanel();
+		}
+		if(e.getSource()==view.createClassCBN) {
+			view.main.displayClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
 		}
 		
 	}

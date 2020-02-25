@@ -90,14 +90,12 @@ public class Model {
 		cls.add(Integer.toString(classID));
 		cls.add(className);
 		cls.add(classRequirements);
+		cls.add("Pending");
 		cls.add(currentUserID);
-		cls.add("1");
 		CDClass tClass = new CDClass(cls);
 		tClass.setClassDirectorName(currentUserName);
 		classList.add(tClass);
-		for(int i=0 ; i < tClass.getSummary().size() ; i++) {
-			System.out.print(tClass.getSummary().get(i)+ ", ");
-		}
+		
 		System.out.print("\nSuccessfully created a class");
 	}
 	

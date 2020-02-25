@@ -1,5 +1,7 @@
 package ModelPackage;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 public class CDClass  implements Populated{
 	private String classID;
 	private String name;
@@ -40,7 +42,9 @@ public class CDClass  implements Populated{
 	public boolean setRequirement(String s) {
 		if(s.equals("") || s==null) {
 				return false;
-		}else {
+		}else{
+			s=s.replaceAll("\\$n\\$","\n");
+			System.out.println(s);
 			this.requirement = s;
 			return true;
 		}
@@ -116,7 +120,7 @@ public class CDClass  implements Populated{
 		s.add(this.semester);
 		s.add(this.classID);
 		s.add(this.name);
-		s.add(this.requirement);
+		s.add(this.requirement.replaceAll("\\n","\\$n\\$"));
 		s.add(this.teacherStatus);
 		s.add(this.classDirectorID);
 		return s;

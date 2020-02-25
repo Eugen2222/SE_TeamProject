@@ -11,3 +11,4 @@ Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID
 -------------------------------------------------
 "1", "1", "CS", "English, Math, French", "Pending", "0001", 
 "5", "2", "a", "b, c", "Pending", "0001", 
+"5", "3", "abc", "as$n$asda", "Pending", "0001", 
