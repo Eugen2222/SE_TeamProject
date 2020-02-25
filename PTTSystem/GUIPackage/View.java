@@ -369,7 +369,7 @@ public class View extends JFrame  implements ActionListener{
 	        
 //	        classListTable.setSelectionModel(new ForcedListSelectionModel());
 	        ListSelectionModel select= classListTable.getSelectionModel();  
-	        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
+//	        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
 //	        select.addListSelectionListener(new ListSelectionListener() {  
 //	        	public void valueChanged(ListSelectionEvent e) {  
 //	        		String Data = null;    
@@ -393,7 +393,7 @@ public class View extends JFrame  implements ActionListener{
 	                java.awt.Point p = e.getPoint();
 	                hoveredRow = classListTable.rowAtPoint(p);
 	                hoveredColumn = classListTable.columnAtPoint(p);
-	                if(hoveredRow<1||hoveredRow>classListTable.getRowCount()) {}
+	                if(hoveredRow<0||hoveredRow>classListTable.getRowCount()) {}
 	                else {
 	                	classListTable.setRowSelectionInterval(hoveredRow, hoveredRow);
 	                	classListTable.repaint();  
