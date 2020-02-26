@@ -107,6 +107,8 @@ public  class Model <T extends Populated>{
 		cls.add(classRequirements);
 		cls.add("Pending");
 		cls.add(currentUserID);
+		cls.add("");
+		cls.add("");
 		CDClass tClass = new CDClass(cls);
 		tClass.setClassDirectorName(currentUserName);
 		classList.add(tClass);

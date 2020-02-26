@@ -465,7 +465,10 @@ public class View extends JFrame  implements ActionListener{
 			JLabel trainingTitleL;
 			JTextArea requirementTA;
 			JTextArea trainingTA;
-			public JButton classDetailSubmitBN;
+			public JButton classDetailSubmitTeachingRequestBN;
+			public JButton classDetailApproveTeachingRequestBN;
+			public JButton classDetailSubmitTeacherBN;
+			public JButton classDetailAssignTeacherBN;
 			Color titleFontColor = SystemColor.controlShadow;
 			
 			
@@ -478,7 +481,7 @@ public class View extends JFrame  implements ActionListener{
 				classDetailPanel.setLayout(null);
 				
 				classNameL = new JLabel("");
-				classNameL.setFont(new Font("Arial", Font.PLAIN, 20));
+				classNameL.setFont(new Font("Arial", Font.PLAIN, 20 ));
 				classNameL.setBounds(65, 30, 370, 62);
 				classDetailPanel.add(classNameL);
 				labelList.add(classNameL);
@@ -608,20 +611,42 @@ public class View extends JFrame  implements ActionListener{
 				trainingSP.setViewportView(trainingTA);
 				TAList.add(trainingTA);
 				
+				CardLayout submitButtonsLayout = new CardLayout();
+				JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
+				submitButtonsPanel.setBounds(365, 113, 112, 35);
 				
-				classDetailSubmitBN = new JButton("Submit");
-				classDetailSubmitBN.setBackground(new java.awt.Color(0,0,0));
-				classDetailSubmitBN.setBorder(BorderFactory.createEmptyBorder());
-				classDetailSubmitBN.setForeground(Color.WHITE);
-				classDetailSubmitBN.setFont(new Font("Arial", Font.PLAIN, 12));
-				classDetailSubmitBN.setBounds(365, 113, 112, 35);
-				operateP.add(classDetailSubmitBN);
+				classDetailSubmitTeacherBN = createBlackButton("Submit");
+				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
+				classDetailSubmitTeacherBN = createBlackButton("Submit");
+				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
+				classDetailSubmitTeacherBN = createBlackButton("Submit");
+				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
+				classDetailSubmitTeacherBN = createBlackButton("Submit");
+				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
+				
+				
+				
+				
+				operateP.add(classDetailSubmitTeacherBN);
 				
 			
 				
 				centerPanel.add(classDetailPanel, "classDetailPanel");
 			}
-					
+			
+			
+			private JButton createBlackButton(String name) {
+				JButton btn = new JButton(name);
+				btn.setBackground(new java.awt.Color(0,0,0));
+				btn.setBorder(BorderFactory.createEmptyBorder());
+				btn.setForeground(Color.WHITE);
+				btn.setFont(new Font("Arial", Font.PLAIN, 12));
+				return btn;
+			}
+			
+			
+			
+			
 
 			public void displayClassDetailPanel(String[] data) {
 				centerPage.show(centerPanel, "classDetailPanel");
