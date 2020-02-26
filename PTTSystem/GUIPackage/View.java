@@ -52,7 +52,7 @@ public class View extends JFrame  implements ActionListener{
 	public Color blue = new java.awt.Color(135,206,250);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, classListPanel, rootPanel, classDetailPanel;
 	public JTable classListTable;
-	public JTextArea requirmentTA;
+	public JTextArea requirementTA;
 	public Semester semester;
 	public Login login;
 	public Bar bar;
@@ -219,8 +219,8 @@ public class View extends JFrame  implements ActionListener{
 	}
 	
 	public class Main{
-		String defaultClassName = "class name";
-		String defaultClassRequirements = "requirment";
+		String defaultClassName = "  Please enter a class name, max length 20.";
+		String defaultClassRequirement = "  Please enter a requirement, max length 200 words.";
 		public CourseDetailPage courseDetailPage;
 		Main(){
 			centerPage =new CardLayout();
@@ -231,79 +231,92 @@ public class View extends JFrame  implements ActionListener{
 		
 		
 		public void buildCreateClassPanel() {
-			JPanel center = new JPanel();
-			center.setLayout(new BoxLayout(center, BoxLayout.PAGE_AXIS));
-			center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
+			JPanel centerP = new JPanel(null);
+			centerP.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
 			JPanel buttonPanel = new JPanel(new FlowLayout());
 			JPanel textAreaPanel = new JPanel(new BorderLayout());
-			textAreaPanel.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
-			JLabel classNameL = new JLabel("Class name:     ");
-			JLabel reqL1 = new JLabel("Requirement:  ");
-//			JLabel reqL2 = new JLabel("Requirement 2:  ");
-			center.setBackground(Color.white);
+			centerP.setBackground(Color.white);
 			buttonPanel.setBackground(Color.white);
 			textAreaPanel.setBackground(Color.white);
 			
-			JLabel label = new JLabel("Create new class", SwingConstants.CENTER);
-			Font f = new Font("TimesRoman",Font.PLAIN,23);
-			label.setFont(f);
+			JLabel createClassTitleL = new JLabel("Create a new class", SwingConstants.CENTER);
+			createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 23));
+			createClassTitleL.setBounds(220, 30, 200, 62);
+			centerP.add(createClassTitleL);
+			
+			
+			textAreaPanel.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+			JLabel classNameL = new JLabel("Class name:     ");
+			classNameL.setForeground(new Color(114, 114, 114));
+			classNameL.setFont(new Font("Arial", Font.PLAIN, 14));
+			classNameL.setBounds(168, 104, 112, 21);
+			centerP.add(classNameL);
+			JLabel reqLTitle1 = new JLabel("Requirement:  ");
+			
+			reqLTitle1.setForeground(new Color(114, 114, 114));
+			reqLTitle1.setFont(new Font("Arial", Font.PLAIN, 14));
+			reqLTitle1.setBounds(168, 184, 112, 21);
+			centerP.add(reqLTitle1);
+			
+			
 			
 			courseNameTF = new JTextField();
+		
+			courseNameTF.setFont(new Font("Arial", Font.PLAIN, 12));
+			courseNameTF.setForeground(new Color(20,20,20));
+			courseNameTF.setBounds(164, 125, 319, 36);
+
+			courseNameTF.setColumns(10);
+			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+			
+			centerP.add(courseNameTF);
+			
+			
+			
+			
 			int TA_row = 10;
 			int TA_col = 30;
 			
-			requirmentTA= new JTextArea(TA_row, TA_col);
-			requirmentTA.setMaximumSize(new Dimension(5, 30));
-//			requirment2TF= new JTextField();
-			requirmentTA.setWrapStyleWord(true);
-			requirmentTA.setLineWrap(true);
-			JScrollPane scrollPane = new JScrollPane( requirmentTA );
-			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+			requirementTA= new JTextArea(TA_row, TA_col);
+			requirementTA.setFont(new Font("Arial", Font.PLAIN, 12));
+			requirementTA.setMaximumSize(new Dimension(5, 30));
+			requirementTA.setForeground(new Color(20,20,20));
+
+			requirementTA.setWrapStyleWord(true);
+			requirementTA.setLineWrap(true);
+			
+			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+			
+			JScrollPane reqScrollPanel = new JScrollPane( requirementTA );
+			reqScrollPanel.setBounds(164, 208, 319, 160);
+
 //			requirment.addFocusListener(new JTextFieldHintListener(requirment, defaultClassRequirements));
 //			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
 			
-			courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
-			scrollPane.setBorder(BorderFactory.createLineBorder(blue));
+
+			reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(114, 114, 114)));
+			
+			centerP.add(reqScrollPanel);
+			
 //			requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
 //			add = new JButton("add a new requirement");
+			
 			createClassOKBN = new JButton("Ok");
-			createClassCBN = new JButton("Cancel");
-			createClassCBN.addActionListener(View.this);
-			createClassOKBN.setBackground(blue);
+			createClassOKBN.setBounds(415, 391, 70, 33);
+			createClassOKBN.setForeground(Color.white);
+			createClassOKBN.setFont(new Font("Arial", Font.PLAIN,12));	
+			createClassOKBN.setBackground(new Color(56, 151, 240));
 			createClassOKBN.setFocusPainted(false);
-		
-			createClassCBN.setBackground(blue);
-			createClassCBN.setFocusPainted(false);
-
-			
-			buttonPanel.add(createClassOKBN);
-			buttonPanel.add(createClassCBN);
-			JPanel rowPanel1 = new JPanel(new BorderLayout());
-			JPanel rowPanel2 = new JPanel(new BorderLayout());
-			JPanel rowPanel3 = new JPanel(new BorderLayout());
-			JPanel rowPanel4 = new JPanel(new BorderLayout());
-			
-			rowPanel1.setBackground(Color.white);
-			rowPanel2.setBackground(Color.white);
-			rowPanel3.setBackground(Color.white);
-			rowPanel4.setBackground(Color.white);
+			centerP.add(createClassOKBN);
 			
 			
-			rowPanel1.add(label, BorderLayout.CENTER);
-			rowPanel2.add(classNameL, BorderLayout.WEST);
-			rowPanel2.add(courseNameTF, BorderLayout.CENTER);
-			textAreaPanel.add(reqL1, BorderLayout.WEST);
-			textAreaPanel.add(scrollPane, BorderLayout.CENTER);
-//			rowPanel4.add(reqL2, BorderLayout.WEST);
-//			rowPanel4.add(requirment2TF, BorderLayout.CENTER);
-//			center.add(add);
-			center.add(rowPanel1);
-			center.add(rowPanel2);
-			center.add(textAreaPanel);
-//			center.add(rowPanel4);
 			
-			center.add(buttonPanel);
-			createClassPanel = center;
+			createClassCBN = createBlackButton("Cancel");
+			createClassCBN.setBounds(166, 391, 80, 33);
+			
+			centerP.add(createClassCBN);
+			
+			createClassPanel = centerP;
 			centerPanel.add(createClassPanel, "createClassPanel");
 			
 		}
@@ -324,10 +337,10 @@ public class View extends JFrame  implements ActionListener{
 			}
 			s += encodeString(courseNameTF.getText());
 			String req ="";
-			if(requirmentTA.getText().equals(" ")|| requirmentTA.getText().equals("")) {
+			if(requirementTA.getText().equals(" ")|| requirementTA.getText().equals("")) {
 				return null;
 			}
-			req += requirmentTA.getText();
+			req += requirementTA.getText();
 			
 			s += encodeString(req);
 	
@@ -336,7 +349,8 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void cleanCreateClassText() {
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			View.this.requirmentTA.setText("");
+			courseNameTF.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+
 		}
 		
 	
@@ -650,14 +664,6 @@ public class View extends JFrame  implements ActionListener{
 			}
 			
 			
-			private JButton createBlackButton(String name) {
-				JButton btn = new JButton(name);
-				btn.setBackground(new java.awt.Color(0,0,0));
-				btn.setBorder(BorderFactory.createEmptyBorder());
-				btn.setForeground(Color.WHITE);
-				btn.setFont(new Font("Arial", Font.PLAIN, 12));
-				return btn;
-			}
 			
 			public String[] getAssignTeacher() {
 				String [] s = new String [2];
@@ -726,6 +732,11 @@ public class View extends JFrame  implements ActionListener{
 
 				View.this.refresh();
 			}
+			
+			
+			
+			
+			
 			public void displayAdminsMode(String[] data) {
 				updateData(data);
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
@@ -1000,6 +1011,15 @@ public class View extends JFrame  implements ActionListener{
 		}
 	}
 	
+	
+	private JButton createBlackButton(String name) {
+		JButton btn = new JButton(name);
+		btn.setBackground(new Color(20,20,20));
+		btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.setForeground(Color.WHITE);
+		btn.setFont(new Font("Arial", Font.PLAIN, 12));
+		return btn;
+	}
 	
 	
 //	

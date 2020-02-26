@@ -54,7 +54,6 @@ public class CDController extends Controller implements ActionListener{
 		super.actionPerformed(e);
 		if(e.getSource() == view.createClassOKBN) {
 			String class1 = view.main.getCreateClassString();
-			System.out.println(class1.length());
 
 			if(class1==null) {
 				view.main.cleanCreateClassText();

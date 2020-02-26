@@ -299,10 +299,7 @@ public  class Model <T extends Populated>{
 		}
 		
 		private String encodeString(String s) {
-			if(s!=null) {
-				return (!s.equals("")) ? "\""+ s + "\"" : "";
-			}
-			return null;
+			return  "\""+ s + "\"";
 		}
 		
 	
@@ -318,7 +315,7 @@ public  class Model <T extends Populated>{
 				database += "-------------------------------------------------"+"\n";
 				for(T e : subList) {
 					String row =  "";
-					for (String s : e.getData()) {
+					for (String s : e.getRawData()) {
 						row += encodeString(s) + ", ";
 					}
 					database += row +"\n";

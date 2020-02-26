@@ -11,13 +11,13 @@ public class CDClass  implements Populated{
 	private String requirement = "";
 	
 	private String semester;
-	private String classDirectorID= "";//FK
+	private String classDirectorID;//FK
 	private String classDirectorName;
 	private String teacherStatus;
-	private String teacherID = "";//FK
-	private String training="";
+	private String teacherID;//FK
+	private String training;
 	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
-	private String tableTitle = "";
+	private String tableTitle;
 	private List<Integer> indexOfFKList = new LinkedList<Integer>();
 	
 	public CDClass(List<String> s) {
@@ -69,6 +69,7 @@ public class CDClass  implements Populated{
 		if(s.equals("") || s==null) {
 				return false;
 		}else{
+			
 			s=s.replaceAll("\\$n\\$","\\n");
 			System.out.println(s);
 			this.requirement = s;
@@ -145,7 +146,7 @@ public class CDClass  implements Populated{
 		s.add(this.semester);
 		s.add(this.classID);
 		s.add(this.name);
-		s.add(this.requirement.replaceAll("\\n","\\$n\\$"));
+		s.add(this.requirement.replaceAll("\\n", "\\$n\\$"));
 		s.add(this.teacherStatus);
 		s.add(this.classDirectorID);
 		s.add(""+this.teacherID);
