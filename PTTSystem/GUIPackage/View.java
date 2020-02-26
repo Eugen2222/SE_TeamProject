@@ -92,6 +92,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		
+		
 	}
 	
 	
@@ -461,15 +462,19 @@ public class View extends JFrame  implements ActionListener{
 			JLabel staffTitleL;
 			JLabel staffIDL;
 			JLabel staffNameL;
+			JLabel statusTitleL;
 			JLabel statusL;
 			JLabel trainingTitleL;
 			JTextArea requirementTA;
 			JTextArea trainingTA;
-			public JButton classDetailSubmitTeachingRequestBN;
-			public JButton classDetailApproveTeachingRequestBN;
-			public JButton classDetailSubmitTeacherBN;
-			public JButton classDetailAssignTeacherBN;
-			Color titleFontColor = SystemColor.controlShadow;
+			public JButton submitTeachingRequestBN;
+			public JButton approveTeachingRequestBN;
+			public JButton submitTeacherBN;
+			public JButton assignTeacherBN;
+			CardLayout submitButtonsLayout = new CardLayout();
+			JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
+			Color titleFontColor = new Color(114,114,114);
+			private int statusIndex = -1;
 			
 			
 			private List<JLabel> labelList = new ArrayList<JLabel>();
@@ -532,10 +537,17 @@ public class View extends JFrame  implements ActionListener{
 				labelList.add(directorNameL);
 				
 				
+				statusTitleL = new JLabel("Status: ");
+				statusTitleL .setBounds(65, 284, 82, 29);
+				statusTitleL.setForeground(titleFontColor);
+				statusTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				classDetailPanel.add(statusTitleL);
 				
-				statusL = new JLabel("Pending Teaching Request");
-				statusL .setBounds(65, 288, 177, 21);
-				classDetailPanel.add(statusL);
+				
+				
+				
+				statusL = new JLabel("Teacher has not been assigned.");
+				statusL .setBounds(115, 288, 400, 21);
 				statusL.setForeground(Color.BLACK);
 				statusL.setFont(new Font("Arial", Font.PLAIN, 14));
 				classDetailPanel.add(statusL);
@@ -557,7 +569,7 @@ public class View extends JFrame  implements ActionListener{
 				
 				staffTitleL = new JLabel("Teacher");
 				staffTitleL.setBounds(16, 13, 76, 14);
-				staffTitleL.setForeground(SystemColor.controlShadow);
+				staffTitleL.setForeground(titleFontColor);
 				staffTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
 				operateP.add(staffTitleL);
 				
@@ -578,7 +590,7 @@ public class View extends JFrame  implements ActionListener{
 				
 				
 				trainingTitleL = new JLabel("Organized training");
-				trainingTitleL.setForeground(Color.GRAY);
+				trainingTitleL.setForeground(titleFontColor);
 				trainingTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
 				trainingTitleL.setBounds(158, 11, 147, 18);
 				operateP.add(trainingTitleL);
@@ -611,23 +623,26 @@ public class View extends JFrame  implements ActionListener{
 				trainingSP.setViewportView(trainingTA);
 				TAList.add(trainingTA);
 				
-				CardLayout submitButtonsLayout = new CardLayout();
-				JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
-				submitButtonsPanel.setBounds(365, 113, 112, 35);
+
+				submitButtonsPanel.setBounds(365, 113, 100, 30);
 				
-				classDetailSubmitTeacherBN = createBlackButton("Submit");
-				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
-				classDetailSubmitTeacherBN = createBlackButton("Submit");
-				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
-				classDetailSubmitTeacherBN = createBlackButton("Submit");
-				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
-				classDetailSubmitTeacherBN = createBlackButton("Submit");
-				submitButtonsPanel.add(classDetailSubmitTeacherBN, "submitTeacherBN");
+				submitTeacherBN = createBlackButton("Submit");
+				submitButtonsPanel.add(submitTeacherBN, "submitTeacherBN");
+				approveTeachingRequestBN = createBlackButton("Approve");
+				submitButtonsPanel.add(approveTeachingRequestBN, "approveTeachingRequestBN");
+				submitTeachingRequestBN = createBlackButton("Submit");
+				submitButtonsPanel.add(submitTeachingRequestBN, "submitTeachingRequestBN");
+				JPanel emptyP = new JPanel ();
+				emptyP.setBackground(Color.WHITE);
+				submitButtonsPanel.add(emptyP, "emptyP");		
+				operateP.add(submitButtonsPanel);
 				
-				
-				
-				
-				operateP.add(classDetailSubmitTeacherBN);
+				assignTeacherBN = createBlackButton("Assign");
+				assignTeacherBN.setBounds(75, 13, 40, 16);
+				assignTeacherBN.setFont(new Font("Arial", Font.BOLD, 8));
+				assignTeacherBN.setVisible(false);
+				assignTeacherBN.setEnabled(false);
+				operateP.add(assignTeacherBN);
 				
 			
 				
@@ -644,11 +659,16 @@ public class View extends JFrame  implements ActionListener{
 				return btn;
 			}
 			
-			
+			public String[] getAssignTeacher() {
+				String [] s = new String [2];
+				s[0] = staffNameL.getText();
+				s[1] = requirementTA.getText();			
+				return s;
+			}
 			
 			
 
-			public void displayClassDetailPanel(String[] data) {
+			public void updateData(String[] data) {
 				centerPage.show(centerPanel, "classDetailPanel");
 				int i = 1;	//start with class id #2 element
 				String [] refinedData = new String[data.length];
@@ -664,6 +684,25 @@ public class View extends JFrame  implements ActionListener{
 				refinedData[7] = data[8]; //teachername
 				refinedData[8] = data[3]; //requirement
 				refinedData[9] = data[9]; //training				
+				
+				if(refinedData[5].equals("Pending")) {
+					statusIndex = 1;
+					refinedData[5] = "Require the assignment of a teacher.";
+				}
+				else if(refinedData[5].equals("Assigned")) {
+					statusIndex = 2;
+					refinedData[5] = "Require the submission of the teaching request.";
+				}
+				else if(refinedData[5].equals("Submitted")) {
+					statusIndex = 3;
+					refinedData[5] = "Require the approvement of the teaching request.";
+				}
+				else if(refinedData[5].equals("Approved")) {
+					statusIndex = 4;
+					refinedData[5] = "Teaching request had been approved";
+				}else {
+					refinedData[5] = "Error" + refinedData[5];
+				}
 				
 				
 				System.out.println();
@@ -687,7 +726,72 @@ public class View extends JFrame  implements ActionListener{
 
 				View.this.refresh();
 			}
-		
+			public void displayAdminsMode(String[] data) {
+				updateData(data);
+				if(View.this.main.courseDetailPage.statusIndex == 1) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "submitTeacherBN");
+					trainingTA.setEditable(true);
+					View.this.main.courseDetailPage.assignTeacherBN.setVisible(true);
+					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(true);
+				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					trainingTA.setEditable(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
+				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");	
+					trainingTA.setEditable(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
+				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					trainingTA.setEditable(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
+					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
+				}
+				
+			}
+			
+			public void displayDCMode(String[] data) {
+				updateData(data);
+				if(View.this.main.courseDetailPage.statusIndex == 1) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "submitTeachingRequestBN");
+				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}
+				
+			}
+			
+			public void displayPDMode(String[] data) {
+				updateData(data);
+				if(View.this.main.courseDetailPage.statusIndex == 1) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "approveTeachingRequestBN");
+				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}
+				
+			}
+			public void displayNormalMode(String[] data) {
+				updateData(data);
+				if(View.this.main.courseDetailPage.statusIndex == 1) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+				}
+				
+			}
 		
 		}
 		

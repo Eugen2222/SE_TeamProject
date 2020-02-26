@@ -181,8 +181,8 @@ public class CDClass  implements Populated{
 		if(s.equals("Assigned")) {
 			this.teacherStatus = "Assigned";
 		}
-		if(s.equals("Submited")) {
-			this.teacherStatus = "Submited";
+		if(s.equals("Submitted")) {
+			this.teacherStatus = "Submitted";
 		}
 		if(s.equals("Approved")) {
 			this.teacherStatus = "Approved";

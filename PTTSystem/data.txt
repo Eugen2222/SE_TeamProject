@@ -16,5 +16,5 @@ Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID
 -------------------------------------------------
 "1", "1", "CS", "English, Math, French", "Pending", "0001","","",
 "5", "2", "Internet Technology", "Need teacher who knows Python", "Assigned", "0001", "0004", "Python", 
-"5", "3", "Java", "Need one teacher who knows java", "Submited", "0001", "0004", "Java", 
+"5", "3", "Java", "Need one teacher who knows java", "Submitted", "0001", "0004", "Java", 
 "5", "4", "Law", "Need one teacher", "Approved", "0001", "0004", "Law", 

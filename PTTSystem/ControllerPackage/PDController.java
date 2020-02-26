@@ -13,13 +13,24 @@ public class PDController extends Controller {
 	}
 	
 	public void initialisePage() {
-		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
+		super.initialisePage();
+		view.bar.buildPDBar(model.getUser()[0], model.getUser()[1]);
+		view.classListBN.addActionListener(this);	
 		view.logoutBN.addActionListener(this.logC);
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
+		
 		//setup all available pages
-		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 		//add all action listeners
 		
 	}
+	
+	
+	public void selectedCourseStage(String classId){
+	       view.main.courseDetailPage.displayPDMode(model.getClass(classId));
+	}
+	
+	
+	
+	
 }

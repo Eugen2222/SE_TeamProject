@@ -34,8 +34,34 @@ public class Controller implements ActionListener{
 	
 
 	public void initialisePage() {
+
 		
+		//setup all available pages
+		view.main.courseDetailPage.buildClassDetailPanel();
+		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+
+		view.classListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+				public void mouseClicked(java.awt.event.MouseEvent evt) {
+					int selectedRow = view.classListTable.rowAtPoint(evt.getPoint());
+		//		    int selectedCol = view.classListTable.columnAtPoint(evt.getPoint());
+				    if (selectedRow >= 0) {
+				       String classId = view.classListTable.getValueAt(selectedRow, 1).toString();
+				       System.out.println(selectedRow);
+				       selectedCourseStage(classId);
+
+				    }
+				}
+			});
+		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 	}
+	
+	public void selectedCourseStage(String classId){
+	       view.main.courseDetailPage.displayNormalMode(model.getClass(classId));
+	}
+	
+	
+	
 	
 	public void actionPerformed(ActionEvent e) {
 
@@ -47,24 +73,10 @@ public class Controller implements ActionListener{
 			}
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-
-		if(e.getSource() == view.teacherList) {
-			view.teacherList.setBackground(Color.white);
-			view.teacherList.setBorder(BorderFactory.createLineBorder(Color.white));
-			view.classListBN.setBackground(view.blue);
-			view.classListBN.setBorder(BorderFactory.createLineBorder(view.blue));
-			view.requestList.setBackground(view.blue);
-			view.requestList.setBorder(BorderFactory.createLineBorder(view.blue));
-			
+		if(e.getSource() == view.classListBN) {
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 		}
+		
 		
 		if(e.getSource() == view.requestList) {
 			view.requestList.setBackground(Color.white);

@@ -21,41 +21,33 @@ public class CDController extends Controller implements ActionListener{
 	}
 	
 	public void initialisePage() {
+		super.initialisePage();		
+		
+		
 		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
 		view.logoutBN.addActionListener(this.logC);
+		view.classListBN.addActionListener(this);	
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
-		//setup all available pages
 		view.main.buildCreateClassPanel();
-		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
-		view.main.courseDetailPage.buildClassDetailPanel();
+
 		//add all action listeners
 		view.createClassBN.setVisible(true);
 		view.createClassBN.addActionListener(this);
 		view.createClassOKBN.addActionListener(this);
 		view.createClassCBN.addActionListener(this);
-		view.classListBN.addActionListener(this);
-		view.main.courseDetailPage.classDetailSubmitBN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		
-		
-			view.classListTable.addMouseListener(new java.awt.event.MouseAdapter() {
-			    @Override
-			    public void mouseClicked(java.awt.event.MouseEvent evt) {
-			        int selectedRow = view.classListTable.rowAtPoint(evt.getPoint());
-//			        int selectedCol = view.classListTable.columnAtPoint(evt.getPoint());
-			        if (selectedRow >= 0) {
-			        	String classId = view.classListTable.getValueAt(selectedRow, 1).toString();
-			        	System.out.println(selectedRow);
-			        	view.main.courseDetailPage.displayClassDetailPanel(model.getClass(classId));
-			        }
-			    }
-			});
-//		
-		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 	}
+	
+	
+	
+	
+
+	public void selectedCourseStage(String classId){
+	       view.main.courseDetailPage.displayDCMode(model.getClass(classId));
+	}
+	
+	
 	
 	
 	public void actionPerformed(ActionEvent e) {
