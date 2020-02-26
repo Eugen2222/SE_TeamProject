@@ -27,27 +27,34 @@ public class CDController extends Controller implements ActionListener{
 		view.frame.displayFramePanel();
 		//setup all available pages
 		view.main.buildCreateClassPanel();
-		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
-		view.main.buildClassDetailPanel();
+		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+		view.main.courseDetailPage.buildClassDetailPanel();
 		//add all action listeners
 		view.createClassBN.setVisible(true);
 		view.createClassBN.addActionListener(this);
 		view.createClassOKBN.addActionListener(this);
 		view.createClassCBN.addActionListener(this);
 		view.classListBN.addActionListener(this);
+		view.main.courseDetailPage.classDetailSubmitBN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
 		
 			view.classListTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			    @Override
 			    public void mouseClicked(java.awt.event.MouseEvent evt) {
-			        int row = view.classListTable.rowAtPoint(evt.getPoint());
-			        int col = view.classListTable.columnAtPoint(evt.getPoint());
-			        if (row >= 0 && col >= 0) {
-			        	view.main.displayClassDetailPanel();
+			        int selectedRow = view.classListTable.rowAtPoint(evt.getPoint());
+//			        int selectedCol = view.classListTable.columnAtPoint(evt.getPoint());
+			        if (selectedRow >= 0) {
+			        	String classId = view.classListTable.getValueAt(selectedRow, 1).toString();
+			        	System.out.println(selectedRow);
+			        	view.main.courseDetailPage.displayClassDetailPanel(model.getClass(classId));
 			        }
 			    }
 			});
 //		
-		view.main.displayClassListPanel(model.getClassListHeader(), model.getClassDetialList());
+		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 	}
 	
 	
@@ -67,14 +74,14 @@ public class CDController extends Controller implements ActionListener{
 		}
 		
 		if(e.getSource() == view.classListBN) {
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable()));
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 		}
 		
 		if(e.getSource()==view.createClassBN) {
 			view.main.displayCreateClassPanel();
 		}
 		if(e.getSource()==view.createClassCBN) {
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable()));
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 		}
 		
 		

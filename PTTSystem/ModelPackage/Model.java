@@ -7,11 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.*;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -20,17 +16,22 @@ import java.lang.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class Model {
+public  class Model <T extends Populated>{
 	
 	//Semester
 	private int latestSem = 5;
 	private int selectedSem = 0;
 	
-	private List<CDClass> classList = new ArrayList<CDClass>();
-	protected List<Account> accountList =  new ArrayList<Account>();
+	protected List<CDClass> classList;
+	protected List<Account> accountList;
+	private List<LinkedList<T>> database;
+	
 	private String currentUserID = "";
 	private String currentUserName = "";
 	private ManageFile mf;
+	
+	
+	
 	public String[] getUser() {
 		String [] s = new String[2];
 		s[0] = currentUserID;
@@ -40,8 +41,22 @@ public class Model {
 	
 	
 	public Model() {
+
+		accountList =  new LinkedList<Account>();
+		classList = new LinkedList<CDClass>();
+		database = new LinkedList<LinkedList<T>>();
+		try {
+			database.add((LinkedList<T>) accountList);
+			database.add((LinkedList<T>) classList);
+
+		}catch(ClassCastException e) {
+			e.printStackTrace();
+		}
+		
+		
 		mf = new ManageFile();
 		mf.readFile();
+		
 	}
 	
 	
@@ -101,35 +116,70 @@ public class Model {
 	
 	
 	public String[] getClassListTableHeader() {
-		String [] header = {"Semester", "ID", "Name", "Requirements", "TeacherStatus", "DirectorID", "DirectorName"};
+		String [] header = {"Semester", "ID", "Name", "Requirements", "Teacher Status", "DirectorID", "Director","TeacherID", "Teacher", "Trainning" };
 		return header;
 	}
-	public <T extends Populated> String[][] getClassListTable() {
+	public String[][] getClassListTable() {
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {
 			String [][] tem = new String [classList.size()][];
 			for(int i=0 ; i < tem.length ; i++) {
-				List<String> tem2 = null; 
-				tem2 = this.classList.get(i).getSummary();
-				tem2.add(this.getNameOfForiegnKey((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
-				for(String s: tem2) {
-						System.out.print(s);
-				}
-				System.out.println();
-				tem[i] = tem2.toArray(new String[ tem2.size()]);
+				tem[i] = (this.addNamesOfForiegnKeys((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
+				System.out.print(tem[i]);
 			}
 			return tem;
 		}
 	}
 	
-	public <T extends Populated> String getNameOfForiegnKey(T a, List<T> FKTable) {
-		for(T fk : FKTable) {
-			if(a.getFKID().equals(fk.getPKID())) {				
-				return fk.getName();
+
+	
+	
+	
+	
+	public  String[] getClass(String  s) {
+		String [] tem=null;
+		if(this.classList.isEmpty()) {
+			return tem;
+		}else {
+			for(CDClass c : classList) {
+				if(s.equals(c.getPKID())) {
+					tem = addNamesOfForiegnKeys((T)c , (List<T>)accountList);
+				}
 			}
 		}
-		return null;
+		return tem;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public String [] addNamesOfForiegnKeys(T a, List<T> FKTable) {
+		
+		List<String> tem = a.getData();
+		int countForIndexIncrease = 0;
+		for(int index : a.getIndexOfFKList()) {
+			if(a.getElement(index).equals(null)||a.getElement(index).equals("")||a.getElement(index).equals(" ")) {
+				tem.add(index+countForIndexIncrease+1, "");					
+				countForIndexIncrease ++;
+			}else {				
+				for(T fkObj : FKTable) {
+						if(a.getElement(index).equals(fkObj.getPKID())) {	
+						tem.add(index+countForIndexIncrease+1, fkObj.getName());					
+						countForIndexIncrease ++;
+						break;
+						//insert director's name and teacher's name. 
+					}
+				}
+			}
+		}
+		
+		String[] tem2 = tem.toArray(new String[ tem.size()]);
+		return tem2;
 	}
 	
 	private class ManageFile{	
@@ -165,7 +215,7 @@ public class Model {
 			}
 		}
 		
-		public <T extends Populated> void save() {
+		public void save() {
 			try {
 				File file = new File("data.txt");
 				if (!file.exists()) {

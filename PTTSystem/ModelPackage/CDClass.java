@@ -11,11 +11,14 @@ public class CDClass  implements Populated{
 	private String requirement = "";
 	
 	private String semester;
-	private String classDirectorID;
+	private String classDirectorID= null;//FK
 	private String classDirectorName;
 	private String teacherStatus;
+	private String teacherID = null;//FK
+	private String training;
 	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
 	private String tableTitle = "";
+	private List<Integer> indexOfFKList = new LinkedList<Integer>();
 	
 	public CDClass(List<String> s) {
 		this.semester = s.get(0);
@@ -24,7 +27,30 @@ public class CDClass  implements Populated{
 		setRequirement(s.get(3));
 		this.setTeacherStatus(s.get(4));
 		this.classDirectorID = s.get(5);
+		this.teacherID = s.get(6);
+		this.training = s.get(7);	
+		
+		this.setIndexOfFK(5);	//FK classDirectorID;
+		this.setIndexOfFK(6);	//FK teacherID;
 	}
+	
+	public void setIndexOfFK(int index) {
+		this.indexOfFKList.add(index);
+	}
+	
+	
+	public List<Integer> getIndexOfFKList() {
+		return indexOfFKList;
+	}
+	
+	
+	public String getElement(int index) {
+		return this.getData().get(index);
+	}
+	
+	
+	
+	
 	
 //	public boolean setRequirement(String s) {
 //		if(!hasRequirement()) {
@@ -76,7 +102,7 @@ public class CDClass  implements Populated{
 //	}
 	
 	
-	public  List<String> getSummary() {
+	public  List<String> getData() {
 		List<String> s = new ArrayList<String>() ;
 		s.add(""+this.semester);
 		s.add(""+this.classID);
@@ -84,9 +110,8 @@ public class CDClass  implements Populated{
 		s.add(this.requirement);
 		s.add(this.teacherStatus);
 		s.add(""+this.classDirectorID);
-		for(String ste:s) {
-			System.out.println(this.requirement+"s");
-		}
+		s.add(""+this.teacherID);
+		s.add(""+this.training);
 		return s;
 	}
 	
@@ -115,7 +140,7 @@ public class CDClass  implements Populated{
 		return this.classID;
 	}
 	
-	public List<String> getData() {
+	public List<String> getRawData() {
 		List<String> s = new LinkedList<String>();
 		s.add(this.semester);
 		s.add(this.classID);
@@ -123,11 +148,13 @@ public class CDClass  implements Populated{
 		s.add(this.requirement.replaceAll("\\n","\\$n\\$"));
 		s.add(this.teacherStatus);
 		s.add(this.classDirectorID);
+		s.add(""+this.teacherID);
+		s.add(""+this.training);
 		return s;
 	}
 	
 	public String getTableHeader() {
-		String s = "Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID";
+		String s = "Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning";
 		return s;
 	}
 	

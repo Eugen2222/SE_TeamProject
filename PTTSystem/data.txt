@@ -5,12 +5,16 @@ ID, Password, Type, Name
 "0001", "1", "CD", "John Wick", 
 "0002", "6666", "A", "PoPo", 
 "0003", "888", "PD", "Cat", 
+"0004", "1", "S", "James LEE", 
+"0005", "1", "S", "Derick", 
+"0006", "1", "S", "Jenny", 
+"0007", "1", "S", "Yenz", 
+"0008", "1", "S", "Po Xi", 
 -------------------------------------------------
 <CD CLASS TABLE>
-Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID
+Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning
 -------------------------------------------------
-"1", "1", "CS", "English, Math, French", "Pending", "0001", 
-"5", "2", "a", "b, c", "Pending", "0001", 
-"5", "3", "abc", "as$n$asda", "Pending", "0001", 
-"5", "4", "1", "13333333333333333333333333333333333333333333333333333333333333333333333", "Pending", "0001", 
-"5", "5", "24", "13333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333", "Pending", "0001", 
+"1", "1", "CS", "English, Math, French", "Pending", "0001", "", "",
+"5", "2", "Internet Technology", "Need teacher who knows Python", "Assigned", "0001", "0004", "Python",
+"5", "3", "Java", "Need one teacher who knows java", "Submited", "0001", "0004", "Java",
+"5", "4", "Law", "Need one teacher", "Approved", "0001", "0004", "Law",

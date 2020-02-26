@@ -51,6 +51,9 @@ public class Account implements Populated{
 		else if(this.type.equals("PD")) {
 			return 3;
 		}
+		else if(this.type.equals("S")) {
+			return 0;
+		}
 		return -1;
 	}
 	
@@ -63,6 +66,18 @@ public class Account implements Populated{
 		return s;
 	}
 	
+	public List<String> getRawData() {
+		List<String> s = new LinkedList<String>();
+		s.add(this.ID);
+		s.add(this.PW);
+		s.add(this.type);
+		s.add(this.name);
+		return s;
+	}
+	
+	
+	
+	
 	public String getTableHeader() {
 		String s = "ID, Password, Type, Name";
 		return s;
@@ -74,5 +89,17 @@ public class Account implements Populated{
 	
 	public void setTableTitle(String s) {
 		this.tableTitle = s;
+	}
+
+	@Override
+	public List<Integer> getIndexOfFKList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getElement(int index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

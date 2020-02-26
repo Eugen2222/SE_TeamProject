@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +33,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -66,9 +68,9 @@ public class View extends JFrame  implements ActionListener{
 		this.getContentPane().removeAll();
 
 		this.setTitle("PTT Manage System");
-		this.setSize(900,400);
+		this.setSize(800,550);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocation(400,240);
+		this.setLocation(50,50);
 		semester = new Semester();
 		login = new Login();
 		bar = new Bar();
@@ -218,11 +220,12 @@ public class View extends JFrame  implements ActionListener{
 	public class Main{
 		String defaultClassName = "class name";
 		String defaultClassRequirements = "requirment";
-		
+		public CourseDetailPage courseDetailPage;
 		Main(){
 			centerPage =new CardLayout();
 			centerPanel = new JPanel(centerPage);
 			centerPanel.setBackground(Color.white);
+			courseDetailPage = new CourseDetailPage();
 		}
 		
 		
@@ -344,7 +347,7 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel = new JPanel(new BorderLayout());
 			JPanel classListSubP = new JPanel(new BorderLayout());
 			JLabel space = new JLabel("");
-			createClassBN = new JButton("Create a class");
+			createClassBN = new JButton ("Create a class");
 			createClassBN.setVisible(false);
 			createClassBN.setBackground(blue);
 			createClassBN.addActionListener(View.this);
@@ -446,158 +449,222 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		
+		public class CourseDetailPage {
+			JLabel classNameL;
+			JLabel classIDTitleL;
+			JLabel directorNameTitleL;
+			JLabel directorIDTitleL;
+			JLabel classIDL;
+			JLabel directorNameL;
+			JLabel directorIDL;
+			JLabel requirementTitleL;
+			JLabel staffTitleL;
+			JLabel staffIDL;
+			JLabel staffNameL;
+			JLabel statusL;
+			JLabel trainingTitleL;
+			JTextArea requirementTA;
+			JTextArea trainingTA;
+			public JButton classDetailSubmitBN;
+			Color titleFontColor = SystemColor.controlShadow;
+			
+			
+			private List<JLabel> labelList = new ArrayList<JLabel>();
+			List<JTextArea> TAList = new ArrayList<JTextArea>();		
+			public void buildClassDetailPanel() {
+				classDetailPanel = new JPanel();
+				classDetailPanel.setBackground(Color.WHITE);
+
+				classDetailPanel.setLayout(null);
+				
+				classNameL = new JLabel("");
+				classNameL.setFont(new Font("Arial", Font.PLAIN, 20));
+				classNameL.setBounds(65, 30, 370, 62);
+				classDetailPanel.add(classNameL);
+				labelList.add(classNameL);
+			
+				classIDTitleL = new JLabel("Course ID");
+				classIDTitleL.setForeground(titleFontColor);
+				classIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				classIDTitleL.setBounds(65, 92, 91, 29);
+				classDetailPanel.add(classIDTitleL);
+				
+				
+				
+				directorIDTitleL = new JLabel("CDID");
+				directorIDTitleL.setForeground(titleFontColor);
+				directorIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				directorIDTitleL.setBounds(184, 91, 53, 29);
+				classDetailPanel.add(directorIDTitleL);
+				
+				directorNameTitleL = new JLabel("Director");
+				directorNameTitleL.setForeground(titleFontColor);
+				directorNameTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				directorNameTitleL.setBounds(293, 90, 116, 29);
+				classDetailPanel.add(directorNameTitleL);
+
+				
+				classIDL= new JLabel();
+				classIDL.setForeground(Color.BLACK);
+				classIDL.setFont(new Font("Arial", Font.PLAIN, 12));
+				classIDL.setBounds(65, 112, 53, 29);
+				classDetailPanel.add(classIDL);
+				labelList.add(classIDL);
+				
+				
+				
+				directorIDL = new JLabel();
+				directorIDL.setForeground(Color.BLACK);
+				directorIDL.setFont(new Font("Arial", Font.PLAIN, 14));
+				directorIDL.setBounds(184, 112, 97, 29);
+				classDetailPanel.add(directorIDL);
+				labelList.add(directorIDL);
+				
+				
+				directorNameL = new JLabel();
+				directorNameL.setForeground(Color.BLACK);
+				directorNameL.setFont(new Font("Arial", Font.PLAIN, 14));
+				directorNameL.setBounds(292, 111, 82, 29);
+				classDetailPanel.add(directorNameL);
+				labelList.add(directorNameL);
+				
+				
+				
+				statusL = new JLabel("Pending Teaching Request");
+				statusL .setBounds(65, 288, 177, 21);
+				classDetailPanel.add(statusL);
+				statusL.setForeground(Color.BLACK);
+				statusL.setFont(new Font("Arial", Font.PLAIN, 14));
+				classDetailPanel.add(statusL);
+				labelList.add(statusL);
+				
+				requirementTitleL = new JLabel("Requirement");
+				requirementTitleL.setForeground(titleFontColor);
+				requirementTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				requirementTitleL.setBounds(65, 145, 89, 21);
+				classDetailPanel.add(requirementTitleL);
+				
+				
+				JPanel operateP = new JPanel();
+				operateP.setBorder(new LineBorder(Color.LIGHT_GRAY));
+				operateP.setBackground(Color.WHITE);
+				operateP.setBounds(65, 312, 495, 160);
+				classDetailPanel.add(operateP);
+				operateP.setLayout(null);
+				
+				staffTitleL = new JLabel("Teacher");
+				staffTitleL.setBounds(16, 13, 76, 14);
+				staffTitleL.setForeground(SystemColor.controlShadow);
+				staffTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				operateP.add(staffTitleL);
+				
+				staffIDL = new JLabel();
+				staffIDL.setForeground(Color.BLACK);
+				staffIDL.setFont(new Font("Arial", Font.PLAIN, 14));
+				staffIDL.setBounds(16, 36, 97, 21);
+				operateP.add(staffIDL);
+				labelList.add(staffIDL);
+				
+				staffNameL = new JLabel();
+				staffNameL.setForeground(Color.BLACK);
+				staffNameL.setFont(new Font("Arial", Font.PLAIN, 14));
+				staffNameL.setBounds(16, 58, 124, 21);
+				operateP.add(staffNameL);
+				labelList.add(staffNameL);
+				
+				
+				
+				trainingTitleL = new JLabel("Organized training");
+				trainingTitleL.setForeground(Color.GRAY);
+				trainingTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				trainingTitleL.setBounds(158, 11, 147, 18);
+				operateP.add(trainingTitleL);
+				
+				
+				JScrollPane requirementSP = new JScrollPane();
+				requirementSP.setBounds(65, 170, 495, 106);
+				classDetailPanel.add(requirementSP);
+				
+				requirementTA = new JTextArea();
+				requirementTA.setFont(new Font("Arial", Font.PLAIN, 14));
+				requirementTA.setEditable(false);
+				requirementTA.setWrapStyleWord(true);
+				requirementTA.setLineWrap(true);
+				requirementTA.setText("");
+				requirementSP.setViewportView(requirementTA);
+				TAList.add(requirementTA);
+				
+				JScrollPane trainingSP = new JScrollPane();
+				trainingSP.setToolTipText("");
+				trainingSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+				trainingSP.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				trainingSP.setBounds(158, 36, 319, 70);
+				operateP.add(trainingSP);
+				trainingTA  = new JTextArea();
+				trainingTA.setWrapStyleWord(true);
+				trainingTA.setLineWrap(true);
+				trainingTA.setEditable(false);
+				trainingTA.setText("");
+				trainingSP.setViewportView(trainingTA);
+				TAList.add(trainingTA);
+				
+				
+				classDetailSubmitBN = new JButton("Submit");
+				classDetailSubmitBN.setBackground(new java.awt.Color(0,0,0));
+				classDetailSubmitBN.setBorder(BorderFactory.createEmptyBorder());
+				classDetailSubmitBN.setForeground(Color.WHITE);
+				classDetailSubmitBN.setFont(new Font("Arial", Font.PLAIN, 12));
+				classDetailSubmitBN.setBounds(365, 113, 112, 35);
+				operateP.add(classDetailSubmitBN);
+				
+			
+				
+				centerPanel.add(classDetailPanel, "classDetailPanel");
+			}
+					
+
+			public void displayClassDetailPanel(String[] data) {
+				centerPage.show(centerPanel, "classDetailPanel");
+				int i = 1;	//start with class id #2 element
+				String [] refinedData = new String[data.length];
+				
+				
+				refinedData[0] = data[0]; //semester
+				refinedData[1] = data[2]; //classname
+				refinedData[2] = data[1]; //classid
+				refinedData[3] = data[5]; //directorid
+				refinedData[4] = data[6]; //directorname
+				refinedData[5] = data[4]; //status
+				refinedData[6] = data[7]; //teacherid
+				refinedData[7] = data[8]; //teachername
+				refinedData[8] = data[3]; //requirement
+				refinedData[9] = data[9]; //training				
+				
+				
+				System.out.println();
+				
+				for(JLabel l : labelList) {
+					if(i<refinedData.length) {
+						System.out.print(refinedData[i]);
+						l.setText(refinedData[i]);
+						i++;
+					}
+				}
+				for(JTextArea l : TAList) {
+					System.out.print(l.getName());
+					if(i<refinedData.length) {
+						System.out.print(refinedData[i]);
+						System.out.print(l.getName());
+						l.setText(refinedData[i]);
+						i++;
+					}
+				}
+
+				View.this.refresh();
+			}
 		
 		
-		public void buildClassDetailPanel() {
-			classDetailPanel = new JPanel();
-			classDetailPanel.setBackground(Color.WHITE);
-
-			classDetailPanel.setLayout(null);
-			centerPanel.add(classDetailPanel, "classDetailPanel");
-			
-			JLabel lblAdvanceProgramming = new JLabel("Advance Programming");
-			lblAdvanceProgramming.setFont(new Font("Arial", Font.PLAIN, 22));
-			lblAdvanceProgramming.setBounds(135, 10, 229, 81);
-			classDetailPanel.add(lblAdvanceProgramming);
-			
-			JLabel lblNewLabel = new JLabel("ClassID");
-			lblNewLabel.setForeground(SystemColor.controlShadow);
-			lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel.setBounds(45, 70, 53, 29);
-			classDetailPanel.add(lblNewLabel);
-			
-			JLabel lblDirector = new JLabel("Director");
-			lblDirector.setForeground(SystemColor.controlShadow);
-			lblDirector.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblDirector.setBounds(108, 70, 53, 29);
-			classDetailPanel.add(lblDirector);
-			
-			JLabel lblNewLabel_1_1 = new JLabel("ID");
-			lblNewLabel_1_1.setForeground(SystemColor.controlShadow);
-			lblNewLabel_1_1.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel_1_1.setBounds(215, 70, 53, 29);
-			classDetailPanel.add(lblNewLabel_1_1);
-			
-			JLabel lblNewLabel_1 = new JLabel("10");
-			lblNewLabel_1.setForeground(Color.BLACK);
-			lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel_1.setBounds(45, 91, 53, 29);
-			classDetailPanel.add(lblNewLabel_1);
-			
-			JLabel lblNewLabel_1_2 = new JLabel("John Wick");
-			lblNewLabel_1_2.setForeground(Color.BLACK);
-			lblNewLabel_1_2.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel_1_2.setBounds(108, 91, 97, 29);
-			classDetailPanel.add(lblNewLabel_1_2);
-			
-			JLabel lblNewLabel_1_2_1 = new JLabel("0001");
-			lblNewLabel_1_2_1.setForeground(Color.BLACK);
-			lblNewLabel_1_2_1.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel_1_2_1.setBounds(215, 91, 82, 29);
-			classDetailPanel.add(lblNewLabel_1_2_1);
-			
-			JLabel lblRequirement = new JLabel("Requirement");
-			lblRequirement.setForeground(SystemColor.controlShadow);
-			lblRequirement.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblRequirement.setBounds(45, 118, 89, 21);
-			classDetailPanel.add(lblRequirement);
-			
-			JPanel panel_1 = new JPanel();
-			panel_1.setBorder(new LineBorder(Color.LIGHT_GRAY));
-			panel_1.setBackground(Color.WHITE);
-			panel_1.setBounds(45, 250, 415, 118);
-			classDetailPanel.add(panel_1);
-			panel_1.setLayout(null);
-			
-			JLabel lblStuffName = new JLabel("Stuff name");
-			lblStuffName.setBounds(23, 11, 76, 14);
-			lblStuffName.setForeground(SystemColor.controlShadow);
-			lblStuffName.setFont(new Font("Arial", Font.PLAIN, 12));
-			panel_1.add(lblStuffName);
-			
-			JLabel lblNewLabel_1_2_2 = new JLabel("John John John");
-			lblNewLabel_1_2_2.setForeground(Color.BLACK);
-			lblNewLabel_1_2_2.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblNewLabel_1_2_2.setBounds(23, 29, 97, 21);
-			panel_1.add(lblNewLabel_1_2_2);
-			
-			JLabel lblTrainning = new JLabel("Orgnized Trainning");
-			lblTrainning.setForeground(SystemColor.controlShadow);
-			lblTrainning.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblTrainning.setBounds(131, 11, 115, 14);
-			panel_1.add(lblTrainning);
-			
-			JScrollPane scrollPane_1 = new JScrollPane();
-			scrollPane_1.setBounds(130, 29, 275, 46);
-
-			
-			JTextPane txtpnwindowbuildertable_1 = new JTextPane();
-			txtpnwindowbuildertable_1.setBackground(SystemColor.control);
-
-			txtpnwindowbuildertable_1.setText("La Flora, o vero Il natal de' fiori (Flora, or The Birth of Flowers) is an opera in a prologue and five acts composed by Marco da Gagliano and Jacopo Peri to a libretto by Andrea Salvadori. It was first performed on 14 October 1628 at the Teatro Mediceo in Florence to celebrate the marriage of Margherita de' Medici and Odoardo Farnese, Duke of Parma.[1] Based on the story of Chloris and Zephyrus in Book V of Ovid's Fasti, Salvadori's libretto contains many allegorical references to the transfer of political power, the beauty of Tuscany,");
-			txtpnwindowbuildertable_1.setFont(new Font("Arial", Font.PLAIN, 12));
-			txtpnwindowbuildertable_1.setEditable(false);
-			scrollPane_1.setVerticalScrollBar(new JScrollBar() {
-			    public void setValue(int value) {
-			        super.setValue(value);
-			    } 
-			});
-			scrollPane_1.add(txtpnwindowbuildertable_1);
-			JButton btnSubmit = new JButton("Submit");
-			btnSubmit.setBackground(new Color(255, 255, 255));
-			btnSubmit.setFont(new Font("Arial", Font.PLAIN, 12));
-			btnSubmit.setBounds(159, 85, 85, 23);
-			panel_1.add(btnSubmit);
-			
-			
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(45, 138, 415, 81);
-			
-			
-			JTextPane txtpnwindowbuildertable = new JTextPane();
-
-			txtpnwindowbuildertable.setFont(new Font("Arial", Font.PLAIN, 12));
-			txtpnwindowbuildertable.setEditable(false);
-			txtpnwindowbuildertable.setText("La Flora, o vero Il natal de' fiori (Flora, or The Birth of Flowers) is an opera in a prologue and five acts composed by Marco da Gagliano and Jacopo Peri to a libretto by Andrea Salvadori. It was first performed on 14 October 1628 at the Teatro Mediceo in Florence to celebrate the marriage of Margherita de' Medici and Odoardo Farnese, Duke of Parma.[1] Based on the story of Chloris and Zephyrus in Book V of Ovid's Fasti, Salvadori's libretto contains many allegorical references to the transfer of political power, the beauty of Tuscany,");
-			scrollPane.setVerticalScrollBar(new JScrollBar() {
-			    /**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				public void setValue(int value) {
-			        super.setValue(value);
-			    } 
-			});
-			scrollPane.getVerticalScrollBar().setBackground(Color.BLACK);
-			scrollPane.getHorizontalScrollBar().setBackground(Color.BLACK);
-
-			scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-			    @Override
-			    protected void configureScrollBarColors() {
-			        this.thumbColor = Color.white;
-			    }
-			});
-			scrollPane.add(txtpnwindowbuildertable);
-			
-			JLabel lblTeachingRequest = new JLabel("Teaching request");
-			lblTeachingRequest.setBounds(45, 226, 134, 14);
-			classDetailPanel.add(lblTeachingRequest);
-			lblTeachingRequest.setForeground(Color.BLACK);
-			lblTeachingRequest.setFont(new Font("Arial", Font.PLAIN, 12));
-			panel_1.add(scrollPane_1);
-			classDetailPanel.add(scrollPane);
-			
 		}
-		
-
-		public void displayClassDetailPanel() {
-			centerPage.show(centerPanel, "classDetailPanel");
-			View.this.refresh();
-		}
-		
-		
-		
 		
 		
 		

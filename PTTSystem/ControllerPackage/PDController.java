@@ -18,7 +18,7 @@ public class PDController extends Controller {
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
 		//setup all available pages
-		view.main.buildClassListPanel(model.getClassDetailHeader(), model.getClassDetialList());
+		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 		//add all action listeners
 		
 	}
