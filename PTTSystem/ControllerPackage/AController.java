@@ -38,7 +38,7 @@ public class AController extends Controller {
 			view.main.selectTeacherPage.displaySelectTeacherPanel(model.getStaffListTableHeader(), model.getStaffListTable(), model.getSelectedSem());
 		}
 		else if(e.getSource()==view.main.courseDetailPage.submitTeacherBN) {
-			model.setCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
+			model.assignCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
 			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 			model.save();
 		}

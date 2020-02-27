@@ -20,6 +20,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+import java.awt.GridLayout;
 
 public class ClassDetail extends JFrame {
 
@@ -141,11 +142,28 @@ public class ClassDetail extends JFrame {
 		txtpnwindowbuildertable_1.setFont(new Font("Arial", Font.PLAIN, 12));
 		txtpnwindowbuildertable_1.setEditable(false);
 		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(23, 85, 382, 29);
+		panel_1.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JButton btnSubmit_1_1 = new JButton("Submit");
+		btnSubmit_1_1.setBounds(313, 0, 69, 19);
+		panel_2.add(btnSubmit_1_1);
+		btnSubmit_1_1.setFont(new Font("Arial", Font.PLAIN, 12));
+		btnSubmit_1_1.setBackground(Color.WHITE);
+		
+		JButton btnSubmit_1 = new JButton("Submit");
+		btnSubmit_1.setBounds(0, -2, 76, 23);
+		panel_2.add(btnSubmit_1);
+		btnSubmit_1.setFont(new Font("Arial", Font.PLAIN, 12));
+		btnSubmit_1.setBackground(Color.WHITE);
+		
 		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(131, 85, 88, 29);
+		panel_1.add(btnSubmit);
 		btnSubmit.setBackground(new Color(255, 255, 255));
 		btnSubmit.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnSubmit.setBounds(159, 85, 85, 23);
-		panel_1.add(btnSubmit);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(45, 138, 415, 81);

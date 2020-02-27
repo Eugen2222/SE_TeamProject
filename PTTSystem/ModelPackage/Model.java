@@ -110,11 +110,22 @@ public  class Model <T extends Populated>{
 	
 	
 	
-	public void setCourseTeacher(String[]s) {
+	public void assignCourseTeacher(String[]s) {
 		findCourse(s[0]).assignTeacher(s);
 	}
 	
+	public void submitTeachingRequest(String[]s) {
+		findCourse(s[0]).setTeacherStatus("Submitted");
+		
+	}
 	
+	public void approveTeachingRequest(String[]s) {
+		findCourse(s[0]).setTeacherStatus("Approved");
+	}
+	
+	public void withdrawAssignedTeacher(String[]s) {
+		findCourse(s[0]).setTeacherStatus("Pending");
+	}
 	
 	
 	

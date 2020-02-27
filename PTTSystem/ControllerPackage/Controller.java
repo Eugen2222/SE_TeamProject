@@ -60,7 +60,10 @@ public class Controller implements ActionListener{
 	       view.main.courseDetailPage.displayNormalMode(model.getClass(classId));
 	}
 	
-	
+	public void displayCourseListPage() {
+		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+		
+	}
 	
 	
 	public void actionPerformed(ActionEvent e) {

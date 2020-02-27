@@ -3,6 +3,7 @@ import GUIPackage.View;
 import ModelPackage.Model;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 
 import DefaultPackage.Run;
 public class PDController extends Controller {
@@ -22,6 +23,7 @@ public class PDController extends Controller {
 		
 		//setup all available pages
 		//add all action listeners
+		view.main.courseDetailPage.approveTeachingRequestBN.addActionListener(this);
 		
 	}
 	
@@ -30,7 +32,11 @@ public class PDController extends Controller {
 	       view.main.courseDetailPage.displayPDMode(model.getClass(classId));
 	}
 	
-	
-	
-	
+	public void actionPerformed(ActionEvent e) {
+		super.actionPerformed(e);
+		if(e.getSource()==view.main.courseDetailPage.approveTeachingRequestBN) {
+			model.approveTeachingRequest(view.main.courseDetailPage.getClassInform());
+			displayCourseListPage();
+		}
+	}
 }

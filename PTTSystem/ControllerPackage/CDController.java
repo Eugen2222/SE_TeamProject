@@ -36,6 +36,7 @@ public class CDController extends Controller implements ActionListener{
 		view.createClassBN.addActionListener(this);
 		view.createClassOKBN.addActionListener(this);
 		view.createClassCBN.addActionListener(this);
+		view.main.courseDetailPage.submitTeachingRequestBN.addActionListener(this);
 		
 	}
 	
@@ -48,7 +49,7 @@ public class CDController extends Controller implements ActionListener{
 	}
 	
 	
-	
+
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
@@ -64,17 +65,17 @@ public class CDController extends Controller implements ActionListener{
 			}
 		}
 		
-		if(e.getSource() == view.classListBN) {
-			view.main.displayClassListPanel(model.getStaffListTableHeader(), model.getStaffListTable());
-		}
-		
+	
 		if(e.getSource()==view.createClassBN) {
 			view.main.displayCreateClassPanel();
 		}
 		if(e.getSource()==view.createClassCBN) {
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+			displayCourseListPage();
 		}
-		
+		if(e.getSource()==view.main.courseDetailPage.submitTeachingRequestBN) {
+			model.submitTeachingRequest(view.main.courseDetailPage.getClassInform());
+			displayCourseListPage();
+		}
 		
 		
 	}

@@ -28,7 +28,7 @@ public class CDClass  implements Populated{
 		this.setTeacherStatus(s.get(4));
 		this.classDirectorID = s.get(5);
 		this.teacherID = s.get(6);
-		this.training = s.get(7);	
+		this.training = s.get(7).replace("\\$n\\$","\n");	
 		
 		this.setIndexOfFK(5);	//FK classDirectorID;
 		this.setIndexOfFK(6);	//FK teacherID;
@@ -48,14 +48,20 @@ public class CDClass  implements Populated{
 		return this.getData().get(index);
 	}
 	
-	public void assignTeacher(String[] s) {
-		this.teacherID=s[1];
-		this.training=s[2].replaceAll("\\$n\\$","\\n");
-		this.setTeacherStatus("Assigned");
+	
+	
+	public void submitTeachingRequest() {
+		this.setTeacherStatus("Submited");
 		
 	}
 	
+	public void approveTeachingRequest() {
+		this.setTeacherStatus("Approved");
+	}
 	
+	public void withdrawAssignedTeacher() {
+		this.setTeacherStatus("Pending");
+	}
 	
 //	public boolean setRequirement(String s) {
 //		if(!hasRequirement()) {
@@ -75,14 +81,19 @@ public class CDClass  implements Populated{
 				return false;
 		}else{
 			
-			s=s.replaceAll("\\$n\\$","\\n");
+			s=s.replaceAll("\\$n\\$","\n");
 			System.out.println(s);
 			this.requirement = s;
 			return true;
 		}
 	}
 	
-	
+	public void assignTeacher(String[] s) {
+		this.teacherID=s[1];
+		this.training=s[2].replaceAll("\\$n\\$","\n");
+		this.setTeacherStatus("Assigned");
+		
+	}
 	
 	
 	//setup FK 

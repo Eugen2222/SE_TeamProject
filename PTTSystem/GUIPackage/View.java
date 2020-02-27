@@ -113,32 +113,48 @@ public class View extends JFrame  implements ActionListener{
 	
 	public class Login{
 		public void buildLoginPanel() {
-				loginPanel = new JPanel(new GridLayout(4,1,0,12));
-				loginPanel.setBackground(Color.white);
-				loginPanel.setFocusable(true);
-				loginPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
-				
-				JLabel title = new JLabel("Login", SwingConstants.CENTER);
-				Font f = new Font("TimesRoman",Font.PLAIN,23);
-				title.setFont(f);
-				
-				usernameTF = new JTextField(16);
-				usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, "username"));
-				usernameTF.setBorder(BorderFactory.createLineBorder(blue)); 
-				
-				passwordTF = new JTextField(16);
-				passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, "password"));
-				passwordTF.setBorder(BorderFactory.createLineBorder(blue));
-				
-				loginBN = new JButton("ENTER");
-				loginBN.setBackground(blue);
-				loginBN.setFocusPainted(false);
-		
-				loginPanel.add(title);
-				loginPanel.add(usernameTF);
-				loginPanel.add(passwordTF);
-				loginPanel.add(loginBN);
-				View.this.rootPanel.add(loginPanel,"LoginPage");
+			loginPanel = new JPanel();
+			loginPanel.setBackground(Color.white);
+			loginPanel.setFocusable(true);
+//			loginPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
+			loginPanel.setLayout(null);
+			
+			JLabel title = new JLabel("LOGIN");
+			Font f = new Font("Arial",Font.PLAIN,18);
+			title.setFont(f);
+			title.setBounds(359,122,61,49);
+			
+			JLabel lblUsername = new JLabel("Username");
+			lblUsername.setFont(new Font("Arial", Font.PLAIN, 12));
+			lblUsername.setForeground(new Color(114, 114, 114));
+			lblUsername.setBounds(288, 176, 61, 16);
+			
+			usernameTF = new JTextField(16);
+			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, "Username"));
+			usernameTF.setBounds(288,194,195,41); 
+			
+			JLabel lblPassword = new JLabel("Password");
+			lblPassword.setFont(new Font("Arial", Font.PLAIN, 12));
+			lblPassword.setForeground(new Color(114, 114, 114));
+			lblPassword.setBounds(288, 240, 61, 16);
+			
+			passwordTF = new JTextField(16);
+			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, "Password"));
+//			passwordTF.setBorder(BorderFactory.createLineBorder(blue));
+			passwordTF.setBounds(288,258,195,41);
+			
+			loginBN = new JButton("OK");
+			loginBN.setBackground(new Color(56, 151, 240));
+			loginBN.setFocusPainted(false);
+			loginBN.setBounds(288,320,195,35);
+	
+			loginPanel.add(title);
+			loginPanel.add(lblUsername);
+			loginPanel.add(usernameTF);
+			loginPanel.add(lblPassword);
+			loginPanel.add(passwordTF);
+			loginPanel.add(loginBN);
+			View.this.rootPanel.add(loginPanel,"LoginPage");
 		}
 		
 		public JPanel getLoginPanel() {
@@ -175,20 +191,24 @@ public class View extends JFrame  implements ActionListener{
 				semesterPanel = new JPanel(new GridLayout(4,1,0,12));
 				semesterPanel.setBackground(Color.white);
 				semesterPanel.setFocusable(true);
-				semesterPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
+	//			semesterPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
+				semesterPanel.setLayout(null);
 				
-				JLabel title = new JLabel("Select a semester to access.", SwingConstants.CENTER);
-				Font f = new Font("TimesRoman",Font.PLAIN,12);
+	//			JLabel title = new JLabel("Select a semester to access.", SwingConstants.CENTER);
+				JLabel title = new JLabel("Select a semester to access.");
+				Font f = new Font("Arial",Font.PLAIN,18);
 				title.setFont(f);
+				title.setBounds(313,122,156,49);
 				
 				semesterTF = new JTextField(4);
 		
-				semesterTF.setBorder(BorderFactory.createLineBorder(blue)); 
-				
+	//			semesterTF.setBorder(BorderFactory.createLineBorder(blue)); 
+				semesterTF.setBounds(313,122,156,49);
 				
 				semesterBN = new JButton("Select");
-				semesterBN.setBackground(blue);
+				semesterBN.setBackground(new Color(56, 151, 240));
 				semesterBN.setFocusPainted(false);
+				semesterBN.setBounds(294,185,61,16);
 		
 				semesterPanel.add(title);
 				semesterPanel.add(semesterTF);
@@ -442,7 +462,15 @@ public class View extends JFrame  implements ActionListener{
 			public JButton submitTeachingRequestBN;
 			public JButton approveTeachingRequestBN;
 			public JButton submitTeacherBN;
+			public JButton submitTeacherWBN;
 			public JButton assignTeacherBN;
+			public JButton submitTeachingRequestCBN;
+			public JButton submitTeachingRequestWBN;
+			public JButton approveTeachingRequestCBN;
+			public JButton approveTeachingRequestWBN;
+			public JButton submitTeacherCBN;
+			public JButton normalPageBBN;
+
 			CardLayout submitButtonsLayout = new CardLayout();
 			JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
 			Color titleFontColor = new Color(114,114,114);
@@ -450,7 +478,12 @@ public class View extends JFrame  implements ActionListener{
 			private List<JLabel> labelList = new ArrayList<JLabel>();
 			List<JTextArea> TAList = new ArrayList<JTextArea>();
 			
-			
+			public String[] getClassInform() {
+				String[]s = new String[3];
+				s[0] = classIDL.getText();
+				
+				return s;
+			}
 			
 			
 			
@@ -598,18 +631,41 @@ public class View extends JFrame  implements ActionListener{
 				trainingSP.setViewportView(trainingTA);
 				TAList.add(trainingTA);
 				
-
-				submitButtonsPanel.setBounds(365, 113, 100, 30);
 				
+				
+				GridLayout submitBNLayout = new GridLayout (1,2,8,1);
+				submitButtonsPanel.setBounds(20, 113, 470, 28);
+				submitButtonsPanel.setBackground(Color.white);
+
+				
+				submitTeacherWBN = createBlackButton("Withdraw");
+				submitTeacherCBN = createBlackButton("Cancel");						
 				submitTeacherBN = createBlackButton("Submit");
-				submitButtonsPanel.add(submitTeacherBN, "submitTeacherBN");
-				approveTeachingRequestBN = createBlackButton("Approve");
-				submitButtonsPanel.add(approveTeachingRequestBN, "approveTeachingRequestBN");
+				buildSubmittedBNPanel(submitTeacherWBN ,submitTeacherCBN ,submitTeacherBN ,"submitTeacherBN");
+		
+				submitTeachingRequestWBN = createBlackButton("Withdraw");
+				submitTeachingRequestCBN = createBlackButton("Cancel");	
 				submitTeachingRequestBN = createBlackButton("Submit");
-				submitButtonsPanel.add(submitTeachingRequestBN, "submitTeachingRequestBN");
-				JPanel emptyP = new JPanel ();
-				emptyP.setBackground(Color.WHITE);
-				submitButtonsPanel.add(emptyP, "emptyP");		
+				buildSubmittedBNPanel(submitTeachingRequestWBN ,submitTeachingRequestCBN ,submitTeachingRequestBN ,"submitTeachingRequestBN");
+	
+
+				
+				approveTeachingRequestWBN = createBlackButton("Withdraw");
+				approveTeachingRequestCBN = createBlackButton("Cancel");	
+				approveTeachingRequestBN = createBlackButton("Submit");
+				buildSubmittedBNPanel(approveTeachingRequestWBN ,approveTeachingRequestCBN ,approveTeachingRequestBN ,"approveTeachingRequestBN");
+	
+
+
+
+				JPanel emptyP = new JPanel (null);
+				emptyP.setBackground(Color.white);
+				normalPageBBN = createBlackButton("Back");	
+				normalPageBBN.setBounds(360, 0, 70, 28);
+				emptyP.setBackground(Color.white);
+				emptyP.add(normalPageBBN);
+				submitButtonsPanel.add(emptyP, "emptyP");
+	
 				operateP.add(submitButtonsPanel);
 				
 				assignTeacherBN = createBlackButton("Assign");
@@ -624,6 +680,37 @@ public class View extends JFrame  implements ActionListener{
 				
 				centerPanel.add(classDetailPanel, "classDetailPanel");
 			}
+			
+			public void buildSubmittedBNPanel(JButton withdrawBN, JButton cancelBN, JButton okBN, String key) {
+				
+				JPanel subBP = new JPanel (null);
+				subBP.setBackground(Color.white);
+				GridLayout innerRightBPLayout = new GridLayout (1,2,8,1);
+				JPanel innerRightBP = new JPanel (innerRightBPLayout);
+				innerRightBP.setBackground(Color.white);
+				cancelBN = createBlackButton("Cancel");		
+				okBN = createBlackButton("Submit");
+				innerRightBP.setBounds(285, 0, 170, 28);
+				innerRightBP.setBackground(Color.white);
+				innerRightBP.add(cancelBN);
+				innerRightBP.add(okBN);
+				
+				JPanel innerLeftBP = new JPanel (new GridLayout (1,2,3,1));
+				withdrawBN = createBlackButton("Withdraw");
+				innerLeftBP.setBounds(0, 0, 70, 28);
+				innerLeftBP.add(withdrawBN);
+				innerLeftBP.setBackground(Color.white);
+				subBP.add(innerLeftBP);
+				subBP.add(innerRightBP);
+				
+				submitButtonsPanel.add(subBP, key);
+		
+			}
+			
+			
+			
+			
+			
 			
 			
 			
