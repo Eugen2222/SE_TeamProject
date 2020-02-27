@@ -28,7 +28,7 @@ public class CDClass  implements Populated{
 		this.setTeacherStatus(s.get(4));
 		this.classDirectorID = s.get(5);
 		this.teacherID = s.get(6);
-		this.training = s.get(7).replace("\\$n\\$","\n");	
+		this.training = s.get(7).replaceAll("\\$n\\$","\n");	
 		
 		this.setIndexOfFK(5);	//FK classDirectorID;
 		this.setIndexOfFK(6);	//FK teacherID;
@@ -82,11 +82,15 @@ public class CDClass  implements Populated{
 		}else{
 			
 			s=s.replaceAll("\\$n\\$","\n");
-			System.out.println(s);
 			this.requirement = s;
 			return true;
 		}
 	}
+	
+	public String getSemester() {
+		return this.semester;
+	}
+	
 	
 	public void assignTeacher(String[] s) {
 		this.teacherID=s[1];

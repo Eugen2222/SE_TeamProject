@@ -61,7 +61,7 @@ public class Account implements Populated{
 		List<String> s = new LinkedList<String>();
 		s.add(this.ID);
 		s.add(this.PW);
-		s.add(this.type);
+		s.add(this.getTypeName());
 		s.add(this.name);
 		return s;
 	}
@@ -76,7 +76,26 @@ public class Account implements Populated{
 	}
 	
 	
-	
+	public String getTypeName() {
+		if(this.type ==null) {
+			return null;
+		}else {
+			if(type.equals("CD")){
+				return "Class Director";
+			}
+			else if(type.equals("A")){
+				return "Administrator";
+			}
+			else if(type.equals("PD")){
+				return "PTT Director";
+			}else if(type.equals("S")){
+				return "Staff";
+			}else {
+				return "Unknowed";
+			}
+			
+		}
+	}
 	
 	public String getTableHeader() {
 		String s = "ID, Password, Type, Name";

@@ -36,8 +36,10 @@ public class CDController extends Controller implements ActionListener{
 		view.createClassBN.addActionListener(this);
 		view.createClassOKBN.addActionListener(this);
 		view.createClassCBN.addActionListener(this);
-		view.main.courseDetailPage.submitTeachingRequestBN.addActionListener(this);
-		
+
+		view.main.courseDetailPage.courseDetailWBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
 	}
 	
 	
@@ -53,7 +55,12 @@ public class CDController extends Controller implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
-		if(e.getSource() == view.createClassOKBN) {
+		if(e.getSource()==view.createClassBN) {
+			view.main.displayCreateClassPanel();
+		}
+		
+		
+		else if(e.getSource() == view.createClassOKBN) {
 			String class1 = view.main.getCreateClassString();
 
 			if(class1==null) {
@@ -65,18 +72,23 @@ public class CDController extends Controller implements ActionListener{
 			}
 		}
 		
-	
-		if(e.getSource()==view.createClassBN) {
-			view.main.displayCreateClassPanel();
-		}
-		if(e.getSource()==view.createClassCBN) {
+		else if(e.getSource()==view.createClassCBN) {
 			displayCourseListPage();
 		}
-		if(e.getSource()==view.main.courseDetailPage.submitTeachingRequestBN) {
+		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.submitTeachingRequest(view.main.courseDetailPage.getClassInform());
 			displayCourseListPage();
 		}
 		
+		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
+			displayCourseListPage();
+		}
+		else if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
+			if(view.main.courseDetailPage.withdrawCheck()==0) {
+				model.withdrawAssignedTeacher(view.main.courseDetailPage.getClassInform());
+				displayCourseListPage();
+			}
+		}
 		
 	}
 }

@@ -3,6 +3,7 @@ package GUIPackage;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -37,6 +38,7 @@ import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -50,9 +52,9 @@ import javax.swing.table.TableModel;
 
 public class View extends JFrame  implements ActionListener{
 //	JLabel title,courseDirctor; 
-	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,teacherList,requestList,createCourse,createClassOKBN,createClassCBN;
+	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,myClassListBN,requestListBN,createCourse,createClassOKBN,createClassCBN;
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
-	public Color blue = new java.awt.Color(135,206,250);
+	public Color blue = new Color(56, 151, 240);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
 					classListPanel, rootPanel, classDetailPanel, selectTeacherPanel;
 	public JTable classListTable, staffListTable;
@@ -130,7 +132,7 @@ public class View extends JFrame  implements ActionListener{
 			lblUsername.setBounds(288, 176, 61, 16);
 			
 			usernameTF = new JTextField(16);
-			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, "Username"));
+//			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, " Username"));
 			usernameTF.setBounds(288,194,195,41); 
 			
 			JLabel lblPassword = new JLabel("Password");
@@ -139,13 +141,12 @@ public class View extends JFrame  implements ActionListener{
 			lblPassword.setBounds(288, 240, 61, 16);
 			
 			passwordTF = new JTextField(16);
-			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, "Password"));
+//			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, " Password"));
 //			passwordTF.setBorder(BorderFactory.createLineBorder(blue));
 			passwordTF.setBounds(288,258,195,41);
 			
-			loginBN = new JButton("OK");
-			loginBN.setBackground(new Color(56, 151, 240));
-			loginBN.setFocusPainted(false);
+			loginBN = buildBlueButton("OK");
+			
 			loginBN.setBounds(288,320,195,35);
 	
 			loginPanel.add(title);
@@ -171,11 +172,16 @@ public class View extends JFrame  implements ActionListener{
 		
 		//when user type wrong
 		public void cleanLogin() {
-			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, "username"));
-			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, "password"));
+			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
+			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
 		}
 		
 		public int logOutCheck() {
+			UIManager.put("Button.background", new Color(20,20,20));
+			UIManager.put("Button.FocusPainted",false);
+			UIManager.put("Button.foreground", Color.white);
+			UIManager.put("Panel.background", Color.white);
+			UIManager.put("OptionPane.background", Color.white);
 			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "wanring",JOptionPane.YES_NO_OPTION);
 			return n;
 		}
@@ -187,38 +193,42 @@ public class View extends JFrame  implements ActionListener{
 	}
 	
 	public class Semester{
-		public void buildSemesterPanel() {
-				semesterPanel = new JPanel(new GridLayout(4,1,0,12));
-				semesterPanel.setBackground(Color.white);
-				semesterPanel.setFocusable(true);
-	//			semesterPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
-				semesterPanel.setLayout(null);
-				
-	//			JLabel title = new JLabel("Select a semester to access.", SwingConstants.CENTER);
-				JLabel title = new JLabel("Select a semester to access.");
-				Font f = new Font("Arial",Font.PLAIN,18);
-				title.setFont(f);
-				title.setBounds(313,122,156,49);
-				
-				semesterTF = new JTextField(4);
-		
-	//			semesterTF.setBorder(BorderFactory.createLineBorder(blue)); 
-				semesterTF.setBounds(313,122,156,49);
-				
-				semesterBN = new JButton("Select");
-				semesterBN.setBackground(new Color(56, 151, 240));
-				semesterBN.setFocusPainted(false);
-				semesterBN.setBounds(294,185,61,16);
-		
-				semesterPanel.add(title);
-				semesterPanel.add(semesterTF);
-				semesterPanel.add(semesterBN);
-				View.this.rootPanel.add(semesterPanel,"SemesterPage");
+		private int latestSemester = 0;
+		public void buildSemesterPanel(int num) {
+			semesterPanel = new JPanel(new GridLayout(4,1,0,12));
+			semesterPanel.setBackground(Color.white);
+			semesterPanel.setFocusable(true);
+//			semesterPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
+			semesterPanel.setLayout(null);
+			
+//			JLabel title = new JLabel("Select a semester to access.", SwingConstants.CENTER);
+			JLabel title = new JLabel("Select a semester");
+			Font f = new Font("Arial",Font.PLAIN,18);
+			title.setFont(f);
+			title.setBounds(315,122,250,60);
+			
+			semesterTF = new JTextField(4);
+	
+//			semesterTF.setBorder(BorderFactory.createLineBorder(blue)); 
+			semesterTF.setBounds(293,183,195,41);
+
+			
+			semesterBN = buildBlueButton("Select");
+			semesterBN.setBounds(293,250,195,35);
+	
+			semesterPanel.add(title);
+			semesterPanel.add(semesterTF);
+			semesterPanel.add(semesterBN);
+			latestSemester =num;
+			View.this.rootPanel.add(semesterPanel,"SemesterPage");
+
 		}
 		
-		public void displayLatestSemester(int num) {
-			semesterTF.addFocusListener(new JTextFieldHintListener(semesterTF, ""+num));
+		public void displayLatestSemester() {
+			
+			semesterTF.addFocusListener(new JTextFieldHintListener(semesterTF, ""+latestSemester));
 		}
+		
 		
 		public int getSelecetedSemester() {
 			return Integer.parseInt(semesterTF.getText());
@@ -238,6 +248,7 @@ public class View extends JFrame  implements ActionListener{
 			framePanel.add(bar, BorderLayout.WEST);
 			framePanel.add(View.this.centerPanel, BorderLayout.CENTER);
 			rootPanel.add(framePanel, "mainPage");
+
 			
 		}
 		public void displayFramePanel() {
@@ -263,7 +274,7 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void buildCreateClassPanel() {
 			JPanel centerP = new JPanel(null);
-			centerP.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
+			centerP.setBorder(BorderFactory.createEmptyBorder(20,180,100,180));
 			JPanel buttonPanel = new JPanel(new FlowLayout());
 			JPanel textAreaPanel = new JPanel(new BorderLayout());
 			centerP.setBackground(Color.white);
@@ -272,7 +283,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			JLabel createClassTitleL = new JLabel("Create a new class", SwingConstants.CENTER);
 			createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 23));
-			createClassTitleL.setBounds(220, 30, 200, 62);
+			createClassTitleL.setBounds(200, 30, 200, 62);
 			centerP.add(createClassTitleL);
 			
 			
@@ -280,13 +291,13 @@ public class View extends JFrame  implements ActionListener{
 			JLabel classNameL = new JLabel("Class name:     ");
 			classNameL.setForeground(new Color(114, 114, 114));
 			classNameL.setFont(new Font("Arial", Font.PLAIN, 14));
-			classNameL.setBounds(168, 104, 112, 21);
+			classNameL.setBounds(148, 104, 112, 21);
 			centerP.add(classNameL);
 			JLabel reqLTitle1 = new JLabel("Requirement:  ");
 			
 			reqLTitle1.setForeground(new Color(114, 114, 114));
 			reqLTitle1.setFont(new Font("Arial", Font.PLAIN, 14));
-			reqLTitle1.setBounds(168, 184, 112, 21);
+			reqLTitle1.setBounds(148, 184, 112, 21);
 			centerP.add(reqLTitle1);
 			
 			
@@ -295,10 +306,10 @@ public class View extends JFrame  implements ActionListener{
 		
 			courseNameTF.setFont(new Font("Arial", Font.PLAIN, 12));
 			courseNameTF.setForeground(new Color(20,20,20));
-			courseNameTF.setBounds(164, 125, 319, 36);
+			courseNameTF.setBounds(148, 125, 319, 36);
 
 			courseNameTF.setColumns(10);
-			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+//			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
 			
 			centerP.add(courseNameTF);
 			
@@ -316,34 +327,26 @@ public class View extends JFrame  implements ActionListener{
 			requirementTA.setWrapStyleWord(true);
 			requirementTA.setLineWrap(true);
 			
-			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+//			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
 			
 			JScrollPane reqScrollPanel = new JScrollPane( requirementTA );
-			reqScrollPanel.setBounds(164, 208, 319, 160);
+			reqScrollPanel.setBounds(148, 208, 319, 160);
 
-//			requirment.addFocusListener(new JTextFieldHintListener(requirment, defaultClassRequirements));
-//			requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, defaultClassRequirements));
-			
 
-			reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(114, 114, 114)));
+			reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
 			
 			centerP.add(reqScrollPanel);
 			
-//			requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
-//			add = new JButton("add a new requirement");
 			
-			createClassOKBN = new JButton("Ok");
-			createClassOKBN.setBounds(415, 391, 70, 33);
-			createClassOKBN.setForeground(Color.white);
-			createClassOKBN.setFont(new Font("Arial", Font.PLAIN,12));	
-			createClassOKBN.setBackground(new Color(56, 151, 240));
-			createClassOKBN.setFocusPainted(false);
+			createClassOKBN = buildBlueButton("Ok");
+			createClassOKBN.setBounds(395, 391, 70, 33);
+			
 			centerP.add(createClassOKBN);
 			
 			
 			
-			createClassCBN = createBlackButton("Cancel");
-			createClassCBN.setBounds(166, 391, 80, 33);
+			createClassCBN = buildBlackButton("Cancel");
+			createClassCBN.setBounds(148, 391, 80, 33);
 			
 			centerP.add(createClassCBN);
 			
@@ -354,7 +357,7 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void displayCreateClassPanel() {
 			centerPage.show(centerPanel, "createClassPanel");
-			cleanCreateClassText();
+			
 			View.this.refresh();
 		}
 		
@@ -380,7 +383,7 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void cleanCreateClassText() {
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			courseNameTF.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
 
 		}
 		
@@ -391,21 +394,16 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void buildClassListPanel(String[] header, String[][] list) {
 			classListPanel = new JPanel(new BorderLayout());
-			JPanel classListSubP = new JPanel(new BorderLayout());
-			JLabel space = new JLabel("");
-			createClassBN = new JButton ("Create a class");
-			createClassBN.setVisible(false);
-			createClassBN.setBackground(blue);
-			createClassBN.addActionListener(View.this);
-			classListSubP.setBackground(Color.white);
+			classListPanel.setBorder(new EmptyBorder(50, 20, 5, 20));
 			classListPanel.setBackground(Color.white);
-			classListSubP.add(space, BorderLayout.CENTER);
-			classListSubP.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
-			classListSubP.add(createClassBN, BorderLayout.EAST);
-			classListPanel.add(classListSubP, BorderLayout.NORTH);
+			JLabel courseListTitleL = new JLabel("Course list");
+			courseListTitleL.setFont(new Font("Arial",Font.PLAIN,18));
+			classListPanel.add(courseListTitleL, BorderLayout.NORTH);
 			classListTable = buildModelListTable(header, list);
+			
 			enableTableHoverEffect(classListTable);
 			JScrollPane sp=new JScrollPane();
+			sp.setBorder(new EmptyBorder(40, 0, 0, 0));
 	        sp.setViewportView(classListTable);
 	        sp.getViewport().setBackground(Color.WHITE);
 	        sp.setBackground(Color.white);
@@ -435,6 +433,10 @@ public class View extends JFrame  implements ActionListener{
 		
 		
 		public void displayClassListPanel(String[] header, String[][] list) {	
+			
+			
+			
+			
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
 			centerPage.show(centerPanel, "classListPanel");
@@ -459,18 +461,11 @@ public class View extends JFrame  implements ActionListener{
 			JLabel trainingTitleL;
 			JTextArea requirementTA;
 			JTextArea trainingTA;
-			public JButton submitTeachingRequestBN;
-			public JButton approveTeachingRequestBN;
-			public JButton submitTeacherBN;
-			public JButton submitTeacherWBN;
-			public JButton assignTeacherBN;
-			public JButton submitTeachingRequestCBN;
-			public JButton submitTeachingRequestWBN;
-			public JButton approveTeachingRequestCBN;
-			public JButton approveTeachingRequestWBN;
-			public JButton submitTeacherCBN;
+			public JButton courseDetailWBN;
+			public JButton courseDetailCBN;
+			public JButton courseDetailSBN;
 			public JButton normalPageBBN;
-
+			public JButton assignTeacherBN;
 			CardLayout submitButtonsLayout = new CardLayout();
 			JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
 			Color titleFontColor = new Color(114,114,114);
@@ -485,7 +480,7 @@ public class View extends JFrame  implements ActionListener{
 				return s;
 			}
 			
-			
+		
 			
 			public void buildClassDetailPanel() {
 				classDetailPanel = new JPanel();
@@ -638,37 +633,45 @@ public class View extends JFrame  implements ActionListener{
 				submitButtonsPanel.setBackground(Color.white);
 
 				
-				submitTeacherWBN = createBlackButton("Withdraw");
-				submitTeacherCBN = createBlackButton("Cancel");						
-				submitTeacherBN = createBlackButton("Submit");
-				buildSubmittedBNPanel(submitTeacherWBN ,submitTeacherCBN ,submitTeacherBN ,"submitTeacherBN");
-		
-				submitTeachingRequestWBN = createBlackButton("Withdraw");
-				submitTeachingRequestCBN = createBlackButton("Cancel");	
-				submitTeachingRequestBN = createBlackButton("Submit");
-				buildSubmittedBNPanel(submitTeachingRequestWBN ,submitTeachingRequestCBN ,submitTeachingRequestBN ,"submitTeachingRequestBN");
-	
-
+				courseDetailWBN = buildBlackButton("");
+				courseDetailCBN = buildBlackButton("");						
+				courseDetailSBN = buildBlueButton("");
 				
-				approveTeachingRequestWBN = createBlackButton("Withdraw");
-				approveTeachingRequestCBN = createBlackButton("Cancel");	
-				approveTeachingRequestBN = createBlackButton("Submit");
-				buildSubmittedBNPanel(approveTeachingRequestWBN ,approveTeachingRequestCBN ,approveTeachingRequestBN ,"approveTeachingRequestBN");
-	
-
-
+						
+				
+				JPanel subBP = new JPanel (null);
+				subBP.setBackground(Color.white);
+				GridLayout innerRightBPLayout = new GridLayout (1,2,8,1);
+				JPanel innerRightBP = new JPanel (innerRightBPLayout);
+				innerRightBP.setBackground(Color.white);
+				innerRightBP.setBounds(285, 0, 170, 28);
+				innerRightBP.setBackground(Color.white);
+				innerRightBP.add(courseDetailCBN);
+				innerRightBP.add(courseDetailSBN);
+				
+				JPanel innerLeftBP = new JPanel (new GridLayout (1,2,3,1));
+				innerLeftBP.setBounds(0, 0, 70, 28);
+				innerLeftBP.setBackground(Color.white);
+				innerLeftBP.add(courseDetailWBN);
+				subBP.add(innerLeftBP);
+				subBP.add(innerRightBP);
+				
+				submitButtonsPanel.add(subBP, "activeMode");
+				
+				
+				
 
 				JPanel emptyP = new JPanel (null);
 				emptyP.setBackground(Color.white);
-				normalPageBBN = createBlackButton("Back");	
-				normalPageBBN.setBounds(360, 0, 70, 28);
+				normalPageBBN = buildBlackButton("Back");	
+				normalPageBBN.setBounds(385, 0, 70, 28);
 				emptyP.setBackground(Color.white);
 				emptyP.add(normalPageBBN);
-				submitButtonsPanel.add(emptyP, "emptyP");
+				submitButtonsPanel.add(emptyP, "normalMode");
 	
 				operateP.add(submitButtonsPanel);
 				
-				assignTeacherBN = createBlackButton("Assign");
+				assignTeacherBN = buildBlackButton("Assign");
 				assignTeacherBN.setBounds(75, 13, 40, 16);
 				assignTeacherBN.setFont(new Font("Arial", Font.BOLD, 8));
 				assignTeacherBN.setVisible(false);
@@ -681,22 +684,23 @@ public class View extends JFrame  implements ActionListener{
 				centerPanel.add(classDetailPanel, "classDetailPanel");
 			}
 			
+			
 			public void buildSubmittedBNPanel(JButton withdrawBN, JButton cancelBN, JButton okBN, String key) {
-				
+				JButton[] tem  = new JButton [3];
 				JPanel subBP = new JPanel (null);
 				subBP.setBackground(Color.white);
 				GridLayout innerRightBPLayout = new GridLayout (1,2,8,1);
 				JPanel innerRightBP = new JPanel (innerRightBPLayout);
 				innerRightBP.setBackground(Color.white);
-				cancelBN = createBlackButton("Cancel");		
-				okBN = createBlackButton("Submit");
+				cancelBN = buildBlackButton("Cancel");		
+				okBN = buildBlackButton("Submit");
 				innerRightBP.setBounds(285, 0, 170, 28);
 				innerRightBP.setBackground(Color.white);
 				innerRightBP.add(cancelBN);
 				innerRightBP.add(okBN);
 				
 				JPanel innerLeftBP = new JPanel (new GridLayout (1,2,3,1));
-				withdrawBN = createBlackButton("Withdraw");
+				withdrawBN = buildBlackButton("Withdraw");
 				innerLeftBP.setBounds(0, 0, 70, 28);
 				innerLeftBP.add(withdrawBN);
 				innerLeftBP.setBackground(Color.white);
@@ -704,10 +708,17 @@ public class View extends JFrame  implements ActionListener{
 				subBP.add(innerRightBP);
 				
 				submitButtonsPanel.add(subBP, key);
-		
 			}
 			
 			
+			public int withdrawCheck() {
+				UIManager.put("Button.background", new Color(20,20,20));
+				UIManager.put("Button.foreground", Color.white);
+				UIManager.put("Panel.background", Color.white);
+				UIManager.put("OptionPane.background", Color.white);
+				int n = JOptionPane.showConfirmDialog(null, "Are you sure to withdraw?", "wanring",JOptionPane.YES_NO_OPTION);
+				return n;
+			}
 			
 			
 			
@@ -785,65 +796,78 @@ public class View extends JFrame  implements ActionListener{
 			
 			
 			
-			
+			public void displayDCMode(String[] data) {
+				updateData(data);
+				courseDetailWBN.setText("Withdraw");
+				courseDetailCBN.setText("Cancel");				
+				courseDetailSBN.setText("Submit");
+
+
+				if(View.this.main.courseDetailPage.statusIndex == 1) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
+				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");
+
+				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
+				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
+				}
+				centerRefresh();
+			}
 			
 			public void displayAdminsMode(String[] data) {
 				updateData(data);
-				if(View.this.main.courseDetailPage.statusIndex == 1) {
-	
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "submitTeacherBN");
-					
+				courseDetailCBN.setText("Cancel");				
+				courseDetailSBN.setText("Submit");
+				courseDetailWBN.setVisible(false);
+				if(View.this.main.courseDetailPage.statusIndex == 1) {	
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");		
 					trainingTA.setEditable(true);
 					View.this.main.courseDetailPage.assignTeacherBN.setVisible(true);
 					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(true);
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 					trainingTA.setEditable(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
 				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");	
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");	
 					trainingTA.setEditable(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
 				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 					trainingTA.setEditable(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setVisible(false);
 					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(false);
 				}
-				
+				refresh();
 			}
 			
-			public void displayDCMode(String[] data) {
-				updateData(data);
-				if(View.this.main.courseDetailPage.statusIndex == 1) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
-				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "submitTeachingRequestBN");
-				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
-				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
-				}
-				
-			}
+		
 			
 			public void displayPDMode(String[] data) {
 				updateData(data);
+				courseDetailWBN.setText("Withdraw");
+				courseDetailCBN.setText("Cancel");				
+				courseDetailSBN.setText("Submit");
+				courseDetailWBN.setVisible(true);
+				System.out.println("hhhhhhhhhhh"+courseDetailWBN.isVisible());
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "approveTeachingRequestBN");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
+					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}
-				
+				refresh();
 			}
 			public void displayNormalMode(String[] data) {
 				updateData(data);
+				
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
@@ -853,7 +877,7 @@ public class View extends JFrame  implements ActionListener{
 				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
 				}
-				
+				refresh();
 			}
 			
 			
@@ -862,57 +886,30 @@ public class View extends JFrame  implements ActionListener{
 			String staffID = "";
 			String staffName = "";
 			public JButton selectTeacherSubmitBN;
-			JLabel semesterlabel;
+			JLabel semesterlabel ;
 			public void buildSelectTeacherPanel() {
-//				selectTeacherWindow= new JFrame();
-//
-//				selectTeacherWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//				selectTeacherWindow.setVisible(true);
-//				selectTeacherWindow.setBounds(100, 100, 500, 500);
+
 				selectTeacherPanel = new JPanel();
 				selectTeacherPanel.setBackground(Color.white);
-//				selectTeacherPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-//				selectTeacherWindow.setContentPane(contentPane);
-				GridBagLayout gbl_contentPane = new GridBagLayout();
-				gbl_contentPane.columnWidths = new int[]{79, 334, 0};
-				gbl_contentPane.rowHeights = new int[]{31, 22, 14, 323, 23, 0};
-				gbl_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-				gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-				selectTeacherPanel.setLayout(gbl_contentPane);
-				
-				JLabel lblNewLabel = new JLabel("Staff List");
-				lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-				GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-				gbc_lblNewLabel.anchor = GridBagConstraints.NORTH;
-				gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
-				gbc_lblNewLabel.gridx = 1;
-				gbc_lblNewLabel.gridy = 1;
-				selectTeacherPanel.add(lblNewLabel, gbc_lblNewLabel);
-				
-				JPanel panel = new JPanel();
-				GridBagConstraints gbc_panel = new GridBagConstraints();
-				gbc_panel.fill = GridBagConstraints.BOTH;
-				gbc_panel.insets = new Insets(0, 0, 5, 0);
-				gbc_panel.gridx = 1;
-				gbc_panel.gridy = 2;
-				selectTeacherPanel.add(panel, gbc_panel);
-				panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-				panel.setBackground(Color.white);
-				JLabel lblSemester = new JLabel("Semester: ");
-				lblSemester.setFont(new Font("Arial", Font.PLAIN, 12));
-				panel.add(lblSemester);
-				
-				semesterlabel = new JLabel("");
+				selectTeacherPanel.setLayout(new BorderLayout());
+				selectTeacherPanel.setBorder(new EmptyBorder(30, 50, 0, 50));
+				JLabel StaffListTitleL = new JLabel("Staff List");
+				StaffListTitleL.setFont(new Font("Arial", Font.PLAIN, 18));
+				JPanel titleP= new JPanel();
+				titleP.add(StaffListTitleL);
+
+				selectTeacherPanel.add(titleP, BorderLayout.NORTH);
+				titleP.setBackground(Color.white);
+				JPanel ListP = new JPanel(new BorderLayout());
+
+				ListP.setBackground(Color.white);
+				semesterlabel = new JLabel("Semester: ");
 				semesterlabel.setFont(new Font("Arial", Font.PLAIN, 12));
-				panel.add(semesterlabel);
+
+				ListP.add(semesterlabel, BorderLayout.NORTH);
 				
 				JScrollPane scrollPane = new JScrollPane();
-				GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-				gbc_scrollPane.fill = GridBagConstraints.BOTH;
-				gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
-				gbc_scrollPane.gridx = 1;
-				gbc_scrollPane.gridy = 3;
-				selectTeacherPanel.add(scrollPane, gbc_scrollPane);
+
 				
 				staffListTable = buildModelListTable(null, null);	
 				
@@ -928,27 +925,27 @@ public class View extends JFrame  implements ActionListener{
 				});
 
 				scrollPane.setViewportView(staffListTable);			
-				selectTeacherSubmitBN = new JButton("Select");
-				selectTeacherSubmitBN.setBorder(BorderFactory.createEmptyBorder(10,8,8,10));
-				selectTeacherSubmitBN.setFont(new Font("Arial", Font.PLAIN, 12));
-				selectTeacherSubmitBN.setBackground(new Color(56, 151, 240));
-				selectTeacherSubmitBN.setForeground(Color.white);
+				ListP.add(scrollPane, BorderLayout.CENTER);
+				JPanel buttonP = new JPanel(new GridLayout(1,1));
+				buttonP.setPreferredSize(new Dimension(50, 80));
+				buttonP.setBackground(Color.white);
+				JPanel subbuttonP = new JPanel(null);
+				selectTeacherSubmitBN = buildBlueButton("Select");
 				selectTeacherSubmitBN.addActionListener(View.this);
-				
-				
-				
-				GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-				gbc_btnNewButton.anchor = GridBagConstraints.NORTH;
-				gbc_btnNewButton.gridx = 1;
-				gbc_btnNewButton.gridy = 4;
-				selectTeacherPanel.add(selectTeacherSubmitBN, gbc_btnNewButton);
+				selectTeacherSubmitBN.setBounds(240, 10, 60, 30);
+				subbuttonP.setBorder(new EmptyBorder(30, 180, 0, 180));
+				subbuttonP.setBackground(Color.white);
+				subbuttonP.add(selectTeacherSubmitBN);
+				buttonP.add(subbuttonP);
+				ListP.add(buttonP, BorderLayout.SOUTH);
+				selectTeacherPanel.add(ListP, BorderLayout.CENTER);
 				centerPanel.add(selectTeacherPanel, "selectTeacherPanel");
 			}
 			
 			public void displaySelectTeacherPanel(String []staffTableHeader,String [][] staffList, String semester) {
 				TableModel m = new DefaultTableModel(staffList, staffTableHeader) ;
 				View.this.staffListTable.setModel(m);
-				semesterlabel.setText(semester);
+				semesterlabel.setText("Semester: "+semester);
 				centerPage.show(centerPanel, "selectTeacherPanel");
 				refresh();
 			}
@@ -1034,184 +1031,211 @@ public class View extends JFrame  implements ActionListener{
 			classListBN.addActionListener(View.this);
 		}
 		public void buildCDBar(String ID, String name) {
+
 			JPanel westPanel = new JPanel(new BorderLayout());
-			JPanel westNorth = new JPanel();
-			JPanel westCenter = new JPanel(new GridLayout(2,1));
-			JPanel westSouth = new JPanel(new GridLayout(3,1,0,20));
-			JPanel list = new JPanel(new GridLayout(3,1,0,5));
+			westPanel.setPreferredSize(new Dimension(180, 550));
+			JPanel northPanel = new JPanel(new GridLayout(2,1,8,8));
+			JPanel list = new JPanel(new GridLayout(9,1,0,5));
 			
-			westNorth.setBorder(BorderFactory.createEmptyBorder(20,10,20,10));
-			westNorth.setBackground(blue);
-			westCenter.setBackground(blue);
-			westSouth.setBackground(blue);
+			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
+			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
+			northPanel.setBackground(blue);
+			JLabel titleL = new JLabel("Course Dirctor");
+			JLabel nameL = new JLabel("Hi, "+name);
 			list.setBackground(blue);
+			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
+			titleL.setFont(new Font("Arial",Font.BOLD,15));
+			nameL.setFont(new Font("Arial",Font.BOLD,15));
+			titleL.setForeground(Color.WHITE);
+			nameL.setForeground(Color.WHITE);
 			
-			JLabel courseDirector = new JLabel("Course Dirctor");
-			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			classListBN = new JButton("Class List");
-			teacherList = new JButton("Teacher List");
-			requestList = new JButton("Request List");
-			logoutBN = new JButton("Log Out");
+			northPanel.add(nameL);
+			northPanel.add(titleL);
+			westPanel.add(northPanel, BorderLayout.NORTH);
 			
-		
-			classListBN.setBackground(new java.awt.Color(135,206,250));
-			classListBN.setBorder(BorderFactory.createLineBorder(blue));
+			List<JButton> listPS = new LinkedList<JButton>();
+			createClassBN = buildBlueBorderlessButton("         Course +");
+			myClassListBN = buildBlueBorderlessButton("         My class list");
+			classListBN = buildBlueBorderlessButton("         Class list");
+			requestListBN = buildBlueBorderlessButton("         Request list");
+			logoutBN = buildBlueBorderlessButton("         Log out");
+			listPS.add(createClassBN);
+			listPS.add(myClassListBN);
+			listPS.add(classListBN);
+			listPS.add(requestListBN);
+			listPS.add(logoutBN);
+			for(JButton bn : listPS) {
+				bn.setBorder(BorderFactory.createEmptyBorder(8,0,10,0));
+				bn.setHorizontalAlignment(SwingConstants.LEFT);
+				list.add(bn);
+			}
 			
-			teacherList.setBackground(new java.awt.Color(135,206,250));
-			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
-			requestList.setBackground(new java.awt.Color(135,206,250));
-			requestList.setBorder(BorderFactory.createLineBorder(blue)); 
-			logoutBN.setBackground(new java.awt.Color(135,206,250));
-			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
 			
-			classListBN.setFocusPainted(false);
-			teacherList.setFocusPainted(false);
-			requestList.setFocusPainted(false);
-			logoutBN.setFocusPainted(false);
-			
-			westNorth.add(courseDirector);
-			Font f = new Font("TimesRoman",Font.PLAIN,15);
-			courseDirector.setFont(f);
-			
-			list.add(classListBN);
-			list.add(teacherList);
-			list.add(requestList);
-			westCenter.add(list);
-			
-			westSouth.add(nameL);
-			westSouth.add(logoutBN);
-			
-			westPanel.add(westNorth,BorderLayout.NORTH);
-			westPanel.add(westCenter,BorderLayout.CENTER);
-			westPanel.add(westSouth,BorderLayout.SOUTH);
+			westPanel.add(list,BorderLayout.CENTER);
 			addSelfListener();
 			barPanel = westPanel;
 		}
 		
 		public void buildABar(String ID, String name) {
-			JPanel westPanel = new JPanel(new BorderLayout());
-			JPanel westNorth = new JPanel();
-			JPanel westCenter = new JPanel(new GridLayout(2,1));
-			JPanel westSouth = new JPanel(new GridLayout(3,1,0,20));
-			JPanel list = new JPanel(new GridLayout(3,1,0,5));
-			
-			westNorth.setBorder(BorderFactory.createEmptyBorder(20,10,20,10));
-			westNorth.setBackground(blue);
-			westCenter.setBackground(blue);
-			westSouth.setBackground(blue);
-			list.setBackground(blue);
-			
-			JLabel courseDirector = new JLabel("Administrator");
-			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			classListBN = new JButton("Course List");
-			teacherList = new JButton("Teacher List");
-			requestList = new JButton("Request List");
-			logoutBN = new JButton("Log Out");
-			
-		
-			classListBN.setBackground(new java.awt.Color(135,206,250));
-			classListBN.setBorder(BorderFactory.createLineBorder(blue));
-			
-			teacherList.setBackground(new java.awt.Color(135,206,250));
-			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
-			requestList.setBackground(new java.awt.Color(135,206,250));
-			requestList.setBorder(BorderFactory.createLineBorder(blue)); 
-			logoutBN.setBackground(new java.awt.Color(135,206,250));
-			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
-			
-			classListBN.setFocusPainted(false);
-			teacherList.setFocusPainted(false);
-			requestList.setFocusPainted(false);
-			logoutBN.setFocusPainted(false);
-			
-			westNorth.add(courseDirector);
-			Font f = new Font("TimesRoman",Font.PLAIN,15);
-			courseDirector.setFont(f);
-			
-			list.add(classListBN);
-			list.add(teacherList);
-			list.add(requestList);
-			westCenter.add(list);
-			
-			westSouth.add(nameL);
-			westSouth.add(logoutBN);
-			
-			westPanel.add(westNorth,BorderLayout.NORTH);
-			westPanel.add(westCenter,BorderLayout.CENTER);
-			westPanel.add(westSouth,BorderLayout.SOUTH);
-			addSelfListener();
-			barPanel =  westPanel;
 
+			JPanel westPanel = new JPanel(new BorderLayout());
+			westPanel.setPreferredSize(new Dimension(180, 550));
+			JPanel northPanel = new JPanel(new GridLayout(2,1,8,8));
+			JPanel list = new JPanel(new GridLayout(9,1,0,5));
+			
+			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
+			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
+			northPanel.setBackground(blue);
+			JLabel titleL = new JLabel("Administrator");
+			JLabel nameL = new JLabel("Hi, "+name);
+			list.setBackground(blue);
+			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
+			titleL.setFont(new Font("Arial",Font.BOLD,15));
+			nameL.setFont(new Font("Arial",Font.BOLD,15));
+			titleL.setForeground(Color.WHITE);
+			nameL.setForeground(Color.WHITE);
+			
+			northPanel.add(nameL);
+			northPanel.add(titleL);
+			westPanel.add(northPanel, BorderLayout.NORTH);
+			
+			List<JButton> listPS = new LinkedList<JButton>();
+			classListBN = buildBlueBorderlessButton("         Class list");
+			requestListBN = buildBlueBorderlessButton("         Request list");
+			logoutBN = buildBlueBorderlessButton("         Log out");
+			listPS.add(classListBN);
+			listPS.add(requestListBN);
+			listPS.add(logoutBN);
+			for(JButton bn : listPS) {
+				bn.setBorder(BorderFactory.createEmptyBorder(8,0,10,0));
+				bn.setHorizontalAlignment(SwingConstants.LEFT);
+				list.add(bn);
+			}
+			
+			
+			westPanel.add(list,BorderLayout.CENTER);
+			addSelfListener();
+			barPanel = westPanel;
 		}
 		
 		
 		public void buildPDBar(String ID, String name) {
+
 			JPanel westPanel = new JPanel(new BorderLayout());
-			JPanel westNorth = new JPanel();
-			JPanel westCenter = new JPanel(new GridLayout(2,1));
-			JPanel westSouth = new JPanel(new GridLayout(3,1,0,20));
-			JPanel list = new JPanel(new GridLayout(3,1,0,5));
+			westPanel.setPreferredSize(new Dimension(180, 550));
+			JPanel northPanel = new JPanel(new GridLayout(2,1,8,8));
+			JPanel list = new JPanel(new GridLayout(9,1,0,5));
 			
-			westNorth.setBorder(BorderFactory.createEmptyBorder(20,10,20,10));
-			westNorth.setBackground(blue);
-			westCenter.setBackground(blue);
-			westSouth.setBackground(blue);
+			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
+			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
+			northPanel.setBackground(blue);
+			JLabel titleL = new JLabel("PTT Dirctor");
+			JLabel nameL = new JLabel("Hi, "+name);
 			list.setBackground(blue);
+			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
+			titleL.setFont(new Font("Arial",Font.BOLD,15));
+			nameL.setFont(new Font("Arial",Font.BOLD,15));
+			titleL.setForeground(Color.WHITE);
+			nameL.setForeground(Color.WHITE);
 			
-			JLabel courseDirector = new JLabel("PTT Dirctor");
-			JLabel nameL = new JLabel("Hi "+name,SwingConstants.CENTER);
-			classListBN = new JButton("Course List");
-			teacherList = new JButton("Teacher List");
-			requestList = new JButton("Request List");
-			logoutBN = new JButton("Log Out");
+			northPanel.add(nameL);
+			northPanel.add(titleL);
+			westPanel.add(northPanel, BorderLayout.NORTH);
 			
-		
-			classListBN.setBackground(new java.awt.Color(135,206,250));
-			classListBN.setBorder(BorderFactory.createLineBorder(blue));
+			List<JButton> listPS = new LinkedList<JButton>();
+			classListBN = buildBlueBorderlessButton("         Class list");
+			requestListBN = buildBlueBorderlessButton("         Request list");
+			logoutBN = buildBlueBorderlessButton("         Log out");
+			listPS.add(classListBN);
+			listPS.add(requestListBN);
+			listPS.add(logoutBN);
+			for(JButton bn : listPS) {
+				bn.setBorder(BorderFactory.createEmptyBorder(8,0,10,0));
+				bn.setHorizontalAlignment(SwingConstants.LEFT);
+				list.add(bn);
+			}
 			
-			teacherList.setBackground(new java.awt.Color(135,206,250));
-			teacherList.setBorder(BorderFactory.createLineBorder(blue)); 
-			requestList.setBackground(new java.awt.Color(135,206,250));
-			requestList.setBorder(BorderFactory.createLineBorder(blue)); 
-			logoutBN.setBackground(new java.awt.Color(135,206,250));
-			logoutBN.setBorder(BorderFactory.createLineBorder(blue)); 
 			
-			classListBN.setFocusPainted(false);
-			teacherList.setFocusPainted(false);
-			requestList.setFocusPainted(false);
-			logoutBN.setFocusPainted(false);
-			
-			westNorth.add(courseDirector);
-			Font f = new Font("TimesRoman",Font.PLAIN,15);
-			courseDirector.setFont(f);
-			
-			list.add(classListBN);
-			list.add(teacherList);
-			list.add(requestList);
-			westCenter.add(list);
-			
-			westSouth.add(nameL);
-			westSouth.add(logoutBN);
-			
-			westPanel.add(westNorth,BorderLayout.NORTH);
-			westPanel.add(westCenter,BorderLayout.CENTER);
-			westPanel.add(westSouth,BorderLayout.SOUTH);
+			westPanel.add(list,BorderLayout.CENTER);
 			addSelfListener();
-			barPanel =  westPanel;
+			barPanel = westPanel;
 		}
 	}
 	
 	
-	private JButton createBlackButton(String name) {
+	private JButton buildBlackButton(String name) {
 		JButton btn = new JButton(name);
-		btn.setBackground(new Color(20,20,20));
+		Color darkGrey = new Color(30,30,30);
+		Color lightGrey = new Color(150,150,150);
+		btn.setBackground(darkGrey);
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setForeground(Color.WHITE);
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
+		btn.setFocusPainted(false);
+		btn.addMouseListener(new java.awt.event.MouseAdapter() {
+		    public void mouseEntered(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(Color.white);
+		    	btn.setForeground(darkGrey);
+		    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
+		    }
+
+		    public void mouseExited(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(darkGrey);
+		    	btn.setForeground(Color.white);
+		    	btn.setBorder(BorderFactory.createEmptyBorder());
+		    }
+		});
+
+		return btn;
+	}
+	private JButton buildBlueButton(String name) {
+		JButton btn = new JButton(name);
+		
+		btn.setBackground(new Color(56, 151, 240));
+		btn.setForeground(Color.white);
+		btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.setFont(new Font("Arial", Font.PLAIN, 12));
+		btn.setFocusPainted(false);
+		btn.addMouseListener(new java.awt.event.MouseAdapter() {
+		    public void mouseEntered(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(Color.white);
+		    	btn.setForeground(blue);
+		    	btn.setBorder(BorderFactory.createLineBorder(blue, 1));
+		    }
+
+		    public void mouseExited(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(blue);
+		    	btn.setForeground(Color.white);
+		    	btn.setBorder(BorderFactory.createEmptyBorder());
+		    }
+		});
+
 		return btn;
 	}
 	
-	
+	private JButton buildBlueBorderlessButton(String name) {
+		JButton btn = new JButton(name);
+		
+		btn.setBackground(new Color(56, 151, 240));
+		btn.setForeground(Color.white);
+		btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.setFocusPainted(false);
+		btn.setFont(new Font("Arial", Font.PLAIN, 12));
+    	btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.addMouseListener(new java.awt.event.MouseAdapter() {
+		    public void mouseEntered(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(Color.white);
+		    	btn.setForeground(blue);
+		    }
+
+		    public void mouseExited(java.awt.event.MouseEvent evt) {
+		    	btn.setBackground(blue);
+		    	btn.setForeground(Color.white);
+		    }
+		});
+
+		return btn;
+	}
 //	
 //	
 //	

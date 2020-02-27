@@ -26,9 +26,9 @@ public class Controller implements ActionListener{
 	}
 	
 	public void selectSemesterPage() {
-		view.semester.buildSemesterPanel();
+		view.semester.buildSemesterPanel(model.getlatestSem());
 		view.semesterBN.addActionListener(this);
-		view.semester.displayLatestSemester(model.getlatestSem());
+		view.semester.displayLatestSemester();
 		view.semester.displaySemesterPanel();
 	}
 	
@@ -53,6 +53,8 @@ public class Controller implements ActionListener{
 				    }
 				}
 		});
+		
+		view.main.courseDetailPage.normalPageBBN.addActionListener(this);
 		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 	}
 	
@@ -70,28 +72,20 @@ public class Controller implements ActionListener{
 
 		if(e.getSource() == view.semesterBN) {
 			int semester = view.semester.getSelecetedSemester();
-			System.out.println("hey");
 			if(model.selectSemester(semester)) {
 				this.initialisePage();
+			}else {
+				view.semester.displayLatestSemester();
 			}
 		}
 		
 		if(e.getSource() == view.classListBN) {
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+			displayCourseListPage();
 		}
 		
-		
-		if(e.getSource() == view.requestList) {
-			view.requestList.setBackground(Color.white);
-			view.requestList.setBorder(BorderFactory.createLineBorder(Color.white));
-			view.teacherList.setBackground(view.blue);
-			view.teacherList.setBorder(BorderFactory.createLineBorder(view.blue));
-			view.classListBN.setBackground(view.blue);
-			view.classListBN.setBorder(BorderFactory.createLineBorder(view.blue));
-			
+		if(e.getSource() == view.main.courseDetailPage.normalPageBBN) {
+			displayCourseListPage();
 		}
-		
-
 	
 	}
 

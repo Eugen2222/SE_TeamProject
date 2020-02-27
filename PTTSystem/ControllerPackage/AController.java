@@ -23,7 +23,8 @@ public class AController extends Controller {
 		//setup all available pages
 		//add all action listeners
 		view.main.courseDetailPage.assignTeacherBN.addActionListener(this);
-		view.main.courseDetailPage.submitTeacherBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
 	}
 	
 	
@@ -37,11 +38,15 @@ public class AController extends Controller {
 		if(e.getSource()==view.main.courseDetailPage.assignTeacherBN) {
 			view.main.selectTeacherPage.displaySelectTeacherPanel(model.getStaffListTableHeader(), model.getStaffListTable(), model.getSelectedSem());
 		}
-		else if(e.getSource()==view.main.courseDetailPage.submitTeacherBN) {
+		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.assignCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
-			model.save();
+			displayCourseListPage();
 		}
+		
+		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
+			displayCourseListPage();
+		}
+		
 		
 	}
 }

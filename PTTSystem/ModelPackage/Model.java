@@ -85,6 +85,7 @@ public  class Model <T extends Populated>{
 			return false;
 		}else {
 			this.selectedSem=num;
+
 			return true;
 		}
 	}
@@ -126,6 +127,12 @@ public  class Model <T extends Populated>{
 	public void withdrawAssignedTeacher(String[]s) {
 		findCourse(s[0]).setTeacherStatus("Pending");
 	}
+	
+	public void withdrawTeachingRequest(String[]s) {
+		findCourse(s[0]).setTeacherStatus("Assigned");
+	}
+	
+	
 	
 	
 	
@@ -183,17 +190,19 @@ public  class Model <T extends Populated>{
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {
-			String [][] tem = new String [classList.size()][];
-			for(int i=0 ; i < tem.length ; i++) {
-				tem[i] = (this.addNamesOfForiegnKeys((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
-				System.out.print(tem[i]);
+			List<String[]> tem = new LinkedList<String[]>();
+			for(int i=0 ; i < classList.size() ; i++) {
+				if(this.classList.get(i).getSemester().equals(Integer.toString(this.selectedSem))) {
+					tem.add(this.addNamesOfForiegnKeys((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
+				}
 			}
-			return tem;
+			String [][] tem2 = tem.toArray(new String[ tem.size()][]);
+			return tem2;
 		}
 	}
 	
 
-	
+
 	
 	
 	
@@ -330,8 +339,7 @@ public  class Model <T extends Populated>{
 			for(List<String> a : table) {
 				Constructor<T> constructor;
 				try {
-//					System.out.println(T.getConstructor(new Class[]{List.class}));
-//					System.out.print(i);
+
 					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class});
 					T object = constructor.newInstance(new Object[]{a });
 					list.add(object);

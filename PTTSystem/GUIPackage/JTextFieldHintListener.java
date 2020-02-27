@@ -22,8 +22,7 @@ public class JTextFieldHintListener implements FocusListener{
 	
 	public JTextFieldHintListener(JTextArea TA,String hintText) {		
 		this.TA = TA;		
-		this.hintText = hintText;	
-		TA.setText("");
+		this.hintText = hintText;
 		TA.setText(hintText);  
 	} 	
 	

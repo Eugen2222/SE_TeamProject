@@ -23,7 +23,9 @@ public class PDController extends Controller {
 		
 		//setup all available pages
 		//add all action listeners
-		view.main.courseDetailPage.approveTeachingRequestBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailWBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
+		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
 		
 	}
 	
@@ -34,9 +36,20 @@ public class PDController extends Controller {
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
-		if(e.getSource()==view.main.courseDetailPage.approveTeachingRequestBN) {
+		if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.approveTeachingRequest(view.main.courseDetailPage.getClassInform());
 			displayCourseListPage();
+		}
+		
+		if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
+			displayCourseListPage();
+		}
+		if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
+			if(view.main.courseDetailPage.withdrawCheck()==0) {
+				model.withdrawTeachingRequest(view.main.courseDetailPage.getClassInform());
+				displayCourseListPage();
+			}
+			
 		}
 	}
 }
