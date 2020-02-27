@@ -1,11 +1,12 @@
 package ControllerPackage;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 
 import GUIPackage.View;
 import ModelPackage.Model;
 
 public class AController extends Controller {
-
+	private String classId;
 	public AController(Model model, View view, LoginController logc) {
 		super(model, view, logc);
 		// TODO Auto-generated constructor stub
@@ -18,16 +19,29 @@ public class AController extends Controller {
 		view.classListBN.addActionListener(this);	
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
+		view.main.selectTeacherPage.buildSelectTeacherPanel();
 		//setup all available pages
 		//add all action listeners
-		
+		view.main.courseDetailPage.assignTeacherBN.addActionListener(this);
+		view.main.courseDetailPage.submitTeacherBN.addActionListener(this);
 	}
 	
 	
 	public void selectedCourseStage(String classId){
 	       view.main.courseDetailPage.displayAdminsMode(model.getClass(classId));
+	       this.classId=classId;
 	}
 	
-	
-	
+	public void actionPerformed(ActionEvent e) {
+		super.actionPerformed(e);
+		if(e.getSource()==view.main.courseDetailPage.assignTeacherBN) {
+			view.main.selectTeacherPage.displaySelectTeacherPanel(model.getStaffListTableHeader(), model.getStaffListTable(), model.getSelectedSem());
+		}
+		else if(e.getSource()==view.main.courseDetailPage.submitTeacherBN) {
+			model.setCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
+			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+			model.save();
+		}
+		
+	}
 }

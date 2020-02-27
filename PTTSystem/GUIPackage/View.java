@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +37,7 @@ import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -50,8 +53,10 @@ public class View extends JFrame  implements ActionListener{
 	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,teacherList,requestList,createCourse,createClassOKBN,createClassCBN;
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new java.awt.Color(135,206,250);
-	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, classListPanel, rootPanel, classDetailPanel;
-	public JTable classListTable;
+	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
+					classListPanel, rootPanel, classDetailPanel, selectTeacherPanel;
+	public JTable classListTable, staffListTable;
+	public JFrame selectTeacherWindow;
 	public JTextArea requirementTA;
 	public Semester semester;
 	public Login login;
@@ -91,7 +96,10 @@ public class View extends JFrame  implements ActionListener{
 	
 	
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource()==main.selectTeacherPage.selectTeacherSubmitBN) {
+			main.selectTeacherPage.setSelectedTeacher();
+			centerPage.show(centerPanel, "classDetailPanel");
+		}
 		
 	}
 	
@@ -222,11 +230,14 @@ public class View extends JFrame  implements ActionListener{
 		String defaultClassName = "  Please enter a class name, max length 20.";
 		String defaultClassRequirement = "  Please enter a requirement, max length 200 words.";
 		public CourseDetailPage courseDetailPage;
+		public SelectTeacherPage selectTeacherPage;
+	
 		Main(){
 			centerPage =new CardLayout();
 			centerPanel = new JPanel(centerPage);
 			centerPanel.setBackground(Color.white);
 			courseDetailPage = new CourseDetailPage();
+			selectTeacherPage = new SelectTeacherPage();
 		}
 		
 		
@@ -372,72 +383,19 @@ public class View extends JFrame  implements ActionListener{
 			classListSubP.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
 			classListSubP.add(createClassBN, BorderLayout.EAST);
 			classListPanel.add(classListSubP, BorderLayout.NORTH);
-			classListPanel.add(buildListTable(header, list), BorderLayout.CENTER);
+			classListTable = buildModelListTable(header, list);
+			enableTableHoverEffect(classListTable);
+			JScrollPane sp=new JScrollPane();
+	        sp.setViewportView(classListTable);
+	        sp.getViewport().setBackground(Color.WHITE);
+	        sp.setBackground(Color.white);
+			
+			classListPanel.add(sp, BorderLayout.CENTER);
 			classListPanel.setVisible(true);
 			centerPanel.add(classListPanel, "classListPanel");
 		}
 		
 		
-		public JScrollPane buildListTable(String[] header, String[][] list) {
-			classListTable = new JTable(list, header){
-				public boolean isCellEditable(int row, int column) {                
-		            return false;    
-					}
-				};	//disable edit cell
-//			classListTable.setCellSelectionEnabled(true);  
-	      
-	        
-	        
-//	        classListTable.setSelectionModel(new ForcedListSelectionModel());
-	        ListSelectionModel select= classListTable.getSelectionModel();  
-//	        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
-//	        select.addListSelectionListener(new ListSelectionListener() {  
-//	        	public void valueChanged(ListSelectionEvent e) {  
-//	        		String Data = null;    
-//	        		int selectedRow = classListTable.getSelectedRow();  
-//	        		if(selectedRow<0|| selectedRow>classListTable.getRowCount()) {}
-//	        		else {
-//	        			Data = (String) classListTable.getValueAt(selectedRow, 0);  
-//	        			System.out.println("Table element selected is: " + Data);    
-//	        		}
-//	             }  
-//	        	
-//	        	
-//	         });  
-	        
-	        
-
-	        classListTable.addMouseMotionListener(new MouseMotionListener() {
-	        	int hoveredRow = -1, hoveredColumn = -1;
-	            @Override
-	            public void mouseMoved(MouseEvent e) {
-	                java.awt.Point p = e.getPoint();
-	                hoveredRow = classListTable.rowAtPoint(p);
-	                hoveredColumn = classListTable.columnAtPoint(p);
-	                if(hoveredRow<0||hoveredRow>classListTable.getRowCount()) {}
-	                else {
-	                	classListTable.setRowSelectionInterval(hoveredRow, hoveredRow);
-	                	classListTable.repaint();  
-	                }
-	            }
-	            @Override
-	            public void mouseDragged(MouseEvent e) {
-	                hoveredRow = hoveredColumn = -1;
-	                classListTable.repaint();
-	            }
-	        });
-	        
-	        classListTable.setBackground(Color.WHITE);
-	        classListTable.getTableHeader().setBackground(Color.WHITE);
-	        classListTable.getTableHeader().setReorderingAllowed(false);
-	        classListTable.setFillsViewportHeight(true);
-			
-	        JScrollPane sp=new JScrollPane(classListTable);
-	        sp.setViewportView(classListTable);
-	        sp.getViewport().setBackground(Color.WHITE);
-	        sp.setBackground(Color.white);
-	        return sp;
-		}
 		
 		public class ForcedListSelectionModel extends DefaultListSelectionModel {
 
@@ -489,10 +447,13 @@ public class View extends JFrame  implements ActionListener{
 			JPanel submitButtonsPanel = new JPanel(submitButtonsLayout);
 			Color titleFontColor = new Color(114,114,114);
 			private int statusIndex = -1;
-			
-			
 			private List<JLabel> labelList = new ArrayList<JLabel>();
-			List<JTextArea> TAList = new ArrayList<JTextArea>();		
+			List<JTextArea> TAList = new ArrayList<JTextArea>();
+			
+			
+			
+			
+			
 			public void buildClassDetailPanel() {
 				classDetailPanel = new JPanel();
 				classDetailPanel.setBackground(Color.WHITE);
@@ -656,6 +617,7 @@ public class View extends JFrame  implements ActionListener{
 				assignTeacherBN.setFont(new Font("Arial", Font.BOLD, 8));
 				assignTeacherBN.setVisible(false);
 				assignTeacherBN.setEnabled(false);
+				assignTeacherBN.addActionListener(View.this);
 				operateP.add(assignTeacherBN);
 				
 			
@@ -666,9 +628,10 @@ public class View extends JFrame  implements ActionListener{
 			
 			
 			public String[] getAssignTeacher() {
-				String [] s = new String [2];
-				s[0] = staffNameL.getText();
-				s[1] = requirementTA.getText();			
+				String [] s = new String [3];
+				s[0] =	classIDL.getText();
+				s[1] = staffIDL.getText();
+				s[2] = trainingTA.getText();			
 				return s;
 			}
 			
@@ -740,7 +703,9 @@ public class View extends JFrame  implements ActionListener{
 			public void displayAdminsMode(String[] data) {
 				updateData(data);
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
+	
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "submitTeacherBN");
+					
 					trainingTA.setEditable(true);
 					View.this.main.courseDetailPage.assignTeacherBN.setVisible(true);
 					View.this.main.courseDetailPage.assignTeacherBN.setEnabled(true);
@@ -803,39 +768,177 @@ public class View extends JFrame  implements ActionListener{
 				}
 				
 			}
-		
+			
+			
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		public void centerRefresh() {
-			View.this.centerPanel.revalidate();
-			View.this.centerPanel.repaint();
-		}
-		
-		public String encodeString(String s) {
-			if(s!=null) {
-				return (!s.equals("")) ? "\""+ s + "\"" : "";
+		public class  SelectTeacherPage{
+			String staffID = "";
+			String staffName = "";
+			public JButton selectTeacherSubmitBN;
+			JLabel semesterlabel;
+			public void buildSelectTeacherPanel() {
+//				selectTeacherWindow= new JFrame();
+//
+//				selectTeacherWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//				selectTeacherWindow.setVisible(true);
+//				selectTeacherWindow.setBounds(100, 100, 500, 500);
+				selectTeacherPanel = new JPanel();
+				selectTeacherPanel.setBackground(Color.white);
+//				selectTeacherPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+//				selectTeacherWindow.setContentPane(contentPane);
+				GridBagLayout gbl_contentPane = new GridBagLayout();
+				gbl_contentPane.columnWidths = new int[]{79, 334, 0};
+				gbl_contentPane.rowHeights = new int[]{31, 22, 14, 323, 23, 0};
+				gbl_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+				gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				selectTeacherPanel.setLayout(gbl_contentPane);
+				
+				JLabel lblNewLabel = new JLabel("Staff List");
+				lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+				GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+				gbc_lblNewLabel.anchor = GridBagConstraints.NORTH;
+				gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
+				gbc_lblNewLabel.gridx = 1;
+				gbc_lblNewLabel.gridy = 1;
+				selectTeacherPanel.add(lblNewLabel, gbc_lblNewLabel);
+				
+				JPanel panel = new JPanel();
+				GridBagConstraints gbc_panel = new GridBagConstraints();
+				gbc_panel.fill = GridBagConstraints.BOTH;
+				gbc_panel.insets = new Insets(0, 0, 5, 0);
+				gbc_panel.gridx = 1;
+				gbc_panel.gridy = 2;
+				selectTeacherPanel.add(panel, gbc_panel);
+				panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+				panel.setBackground(Color.white);
+				JLabel lblSemester = new JLabel("Semester: ");
+				lblSemester.setFont(new Font("Arial", Font.PLAIN, 12));
+				panel.add(lblSemester);
+				
+				semesterlabel = new JLabel("");
+				semesterlabel.setFont(new Font("Arial", Font.PLAIN, 12));
+				panel.add(semesterlabel);
+				
+				JScrollPane scrollPane = new JScrollPane();
+				GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+				gbc_scrollPane.fill = GridBagConstraints.BOTH;
+				gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
+				gbc_scrollPane.gridx = 1;
+				gbc_scrollPane.gridy = 3;
+				selectTeacherPanel.add(scrollPane, gbc_scrollPane);
+				
+				staffListTable = buildModelListTable(null, null);	
+				
+				staffListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+					@Override
+					public void mouseClicked(java.awt.event.MouseEvent evt) {
+						int selectedRow = staffListTable.rowAtPoint(evt.getPoint());
+						if (selectedRow >= 0&& selectedRow < staffListTable.getRowCount()) {
+						staffID = staffListTable.getValueAt(selectedRow, 0).toString();
+						staffName = staffListTable.getValueAt(selectedRow, 2).toString();
+						}
+					}
+				});
+
+				scrollPane.setViewportView(staffListTable);			
+				selectTeacherSubmitBN = new JButton("Select");
+				selectTeacherSubmitBN.setBorder(BorderFactory.createEmptyBorder(10,8,8,10));
+				selectTeacherSubmitBN.setFont(new Font("Arial", Font.PLAIN, 12));
+				selectTeacherSubmitBN.setBackground(new Color(56, 151, 240));
+				selectTeacherSubmitBN.setForeground(Color.white);
+				selectTeacherSubmitBN.addActionListener(View.this);
+				
+				
+				
+				GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+				gbc_btnNewButton.anchor = GridBagConstraints.NORTH;
+				gbc_btnNewButton.gridx = 1;
+				gbc_btnNewButton.gridy = 4;
+				selectTeacherPanel.add(selectTeacherSubmitBN, gbc_btnNewButton);
+				centerPanel.add(selectTeacherPanel, "selectTeacherPanel");
 			}
-			return null;
+			
+			public void displaySelectTeacherPanel(String []staffTableHeader,String [][] staffList, String semester) {
+				TableModel m = new DefaultTableModel(staffList, staffTableHeader) ;
+				View.this.staffListTable.setModel(m);
+				semesterlabel.setText(semester);
+				centerPage.show(centerPanel, "selectTeacherPanel");
+				refresh();
+			}
+			
+			public void setSelectedTeacher() {
+
+				View.this.main.courseDetailPage.staffIDL.setText(staffID);
+				View.this.main.courseDetailPage.staffNameL.setText(staffName);
+				refresh();
+			}
+			
+			
+				
+			
 		}
-		
 	}
 	
-
+	
+	public void centerRefresh() {
+		View.this.centerPanel.revalidate();
+		View.this.centerPanel.repaint();
+	}
+		
+	public String encodeString(String s) {
+		if(s!=null) {
+			return (!s.equals("")) ? "\""+ s + "\"" : "";
+		}
+		return null;
+	}
+		
+	public JTable buildModelListTable(String[] header, String [][] list) {	
+		if(header==null || list == null) {
+			String [] tem  =  {""};
+			String [][] tem2  =  {{""}};
+			header= tem;
+			list =tem2;
+		}
+		
+		JTable modelTable = new JTable(list, header){
+			public boolean isCellEditable(int row, int column) {                
+		           return false;    
+			}
+		};
+			     
+		modelTable.setBackground(Color.WHITE);
+		modelTable.getTableHeader().setBackground(Color.WHITE);
+		modelTable.getTableHeader().setReorderingAllowed(false);
+		modelTable.setFillsViewportHeight(true);
+		return modelTable;		
+	}
+	
+	
+	
+	public void enableTableHoverEffect(JTable modelTable) {
+		
+		modelTable.addMouseMotionListener(new MouseMotionListener() {
+			int hoveredRow = -1, hoveredColumn = -1;
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				java.awt.Point p = e.getPoint();
+			    hoveredRow = modelTable.rowAtPoint(p);
+			    hoveredColumn = modelTable.columnAtPoint(p);
+			    if(hoveredRow<0||hoveredRow>modelTable.getRowCount()) {}
+			    	else {
+			    		modelTable.setRowSelectionInterval(hoveredRow, hoveredRow);
+			    		modelTable.repaint();  
+			        }
+			     }
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				hoveredRow = hoveredColumn = -1;
+			    modelTable.repaint();
+			}
+		});
+	}
+	
+	
 	
 		
 	// Course Director 

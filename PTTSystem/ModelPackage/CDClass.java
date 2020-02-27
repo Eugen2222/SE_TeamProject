@@ -48,7 +48,12 @@ public class CDClass  implements Populated{
 		return this.getData().get(index);
 	}
 	
-	
+	public void assignTeacher(String[] s) {
+		this.teacherID=s[1];
+		this.training=s[2].replaceAll("\\$n\\$","\\n");
+		this.setTeacherStatus("Assigned");
+		
+	}
 	
 	
 	
@@ -150,7 +155,7 @@ public class CDClass  implements Populated{
 		s.add(this.teacherStatus);
 		s.add(this.classDirectorID);
 		s.add(""+this.teacherID);
-		s.add(""+this.training);
+		s.add(this.training.replaceAll("\\n", "\\$n\\$"));
 		return s;
 	}
 	

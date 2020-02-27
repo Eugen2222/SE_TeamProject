@@ -52,7 +52,7 @@ public class Controller implements ActionListener{
 
 				    }
 				}
-			});
+		});
 		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
 	}
 	
@@ -67,7 +67,7 @@ public class Controller implements ActionListener{
 
 		if(e.getSource() == view.semesterBN) {
 			int semester = view.semester.getSelecetedSemester();
-
+			System.out.println("hey");
 			if(model.selectSemester(semester)) {
 				this.initialisePage();
 			}

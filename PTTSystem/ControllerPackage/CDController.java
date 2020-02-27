@@ -65,7 +65,7 @@ public class CDController extends Controller implements ActionListener{
 		}
 		
 		if(e.getSource() == view.classListBN) {
-			view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+			view.main.displayClassListPanel(model.getStaffListTableHeader(), model.getStaffListTable());
 		}
 		
 		if(e.getSource()==view.createClassBN) {

@@ -93,6 +93,31 @@ public  class Model <T extends Populated>{
 		return this.latestSem;
 	}
 	
+	public String getSelectedSem() {
+		return Integer.toString(this.selectedSem);
+	}
+	
+	
+	
+	public CDClass findCourse(String CourseID) {
+		for(CDClass c : classList) {
+			if(c.getID().equals(CourseID)) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	
+	
+	public void setCourseTeacher(String[]s) {
+		findCourse(s[0]).assignTeacher(s);
+	}
+	
+	
+	
+	
+	
 	public void createClass(String s) {
 		int classID = 0;
 		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
@@ -121,6 +146,28 @@ public  class Model <T extends Populated>{
 		String [] header = {"Semester", "ID", "Name", "Requirements", "Teacher Status", "DirectorID", "Director","TeacherID", "Teacher", "Trainning" };
 		return header;
 	}
+	
+	public String[] getStaffListTableHeader() {
+		String [] header = {"ID", "Type", "Name" };
+		return header;
+	}
+	
+	public String[][] getStaffListTable() {
+		if(this.accountList.isEmpty()) {
+			return null;
+		}else {
+			String [][] tem = new String [accountList.size()][];
+			for(int i=0 ; i < tem.length ; i++) {
+				List<String> tem2 = new LinkedList<String>() ;
+				tem2 = accountList.get(i).getData();
+				tem2.remove(1); //remove password
+				tem[i] = tem2.toArray(new String[ tem2.size()]);
+			}
+			return tem;
+		}
+	}
+	
+	
 	public String[][] getClassListTable() {
 		if(this.classList.isEmpty()) {
 			return null;
