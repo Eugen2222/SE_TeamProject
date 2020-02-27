@@ -754,15 +754,15 @@ public class View extends JFrame  implements ActionListener{
 				
 				if(refinedData[5].equals("Pending")) {
 					statusIndex = 1;
-					refinedData[5] = "Require the assignment of a teacher.";
+					refinedData[5] = "Teacher is not assigned.";
 				}
 				else if(refinedData[5].equals("Assigned")) {
 					statusIndex = 2;
-					refinedData[5] = "Require the submission of the teaching request.";
+					refinedData[5] = "Waiting for Class Director to submit teaching request.";
 				}
 				else if(refinedData[5].equals("Submitted")) {
 					statusIndex = 3;
-					refinedData[5] = "Require the approvement of the teaching request.";
+					refinedData[5] = "Waiting for PTT Director to approve teaching request.";
 				}
 				else if(refinedData[5].equals("Approved")) {
 					statusIndex = 4;
