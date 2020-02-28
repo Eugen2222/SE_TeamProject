@@ -1,15 +1,10 @@
 package ControllerPackage;
-
-import java.awt.Color;
-import GUIPackage.View;
+import ViewPackage.View;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
-import GUIPackage.View;
 import ModelPackage.Model;
-import DefaultPackage.Run;
 public class Controller implements ActionListener{
 	protected View view;
 	protected Model model;

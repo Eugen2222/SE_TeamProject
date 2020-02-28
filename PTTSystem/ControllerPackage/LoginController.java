@@ -3,7 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ModelPackage.Model;
 import ControllerPackage.*;
-import GUIPackage.View;
+import ViewPackage.View;
 
 public class LoginController implements ActionListener{
 	View view;

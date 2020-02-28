@@ -1,11 +1,8 @@
 package ControllerPackage;
-import GUIPackage.View;
+import ViewPackage.View;
 import ModelPackage.Model;
-
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
-import DefaultPackage.Run;
 public class PDController extends Controller {
 
 	public PDController(Model model, View view, LoginController logc) {

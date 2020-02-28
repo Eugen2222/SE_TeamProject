@@ -1,4 +1,4 @@
-package GUIPackage;
+package ViewPackage;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -72,6 +72,12 @@ public class View extends JFrame  implements ActionListener{
 	
 	}
 	public void initialise() {
+		
+		try {
+		    UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+		 } catch (Exception e) {
+		            e.printStackTrace();
+		 }
 		this.getContentPane().removeAll();
 
 		this.setTitle("PTT Manage System");
@@ -853,7 +859,6 @@ public class View extends JFrame  implements ActionListener{
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Submit");
 				courseDetailWBN.setVisible(true);
-				System.out.println("hhhhhhhhhhh"+courseDetailWBN.isVisible());
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
@@ -1008,12 +1013,15 @@ public class View extends JFrame  implements ActionListener{
 				java.awt.Point p = e.getPoint();
 			    hoveredRow = modelTable.rowAtPoint(p);
 			    hoveredColumn = modelTable.columnAtPoint(p);
-			    if(hoveredRow<0||hoveredRow>modelTable.getRowCount()) {}
-			    	else {
-			    		modelTable.setRowSelectionInterval(hoveredRow, hoveredRow);
-			    		modelTable.repaint();  
-			        }
-			     }
+			    if(hoveredRow>-1&&hoveredRow<modelTable.getRowCount()+1) {
+			    	modelTable.repaint(); 
+		    		modelTable.setRowSelectionInterval(hoveredRow, hoveredRow);
+	
+			    }else {
+			    	modelTable.clearSelection();
+		    		modelTable.repaint(); 
+			    }
+			 }
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				hoveredRow = hoveredColumn = -1;
@@ -1172,6 +1180,7 @@ public class View extends JFrame  implements ActionListener{
 		btn.setForeground(Color.WHITE);
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
 		btn.setFocusPainted(false);
+		btn.setOpaque(true);
 		btn.addMouseListener(new java.awt.event.MouseAdapter() {
 		    public void mouseEntered(java.awt.event.MouseEvent evt) {
 		    	btn.setBackground(Color.white);
@@ -1196,6 +1205,7 @@ public class View extends JFrame  implements ActionListener{
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
 		btn.setFocusPainted(false);
+		btn.setOpaque(true);
 		btn.addMouseListener(new java.awt.event.MouseAdapter() {
 		    public void mouseEntered(java.awt.event.MouseEvent evt) {
 		    	btn.setBackground(Color.white);
@@ -1215,7 +1225,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	private JButton buildBlueBorderlessButton(String name) {
 		JButton btn = new JButton(name);
-		
+		btn.setOpaque(true);
 		btn.setBackground(new Color(56, 151, 240));
 		btn.setForeground(Color.white);
 		btn.setBorder(BorderFactory.createEmptyBorder());

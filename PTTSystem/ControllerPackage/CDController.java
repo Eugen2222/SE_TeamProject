@@ -1,16 +1,9 @@
 package ControllerPackage;
 import ModelPackage.Model;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import DefaultPackage.Run;
-import GUIPackage.View;
-
+import ViewPackage.View;
 public class CDController extends Controller implements ActionListener{
 	
 	public CDController(Model model, View view, LoginController logC) {
@@ -23,7 +16,7 @@ public class CDController extends Controller implements ActionListener{
 	public void initialisePage() {
 		super.initialisePage();		
 		
-		
+		view.barPanel=null;
 		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
 		view.logoutBN.addActionListener(this.logC);
 		view.classListBN.addActionListener(this);	

@@ -15,9 +15,10 @@ ID, Password, Type, Name
 Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning
 -------------------------------------------------
 "1", "1", "CS", "English, Math, French", "Assigned", "0001", "0007", "Can Run can hide", 
-"5", "2", "Programming", "Need teacher who knows Python", "Pending", "0001", "0004", "Python", 
+"5", "2", "Programming", "Need teacher who knows Python", "Assigned", "0001", "0008", "Python", 
 "5", "3", "History", "Need one teacher who knows java", "Submitted", "0001", "0004", "Java", 
 "5", "4", "Math", "Need one teacher", "Approved", "0001", "0004", "Law", 
 "5", "5", "Statistic", "Should count", "Assigned", "0001", "0004", "Can count very quickly.", 
 "5", "6", "Finance", "Need to know money.", "Assigned", "0001", "0004", "Have a lots$n$of$n$money$n$in$n$his$n$bag.", 
 "5", "7", "hello", "you$n$are$n$good", "Assigned", "0001", "0007", "you$n$ar$n$", 
+"4", "8", "higjl", ",l;;,,m.mnv,b,", "Pending", "0001", "", "", 

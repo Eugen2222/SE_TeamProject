@@ -1,8 +1,7 @@
 package ControllerPackage;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
-import GUIPackage.View;
+import ViewPackage.View;
 import ModelPackage.Model;
 
 public class AController extends Controller {

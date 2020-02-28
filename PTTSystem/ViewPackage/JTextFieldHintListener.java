@@ -1,4 +1,4 @@
-package GUIPackage;
+package ViewPackage;
 
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -62,9 +62,6 @@ public class JTextFieldHintListener implements FocusListener{
 			}			
 		}		
 	} 
-	
-	
-	
 	
 	
 }
