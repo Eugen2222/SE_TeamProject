@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -14,6 +16,7 @@ import java.util.regex.Matcher;
 
 import java.lang.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public  class Model <T extends Populated>{
@@ -24,12 +27,12 @@ public  class Model <T extends Populated>{
 	
 	protected List<CDClass> classList;
 	protected List<Account> accountList;
-	private List<LinkedList<T>> database;
+	private HashMap<String,LinkedList<T>> database;
 	
 	private String currentUserID = "";
 	private String currentUserName = "";
 	private ManageFile mf;
-	
+	private HashMap<String, String[]> classListFKDataHeader = new HashMap<String, String[]>();
 	
 	
 	public String[] getUser() {
@@ -44,19 +47,24 @@ public  class Model <T extends Populated>{
 
 		accountList =  new LinkedList<Account>();
 		classList = new LinkedList<CDClass>();
-		database = new LinkedList<LinkedList<T>>();
-		try {
-			database.add((LinkedList<T>) accountList);
-			database.add((LinkedList<T>) classList);
+		database = new HashMap <String,LinkedList<T>> ();
+		String[] s = new String[] {"TeacherID", "accountList", "Name"};
+		String[] s1 = new String[] {"ClassDirectorID", "accountList", "Name"};
+		classListFKDataHeader.put("ClassDirectorName", s1);
+		classListFKDataHeader.put("TeacherName", s);
 
-		}catch(ClassCastException e) {
-			e.printStackTrace();
-		}
+		
 		
 		
 		mf = new ManageFile();
 		mf.readFile();
-		
+		try {
+			database.put("accountList", (LinkedList<T>) accountList);
+			database.put("classList", (LinkedList<T>) classList);
+
+		}catch(ClassCastException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -125,7 +133,10 @@ public  class Model <T extends Populated>{
 	}
 	
 	public void withdrawAssignedTeacher(String[]s) {
+		System.out.println(s[0]);
 		findCourse(s[0]).setTeacherStatus("Pending");
+		System.out.println(findCourse(s[0]).getElement("TeacherStatus"));
+		System.out.println(findCourse(s[0]).teacherStatus);
 	}
 	
 	public void withdrawTeachingRequest(String[]s) {
@@ -134,7 +145,16 @@ public  class Model <T extends Populated>{
 	
 	
 	
-	
+	public String[] getCreateClassInfom() {
+		String []s =new String[2]; 
+		int classID = 0;
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
+		 LocalDateTime now = LocalDateTime.now();  
+		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
+		s[0] = Integer.toString(classID);
+		s[1] = dtf.format(now);
+		return s;
+	}
 	
 	public void createClass(String s) {
 		int classID = 0;
@@ -153,103 +173,98 @@ public  class Model <T extends Populated>{
 		cls.add("");
 		cls.add("");
 		CDClass tClass = new CDClass(cls);
-		tClass.setClassDirectorName(currentUserName);
 		classList.add(tClass);
 		
 		System.out.print("\nSuccessfully created a class");
 	}
 	
 	
-	public String[] getClassListTableHeader() {
-		String [] header = {"Semester", "ID", "Name", "Requirements", "Teacher Status", "DirectorID", "Director","TeacherID", "Teacher", "Trainning" };
-		return header;
-	}
+
 	
-	public String[] getStaffListTableHeader() {
-		String [] header = {"ID", "Type", "Name" };
-		return header;
-	}
-	
-	public String[][] getStaffListTable() {
+	public String[][] getStaffListTable(String [] query) {
 		if(this.accountList.isEmpty()) {
 			return null;
 		}else {
-			String [][] tem = new String [accountList.size()][];
-			for(int i=0 ; i < tem.length ; i++) {
-				List<String> tem2 = new LinkedList<String>() ;
-				tem2 = accountList.get(i).getData();
-				tem2.remove(1); //remove password
-				tem[i] = tem2.toArray(new String[ tem2.size()]);
+			List<String[]> table1 = new LinkedList<String[]>();
+			for(int i=0 ; i < accountList.size() ; i++) {
+				table1.add(getRowData(query,(T)this.accountList.get(i)));				
 			}
-			return tem;
+			String [][] table2 = table1.toArray(new String[ table1.size()][]);
+			return table2;
 		}
 	}
 	
 	
-	public String[][] getClassListTable() {
+	public String[][] getClassListTable(String [] query, String DirectorID) {	
 		if(this.classList.isEmpty()) {
 			return null;
 		}else {
-			List<String[]> tem = new LinkedList<String[]>();
+			List<String[]> table1 = new LinkedList<String[]>();
 			for(int i=0 ; i < classList.size() ; i++) {
 				if(this.classList.get(i).getSemester().equals(Integer.toString(this.selectedSem))) {
-					tem.add(this.addNamesOfForiegnKeys((T)this.classList.get(i), (List<T>)this.accountList)); //append CD's name;
-				}
-			}
-			String [][] tem2 = tem.toArray(new String[ tem.size()][]);
-			return tem2;
-		}
-	}
-	
-
-
-	
-	
-	
-	public  String[] getClass(String  s) {
-		String [] tem=null;
-		if(this.classList.isEmpty()) {
-			return tem;
-		}else {
-			for(CDClass c : classList) {
-				if(s.equals(c.getPKID())) {
-					tem = addNamesOfForiegnKeys((T)c , (List<T>)accountList);
-				}
-			}
-		}
-		return tem;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	public String [] addNamesOfForiegnKeys(T a, List<T> FKTable) {
-		
-		List<String> tem = a.getData();
-		int countForIndexIncrease = 0;
-		for(int index : a.getIndexOfFKList()) {
-			if(a.getElement(index).equals(null)||a.getElement(index).equals("")||a.getElement(index).equals(" ")) {
-				tem.add(index+countForIndexIncrease+1, "");					
-				countForIndexIncrease ++;
-			}else {				
-				for(T fkObj : FKTable) {
-						if(a.getElement(index).equals(fkObj.getPKID())) {	
-						tem.add(index+countForIndexIncrease+1, fkObj.getName());					
-						countForIndexIncrease ++;
-						break;
-						//insert director's name and teacher's name. 
+					if(DirectorID == null) {
+						table1.add(getRowData(query,(T)this.classList.get(i)));
+					}else if(this.classList.get(i).getElement("ClassDirectorID").equals(DirectorID)) {
+						table1.add(getRowData(query,(T)this.classList.get(i)));
 					}
 				}
+				
+			}
+			String [][] table2 = table1.toArray(new String[ table1.size()][]);
+			return table2;
+		}
+	}
+	
+
+	public  String[] getClass(String id,String [] query) {
+		System.out.println(id + findCourse(id).getPKID());
+		return getRowData(query, (T)findCourse(id)) ;
+	}
+	
+	
+	
+	public String[] getRowData(String []query, T a) {
+		List<String> row = new LinkedList<String>();
+		for(int j = 0 ; j< query.length ; j ++) {	
+			if(a.getTableHeaderList().containsKey(query[j])){
+				row.add(a.getElement(query[j]));
+			}else if(classListFKDataHeader.containsKey(query[j])){
+				System.out.println("!!!!!!!!!!!!!!");
+				row.add(getFKData(query[j],a));
+			}else {
+				row.add(null);
+				System.out.println("error query: "+ query[j]);
 			}
 		}
-		
-		String[] tem2 = tem.toArray(new String[ tem.size()]);
-		return tem2;
+		String [] row2 = row.toArray(new String[ row.size()]);
+		return row2;
 	}
+	
+	public String getFKData(String fkWord, T OData) {
+		String fk = OData.getElement(classListFKDataHeader.get(fkWord)[0]);
+		List<T> fTable = new LinkedList<>();
+		System.out.println(database.containsKey(classListFKDataHeader.get(fkWord)[1])+"!!!!!");
+		if(database.containsKey(classListFKDataHeader.get(fkWord)[1])) {
+			System.out.println(classListFKDataHeader.get(fkWord)[1]);
+				System.out.println(database.get(classListFKDataHeader.get(fkWord)[1]));			
+			fTable = database.get(classListFKDataHeader.get(fkWord)[1]);
+		}
+		
+		String targetEle = classListFKDataHeader.get(fkWord)[2];
+		
+		for (T fData : fTable) {
+
+			if(fData.getPKID().equals(fk)) {
+	
+				System.out.println(fData.getElement(targetEle));
+				return fData.getElement(targetEle);
+			}
+		}
+		return null;
+	}
+	
+		
+	
 	
 	private class ManageFile{	
 		public void readFile() {
@@ -335,7 +350,7 @@ public  class Model <T extends Populated>{
 			}
 			if(table.isEmpty()) throw new Exception("Can't find any data of the "+ key +" table");
 			//Create object
-			List<T> list = new ArrayList<>();
+			List<T> list = new LinkedList<>();
 			for(List<String> a : table) {
 				Constructor<T> constructor;
 				try {

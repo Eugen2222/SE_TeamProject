@@ -28,7 +28,8 @@ public class PDController extends Controller {
 	
 	
 	public void selectedCourseStage(String classId){
-	       view.main.courseDetailPage.displayPDMode(model.getClass(classId));
+	       view.main.courseDetailPage.displayPDMode(
+	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()));
 	}
 	
 	public void actionPerformed(ActionEvent e) {

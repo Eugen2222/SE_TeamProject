@@ -1,16 +1,20 @@
 package ModelPackage;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public interface Populated {
 	public List<String> getRawData();
-	public List<String> getData();
+	public List<Object> getData(List <Integer> l);
 	public String getTableTitle();
-	public String getTableHeader();
+	public HashMap<String, Integer>  getTableHeaderList();
+	public String  getTableHeader();
 	public void setTableTitle(String s);
 	public String getFKID();
-	public List<Integer> getIndexOfFKList();
+	public List<Object> getFKList();
 	public String getPKID();
-	public String getElement(int index);
+
 	public String getName();
+	public String getElement(String s);
 }

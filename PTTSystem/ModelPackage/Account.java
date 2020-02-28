@@ -1,5 +1,6 @@
 package ModelPackage;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,12 +10,23 @@ public class Account implements Populated{
 	private String type = "";
 	private String name = "";	
 	private String tableTitle = "";
-	
+	private List<String> rowData = new LinkedList<String>();
+	private String tableHeader = "";
+	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
 	public Account(List<String> a) {
 		this.ID = a.get(0);
 		this.PW = a.get(1);
 		this.type = a.get(2);
 		this.name = a.get(3);
+		tableHeaderList.put("ID",0);
+		tableHeaderList.put("Password" ,1);		
+		tableHeaderList.put("Type",2);
+		tableHeaderList.put("Name",3);		
+		rowData.add(this.ID );
+		rowData.add(this.PW );
+		rowData.add(this.type );
+		rowData.add(this.name);
+		tableHeader = "ID, Password, Type, Name";
 	}
 	
 	public String toString() {
@@ -74,7 +86,12 @@ public class Account implements Populated{
 		s.add(this.name);
 		return s;
 	}
-	
+	public  String getElement(String s) {
+		if(tableHeaderList.containsKey(s)){
+			return rowData.get(tableHeaderList.get(s));
+		}
+		return null;
+	}
 	
 	public String getTypeName() {
 		if(this.type ==null) {
@@ -97,10 +114,6 @@ public class Account implements Populated{
 		}
 	}
 	
-	public String getTableHeader() {
-		String s = "ID, Password, Type, Name";
-		return s;
-	}
 	
 	public String getTableTitle() {
 		return tableTitle;
@@ -111,14 +124,27 @@ public class Account implements Populated{
 	}
 
 	@Override
-	public List<Integer> getIndexOfFKList() {
+	public List<Object> getData(List<Integer> l) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getElement(int index) {
+	public HashMap<String, Integer> getTableHeaderList() {
+		// TODO Auto-generated method stub
+		return tableHeaderList;
+	}
+
+	@Override
+	public List<Object> getFKList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getTableHeader() {
+		// TODO Auto-generated method stub
+		return tableHeader;
+	}
 }
+	

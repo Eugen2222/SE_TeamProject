@@ -268,96 +268,119 @@ public class View extends JFrame  implements ActionListener{
 		String defaultClassRequirement = "  Please enter a requirement, max length 200 words.";
 		public CourseDetailPage courseDetailPage;
 		public SelectTeacherPage selectTeacherPage;
-	
+		public CreateClassPage createClassPage;		
 		Main(){
 			centerPage =new CardLayout();
 			centerPanel = new JPanel(centerPage);
 			centerPanel.setBackground(Color.white);
 			courseDetailPage = new CourseDetailPage();
 			selectTeacherPage = new SelectTeacherPage();
+			createClassPage = new CreateClassPage();
 		}
 		
-		
-		public void buildCreateClassPanel() {
-			JPanel centerP = new JPanel(null);
-			centerP.setBorder(BorderFactory.createEmptyBorder(20,180,100,180));
-			JPanel buttonPanel = new JPanel(new FlowLayout());
-			JPanel textAreaPanel = new JPanel(new BorderLayout());
-			centerP.setBackground(Color.white);
-			buttonPanel.setBackground(Color.white);
-			textAreaPanel.setBackground(Color.white);
-			
-			JLabel createClassTitleL = new JLabel("Create a new class", SwingConstants.CENTER);
-			createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 23));
-			createClassTitleL.setBounds(200, 30, 200, 62);
-			centerP.add(createClassTitleL);
-			
-			
-			textAreaPanel.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
-			JLabel classNameL = new JLabel("Class name:     ");
-			classNameL.setForeground(new Color(114, 114, 114));
-			classNameL.setFont(new Font("Arial", Font.PLAIN, 14));
-			classNameL.setBounds(148, 104, 112, 21);
-			centerP.add(classNameL);
-			JLabel reqLTitle1 = new JLabel("Requirement:  ");
-			
-			reqLTitle1.setForeground(new Color(114, 114, 114));
-			reqLTitle1.setFont(new Font("Arial", Font.PLAIN, 14));
-			reqLTitle1.setBounds(148, 184, 112, 21);
-			centerP.add(reqLTitle1);
-			
-			
-			
-			courseNameTF = new JTextField();
-		
-			courseNameTF.setFont(new Font("Arial", Font.PLAIN, 12));
-			courseNameTF.setForeground(new Color(20,20,20));
-			courseNameTF.setBounds(148, 125, 319, 36);
+		public class CreateClassPage{
+			JLabel classIDL;
+			JLabel timeL;
+			public void buildCreateClassPanel() {
+				JPanel centerP = new JPanel();
+			//centerP.setBorder(BorderFactory.createEmptyBorder(20,180,100,180));
+					centerP.setLayout(null);
+//					JPanel buttonPanel = new JPanel(new FlowLayout());
+//					JPanel textAreaPanel = new JPanel(new BorderLayout());
+					centerP.setBackground(Color.white);
+//					buttonPanel.setBackground(Color.white);
+//					textAreaPanel.setBackground(Color.white);
+					
+					JLabel createClassTitleL = new JLabel("Create a new class", SwingConstants.CENTER);
+					createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 18));
+					createClassTitleL.setBounds(200, 50, 200, 62);
+					centerP.add(createClassTitleL);
+					
+					
+//				textAreaPanel.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+					JLabel classNameL = new JLabel("Class name:     ");
+					classNameL.setForeground(new Color(114, 114, 114));
+					classNameL.setFont(new Font("Arial", Font.PLAIN, 14));
+					classNameL.setBounds(148, 164, 112, 21);
+					centerP.add(classNameL);
+					
+					JLabel reqLTitle1 = new JLabel("Requirement:  ");		
+					reqLTitle1.setForeground(new Color(114, 114, 114));
+					reqLTitle1.setFont(new Font("Arial", Font.PLAIN, 14));
+					reqLTitle1.setBounds(148, 230, 112, 21);
+					centerP.add(reqLTitle1);
+					
+					JLabel classIDTitle=new JLabel("ID:");
+					classIDTitle.setForeground(new Color(114, 114, 114));
+					classIDTitle.setFont(new Font("Arial", Font.PLAIN, 14));
+					classIDTitle.setBounds(148, 124, 112, 21);
+					centerP.add(classIDTitle);
+					
+					classIDL=new JLabel();
+					classIDL.setFont(new Font("Arial", Font.PLAIN, 14));
+					classIDL.setBounds(170, 124, 112, 21);
+					centerP.add(classIDL);
+					
+					
+					JLabel timeTitle=new JLabel("Date:");
+					timeTitle.setForeground(new Color(114, 114, 114));
+					timeTitle.setFont(new Font("Arial", Font.PLAIN, 14));
+					timeTitle.setBounds(258, 124, 112, 21);
+					centerP.add(timeTitle);
+					
+					timeL=new JLabel();
+					timeL.setFont(new Font("Arial", Font.PLAIN, 14));
+					timeL.setBounds(298, 124, 112, 21);
+					centerP.add(timeL);
+					
+					
+					
+					courseNameTF = new JTextField();
+				
+					courseNameTF.setFont(new Font("Arial", Font.PLAIN, 12));
+					courseNameTF.setForeground(new Color(20,20,20));
+					courseNameTF.setBounds(148, 185, 319, 36);
 
-			courseNameTF.setColumns(10);
-//			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			
-			centerP.add(courseNameTF);
-			
-			
-			
-			
-			int TA_row = 10;
-			int TA_col = 30;
-			
-			requirementTA= new JTextArea(TA_row, TA_col);
-			requirementTA.setFont(new Font("Arial", Font.PLAIN, 12));
-			requirementTA.setMaximumSize(new Dimension(5, 30));
-			requirementTA.setForeground(new Color(20,20,20));
+					courseNameTF.setColumns(10);
+//					courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+					
+					centerP.add(courseNameTF);
 
-			requirementTA.setWrapStyleWord(true);
-			requirementTA.setLineWrap(true);
-			
-//			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
-			
-			JScrollPane reqScrollPanel = new JScrollPane( requirementTA );
-			reqScrollPanel.setBounds(148, 208, 319, 160);
+					
+					int TA_row = 10;
+					int TA_col = 30;
+					
+					requirementTA= new JTextArea(TA_row, TA_col);
+					requirementTA.setFont(new Font("Arial", Font.PLAIN, 12));
+					requirementTA.setMaximumSize(new Dimension(5, 30));
+					requirementTA.setForeground(new Color(20,20,20));
 
+					requirementTA.setWrapStyleWord(true);
+					requirementTA.setLineWrap(true);
+					
+//					requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+					
+					JScrollPane reqScrollPanel = new JScrollPane( requirementTA );
+					reqScrollPanel.setBounds(148, 253, 319, 160);
 
-			reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
-			
-			centerP.add(reqScrollPanel);
-			
-			
-			createClassOKBN = buildBlueButton("Ok");
-			createClassOKBN.setBounds(395, 391, 70, 33);
-			
-			centerP.add(createClassOKBN);
-			
-			
-			
-			createClassCBN = buildBlackButton("Cancel");
-			createClassCBN.setBounds(148, 391, 80, 33);
-			
-			centerP.add(createClassCBN);
-			
-			createClassPanel = centerP;
-			centerPanel.add(createClassPanel, "createClassPanel");
+					reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
+					
+					centerP.add(reqScrollPanel);
+					
+					
+					createClassOKBN = buildBlueButton("Ok");
+					createClassOKBN.setBounds(375, 431, 90, 30);
+					
+					centerP.add(createClassOKBN);
+					
+					
+					createClassCBN = buildBlackButton("Cancel");
+					createClassCBN.setBounds(148, 431, 90, 30);
+					
+					centerP.add(createClassCBN);
+					
+					createClassPanel = centerP;
+					centerPanel.add(createClassPanel, "createClassPanel");
 			
 		}
 		
@@ -367,7 +390,10 @@ public class View extends JFrame  implements ActionListener{
 			View.this.refresh();
 		}
 		
-		
+		public void updatePage(String [] data) {
+			classIDL.setText(data[0] );
+			timeL.setText(data[1]  );
+		}
 		
 		
 		public String getCreateClassString() {
@@ -394,7 +420,7 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 	
-	
+		}
 		
 		
 		
@@ -421,21 +447,21 @@ public class View extends JFrame  implements ActionListener{
 		
 		
 		
-		public class ForcedListSelectionModel extends DefaultListSelectionModel {
-
-		    public ForcedListSelectionModel () {
-		        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		    }
-
-		    @Override
-		    public void clearSelection() {
-		    }
-
-		    @Override
-		    public void removeSelectionInterval(int index0, int index1) {
-		    }
-
-		}
+//		public class ForcedListSelectionModel extends DefaultListSelectionModel {
+//
+//		    public ForcedListSelectionModel () {
+//		        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		    }
+//
+//		    @Override
+//		    public void clearSelection() {
+//		    }
+//
+//		    @Override
+//		    public void removeSelectionInterval(int index0, int index1) {
+//		    }
+//
+//		}
 		
 		
 		public void displayClassListPanel(String[] header, String[][] list) {	
@@ -467,6 +493,8 @@ public class View extends JFrame  implements ActionListener{
 			JLabel trainingTitleL;
 			JTextArea requirementTA;
 			JTextArea trainingTA;
+			String [] query = {"Semester","Name","ClassID","ClassDirectorID","ClassDirectorName", 
+					"TeacherStatus", "TeacherID", "TeacherName", "Requirements", "Trainning"};
 			public JButton courseDetailWBN;
 			public JButton courseDetailCBN;
 			public JButton courseDetailSBN;
@@ -486,7 +514,9 @@ public class View extends JFrame  implements ActionListener{
 				return s;
 			}
 			
-		
+			public String[] getQuery() {
+				return query;
+			}
 			
 			public void buildClassDetailPanel() {
 				classDetailPanel = new JPanel();
@@ -744,55 +774,52 @@ public class View extends JFrame  implements ActionListener{
 			public void updateData(String[] data) {
 				centerPage.show(centerPanel, "classDetailPanel");
 				int i = 1;	//start with class id #2 element
-				String [] refinedData = new String[data.length];
 				
+//				refinedData[0] = data[0]; //semester
+//				refinedData[1] = data[2]; //classname
+//				refinedData[2] = data[1]; //classid
+//				refinedData[3] = data[5]; //directorid
+//				refinedData[4] = data[6]; //directorname
+//				refinedData[5] = data[4]; //status
+//				refinedData[6] = data[7]; //teacherid
+//				refinedData[7] = data[8]; //teachername
+//				refinedData[8] = data[3]; //requirement
+//				refinedData[9] = data[9]; //training				
 				
-				refinedData[0] = data[0]; //semester
-				refinedData[1] = data[2]; //classname
-				refinedData[2] = data[1]; //classid
-				refinedData[3] = data[5]; //directorid
-				refinedData[4] = data[6]; //directorname
-				refinedData[5] = data[4]; //status
-				refinedData[6] = data[7]; //teacherid
-				refinedData[7] = data[8]; //teachername
-				refinedData[8] = data[3]; //requirement
-				refinedData[9] = data[9]; //training				
-				
-				if(refinedData[5].equals("Pending")) {
+				if(data[5].equals("Pending")) {
 					statusIndex = 1;
-					refinedData[5] = "Teacher is not assigned.";
+					data[5] = "Teacher is not assigned.";
 				}
-				else if(refinedData[5].equals("Assigned")) {
+				else if(data[5].equals("Assigned")) {
 					statusIndex = 2;
-					refinedData[5] = "Waiting for Class Director to submit teaching request.";
+					data[5] = "Waiting for Class Director to submit teaching request.";
 				}
-				else if(refinedData[5].equals("Submitted")) {
+				else if(data[5].equals("Submitted")) {
 					statusIndex = 3;
-					refinedData[5] = "Waiting for PTT Director to approve teaching request.";
+					data[5] = "Waiting for PTT Director to approve teaching request.";
 				}
-				else if(refinedData[5].equals("Approved")) {
+				else if(data[5].equals("Approved")) {
 					statusIndex = 4;
-					refinedData[5] = "Teaching request had been approved";
+					data[5] = "Teaching request had been approved";
 				}else {
-					refinedData[5] = "Error" + refinedData[5];
+					data[5] = "Error" + data[5];
 				}
 				
 				
 				System.out.println();
 				
 				for(JLabel l : labelList) {
-					if(i<refinedData.length) {
-						System.out.print(refinedData[i]);
-						l.setText(refinedData[i]);
+					if(i<data.length) {
+						System.out.print(data[i]);
+						l.setText(data[i]);
 						i++;
 					}
 				}
 				for(JTextArea l : TAList) {
-					System.out.print(l.getName());
-					if(i<refinedData.length) {
-						System.out.print(refinedData[i]);
-						System.out.print(l.getName());
-						l.setText(refinedData[i]);
+
+					if(i<data.length) {
+						System.out.print(data[i]);
+						l.setText(data[i]);
 						i++;
 					}
 				}
@@ -802,7 +829,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			
 			
-			public void displayDCMode(String[] data) {
+			public void displayDCMode(String[] data, String DCID) {
 				updateData(data);
 				courseDetailWBN.setText("Withdraw");
 				courseDetailCBN.setText("Cancel");				
@@ -812,8 +839,11 @@ public class View extends JFrame  implements ActionListener{
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
-					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");
-
+					if(View.this.main.courseDetailPage.directorIDL.getText().equals(DCID)) {
+						View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");
+					}else {
+						View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
+					}
 				}else if(View.this.main.courseDetailPage.statusIndex == 3) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 4) {
@@ -890,6 +920,7 @@ public class View extends JFrame  implements ActionListener{
 		public class  SelectTeacherPage{
 			String staffID = "";
 			String staffName = "";
+			String [] query = {"ID", "Type", "Name" };
 			public JButton selectTeacherSubmitBN;
 			JLabel semesterlabel ;
 			public void buildSelectTeacherPanel() {
@@ -947,8 +978,13 @@ public class View extends JFrame  implements ActionListener{
 				centerPanel.add(selectTeacherPanel, "selectTeacherPanel");
 			}
 			
-			public void displaySelectTeacherPanel(String []staffTableHeader,String [][] staffList, String semester) {
-				TableModel m = new DefaultTableModel(staffList, staffTableHeader) ;
+			public String[] getQuery() {
+				return query;
+			}
+			
+			
+			public void displaySelectTeacherPanel(String [][] staffList, String semester) {
+				TableModel m = new DefaultTableModel(staffList, query) ;
 				View.this.staffListTable.setModel(m);
 				semesterlabel.setText("Semester: "+semester);
 				centerPage.show(centerPanel, "selectTeacherPanel");
@@ -1035,6 +1071,8 @@ public class View extends JFrame  implements ActionListener{
 		
 	// Course Director 
 	public class Bar {
+		
+		
 		public void addSelfListener() {
 			classListBN.addActionListener(View.this);
 		}

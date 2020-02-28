@@ -13,13 +13,16 @@ public class CDClass  implements Populated{
 	private String semester;
 	private String classDirectorID;//FK
 	private String classDirectorName;
-	private String teacherStatus;
+	public 	String teacherStatus;
 	private String teacherID;//FK
 	private String training;
+	private Date date;
 	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
 	private String tableTitle;
-	private List<Integer> indexOfFKList = new LinkedList<Integer>();
-	
+	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
+	private List<Object> rowData = new LinkedList<Object>();
+	private List<Object> FKList = new LinkedList<Object>();
+	private String tableHeader = "";
 	public CDClass(List<String> s) {
 		this.semester = s.get(0);
 		this.classID = s.get(1);
@@ -29,37 +32,45 @@ public class CDClass  implements Populated{
 		this.classDirectorID = s.get(5);
 		this.teacherID = s.get(6);
 		this.training = s.get(7).replaceAll("\\$n\\$","\n");	
+		tableHeaderList.put("Semester",0);
+		tableHeaderList.put("ClassID",1);
+		tableHeaderList.put("Name",2);
+		tableHeaderList.put("Requirements",3);
+		tableHeaderList.put("TeacherStatus",4);
+		tableHeaderList.put("ClassDirectorID",5);
+		tableHeaderList.put("TeacherID",6);
+		tableHeaderList.put("Trainning",7);
+		tableHeaderList.put("Date",8);		
+		tableHeader = "Semester, ClassID, Name, Requirements, "
+				+ "TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date";
+		updateRowData();
 		
-		this.setIndexOfFK(5);	//FK classDirectorID;
-		this.setIndexOfFK(6);	//FK teacherID;
+		this.FKList.add(classDirectorID);	//FK classDirectorID;
+		this.FKList.add(teacherID);	//FK teacherID;
 	}
 	
-	public void setIndexOfFK(int index) {
-		this.indexOfFKList.add(index);
+
+	
+	public List<Object> getFKList() {
+		return FKList;
 	}
 	
-	
-	public List<Integer> getIndexOfFKList() {
-		return indexOfFKList;
+	public String getTableHeader() {
+		return tableHeader;
 	}
 	
-	
-	public String getElement(int index) {
-		return this.getData().get(index);
-	}
 	
 	
 	
 	public void submitTeachingRequest() {
-		this.setTeacherStatus("Submited");
-		
+		this.setTeacherStatus("Submited");		
 	}
 	
 	public void approveTeachingRequest() {
 		this.setTeacherStatus("Approved");
 	}
 	
-	public void withdrawAssignedTeacher() {
+	public void withdrawAssignedTeacher() {	
 		this.setTeacherStatus("Pending");
 	}
 	
@@ -77,39 +88,49 @@ public class CDClass  implements Populated{
 //	
 	
 	public boolean setRequirement(String s) {
+
 		if(s.equals("") || s==null) {
-				return false;
+			return false;
 		}else{
-			
+
 			s=s.replaceAll("\\$n\\$","\n");
 			this.requirement = s;
+			updateRowData();
 			return true;
 		}
 	}
 	
 	public String getSemester() {
+
 		return this.semester;
 	}
 	
 	
 	public void assignTeacher(String[] s) {
 		this.teacherID=s[1];
-		this.training=s[2].replaceAll("\\$n\\$","\n");
-		this.setTeacherStatus("Assigned");
-		
+		this.training=s[2];
+		this.setTeacherStatus("Assigned");	
+		updateRowData();
 	}
 	
-	
+	public void updateRowData() {
+		rowData.clear();
+		rowData.add(this.semester);
+		rowData.add(this.classID);		
+		rowData.add(this.name);		
+		rowData.add(this.requirement);	
+		rowData.add(this.teacherStatus);	
+		rowData.add(this.classDirectorID);	
+		rowData.add(this.teacherID);		
+		rowData.add(this.training);	
+		
+	}
 	//setup FK 
 	public void addTeachingRequestID(int id) {
 		teachingRequestListID.add(id);
 	}
 	
-	//setup FK 
-	public void setClassDirectorName(String s) {
-		this.classDirectorName = s;
-	}
-		
+
 	
 //	public String [] getSummary() {
 //		String []s = new String[6];
@@ -123,20 +144,20 @@ public class CDClass  implements Populated{
 //	}
 	
 	
-	public  List<String> getData() {
-		List<String> s = new ArrayList<String>() ;
-		s.add(""+this.semester);
-		s.add(""+this.classID);
-		s.add(this.name);
-		s.add(this.requirement);
-		s.add(this.teacherStatus);
-		s.add(""+this.classDirectorID);
-		s.add(""+this.teacherID);
-		s.add(""+this.training);
+	public  List<Object> getData(List<Integer> listOfHeaderIndex ) {
+		List<Object> s = new ArrayList<Object>() ;
+		for(Integer i : listOfHeaderIndex) {
+			s.add(rowData.get(i));
+		}
 		return s;
 	}
 	
-	
+	public  String getElement(String s) {
+		if(tableHeaderList.containsKey(s)){
+			return rowData.get(tableHeaderList.get(s)).toString();
+		}
+		return null;
+	}
 	
 	
 //	
@@ -174,9 +195,8 @@ public class CDClass  implements Populated{
 		return s;
 	}
 	
-	public String getTableHeader() {
-		String s = "Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning";
-		return s;
+	public HashMap<String, Integer> getTableHeaderList() {
+		return tableHeaderList;
 	}
 	
 	
@@ -208,7 +228,7 @@ public class CDClass  implements Populated{
 		if(s.equals("Approved")) {
 			this.teacherStatus = "Approved";
 		}
-		
+		updateRowData();
 	}
 
 	

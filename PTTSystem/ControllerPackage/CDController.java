@@ -22,7 +22,7 @@ public class CDController extends Controller implements ActionListener{
 		view.classListBN.addActionListener(this);	
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
-		view.main.buildCreateClassPanel();
+		view.main.createClassPage.buildCreateClassPanel();
 
 		//add all action listeners
 		view.createClassBN.setVisible(true);
@@ -33,6 +33,7 @@ public class CDController extends Controller implements ActionListener{
 		view.main.courseDetailPage.courseDetailWBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
+		view.myClassListBN.addActionListener(this);
 	}
 	
 	
@@ -40,7 +41,8 @@ public class CDController extends Controller implements ActionListener{
 	
 
 	public void selectedCourseStage(String classId){
-	       view.main.courseDetailPage.displayDCMode(model.getClass(classId));
+	       view.main.courseDetailPage.displayDCMode(
+	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()), model.getUser()[0]);
 	}
 	
 	
@@ -49,19 +51,20 @@ public class CDController extends Controller implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if(e.getSource()==view.createClassBN) {
-			view.main.displayCreateClassPanel();
+			view.main.createClassPage.updatePage(model.getCreateClassInfom());
+			view.main.createClassPage.displayCreateClassPanel();
 		}
 		
 		
 		else if(e.getSource() == view.createClassOKBN) {
-			String class1 = view.main.getCreateClassString();
+			String class1 = view.main.createClassPage.getCreateClassString();
 
 			if(class1==null) {
-				view.main.cleanCreateClassText();
+				view.main.createClassPage.cleanCreateClassText();
 			}else{
 				this.model.createClass(class1);
 				this.model.save();
-				view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+				displayCourseListPage();
 			}
 		}
 		
@@ -76,8 +79,13 @@ public class CDController extends Controller implements ActionListener{
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
 			displayCourseListPage();
 		}
+		else if(e.getSource()==view.myClassListBN) {
+			view.main.displayClassListPanel(classListTableQuery, 
+					model.getClassListTable(classListTableQuery,model.getUser()[0]));
+		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
 			if(view.main.courseDetailPage.withdrawCheck()==0) {
+				System.out.println(view.main.courseDetailPage.getClassInform()[0]);
 				model.withdrawAssignedTeacher(view.main.courseDetailPage.getClassInform());
 				displayCourseListPage();
 			}

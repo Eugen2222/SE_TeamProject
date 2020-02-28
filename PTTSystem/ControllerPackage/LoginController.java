@@ -44,6 +44,7 @@ public class LoginController implements ActionListener{
 		if(e.getSource() == view.logoutBN) {
 			if(view.login.logOutCheck()==0) {
 				initilise();
+				model.save();
 				view.login.cleanLogin();
 			}	
 		}

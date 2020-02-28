@@ -9,13 +9,15 @@ public class Controller implements ActionListener{
 	protected View view;
 	protected Model model;
 	protected LoginController logC;
-
+	protected String []classListTableQuery;
 	
 	public Controller(Model model, View view, LoginController logC) {
 		// TODO Auto-generated constructor stub
 		this.model = model;
 		this.view = view;
 		this.logC = logC;
+		String []tem = {"ClassID","Name","Requirements","TeacherStatus","ClassDirectorID", "TeacherID"};
+		classListTableQuery = tem;
 		selectSemesterPage();
 		
 	}
@@ -33,7 +35,7 @@ public class Controller implements ActionListener{
 		
 		//setup all available pages
 		view.main.courseDetailPage.buildClassDetailPanel();
-		view.main.buildClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+		view.main.buildClassListPanel(null, null);
 
 		view.classListTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -41,7 +43,7 @@ public class Controller implements ActionListener{
 					int selectedRow = view.classListTable.rowAtPoint(evt.getPoint());
 		//		    int selectedCol = view.classListTable.columnAtPoint(evt.getPoint());
 				    if (selectedRow >= 0) {
-				       String classId = view.classListTable.getValueAt(selectedRow, 1).toString();
+				       String classId = view.classListTable.getValueAt(selectedRow, 0).toString();
 				       System.out.println(selectedRow);
 				       selectedCourseStage(classId);
 
@@ -50,15 +52,17 @@ public class Controller implements ActionListener{
 		});
 		
 		view.main.courseDetailPage.normalPageBBN.addActionListener(this);
-		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+		displayCourseListPage();
 	}
 	
 	public void selectedCourseStage(String classId){
-	       view.main.courseDetailPage.displayNormalMode(model.getClass(classId));
+	       view.main.courseDetailPage.displayNormalMode(
+	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()));
 	}
 	
 	public void displayCourseListPage() {
-		view.main.displayClassListPanel(model.getClassListTableHeader(), model.getClassListTable());
+		view.main.displayClassListPanel(classListTableQuery, 
+				model.getClassListTable(classListTableQuery,null));
 		
 	}
 	

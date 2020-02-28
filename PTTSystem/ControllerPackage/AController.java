@@ -28,14 +28,16 @@ public class AController extends Controller {
 	
 	
 	public void selectedCourseStage(String classId){
-	       view.main.courseDetailPage.displayAdminsMode(model.getClass(classId));
+	       view.main.courseDetailPage.displayAdminsMode(model.getClass(classId, view.main.courseDetailPage.getQuery()));
 	       this.classId=classId;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if(e.getSource()==view.main.courseDetailPage.assignTeacherBN) {
-			view.main.selectTeacherPage.displaySelectTeacherPanel(model.getStaffListTableHeader(), model.getStaffListTable(), model.getSelectedSem());
+			view.main.selectTeacherPage.displaySelectTeacherPanel(model.getStaffListTable(
+					view.main.selectTeacherPage.getQuery()), 
+					model.getSelectedSem());
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.assignCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
