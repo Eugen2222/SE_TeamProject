@@ -36,7 +36,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -46,6 +48,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 
 
@@ -83,7 +86,8 @@ public class View extends JFrame  implements ActionListener{
 		this.setTitle("PTT Manage System");
 		this.setSize(800,550);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocation(50,50);
+		this.setLocationRelativeTo(null);
+//		this.setLocation(50,50);
 		semester = new Semester();
 		login = new Login();
 		bar = new Bar();
@@ -126,7 +130,6 @@ public class View extends JFrame  implements ActionListener{
 			loginPanel.setFocusable(true);
 //			loginPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
 			loginPanel.setLayout(null);
-			
 			JLabel title = new JLabel("LOGIN");
 			Font f = new Font("Arial",Font.PLAIN,18);
 			title.setFont(f);
@@ -152,7 +155,6 @@ public class View extends JFrame  implements ActionListener{
 			passwordTF.setBounds(288,258,195,41);
 			
 			loginBN = buildBlueButton("OK");
-			
 			loginBN.setBounds(288,320,195,35);
 	
 			loginPanel.add(title);
@@ -180,6 +182,7 @@ public class View extends JFrame  implements ActionListener{
 		public void cleanLogin() {
 			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
 			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
+			JOptionPane.showMessageDialog(null, "The username does not exist or the password is wrong!\nPlease re-enter!", "System info", JOptionPane.ERROR_MESSAGE); 
 		}
 		
 		public int logOutCheck() {
@@ -1030,7 +1033,9 @@ public class View extends JFrame  implements ActionListener{
 		           return false;    
 			}
 		};
-			     
+		// sort
+		modelTable.setAutoCreateRowSorter(true);
+		
 		modelTable.setBackground(Color.WHITE);
 		modelTable.getTableHeader().setBackground(Color.WHITE);
 		modelTable.getTableHeader().setReorderingAllowed(false);
