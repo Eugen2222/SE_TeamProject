@@ -1040,7 +1040,7 @@ public class View extends JFrame  implements ActionListener{
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
 			northPanel.setBackground(blue);
-			JLabel titleL = new JLabel("Course Dirctor");
+			JLabel titleL = new JLabel("Class Dirctor");
 			JLabel nameL = new JLabel("Hi, "+name);
 			list.setBackground(blue);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
@@ -1054,9 +1054,9 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			createClassBN = buildBlueBorderlessButton("         Course +");
-			myClassListBN = buildBlueBorderlessButton("         My class list");
-			classListBN = buildBlueBorderlessButton("         Class list");
+			createClassBN = buildBlueBorderlessButton("         + Course");
+			myClassListBN = buildBlueBorderlessButton("         My course list");
+			classListBN = buildBlueBorderlessButton("         Course list");
 			requestListBN = buildBlueBorderlessButton("         Request list");
 			logoutBN = buildBlueBorderlessButton("         Log out");
 			listPS.add(createClassBN);
@@ -1100,7 +1100,7 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton("         Class list");
+			classListBN = buildBlueBorderlessButton("         Course list");
 			requestListBN = buildBlueBorderlessButton("         Request list");
 			logoutBN = buildBlueBorderlessButton("         Log out");
 			listPS.add(classListBN);
@@ -1143,7 +1143,7 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton("         Class list");
+			classListBN = buildBlueBorderlessButton("         Course list");
 			requestListBN = buildBlueBorderlessButton("         Request list");
 			logoutBN = buildBlueBorderlessButton("         Log out");
 			listPS.add(classListBN);
