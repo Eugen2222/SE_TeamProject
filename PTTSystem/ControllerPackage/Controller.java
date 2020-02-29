@@ -1,6 +1,7 @@
 package ControllerPackage;
 import ViewPackage.View;
 import java.util.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,14 +11,18 @@ public class Controller implements ActionListener{
 	protected Model model;
 	protected LoginController logC;
 	protected String []classListTableQuery;
+	protected String displayPage = "";
+	
+	
 	
 	public Controller(Model model, View view, LoginController logC) {
 		// TODO Auto-generated constructor stub
 		this.model = model;
 		this.view = view;
 		this.logC = logC;
-		String []tem = {"ClassID","Name","Requirements","TeacherStatus","ClassDirectorID", "TeacherID"};
+		String []tem = {"ClassID","Name","TeacherStatus","ClassDirectorID", "TeacherID", "Date"};
 		classListTableQuery = tem;
+		displayPage= "";
 		selectSemesterPage();
 		
 	}
@@ -30,12 +35,10 @@ public class Controller implements ActionListener{
 	}
 	
 
-	public void initialisePage() {
-
-		
+	public void initialise() {
 		//setup all available pages
 		view.main.courseDetailPage.buildClassDetailPanel();
-		view.main.buildClassListPanel(null, null);
+		view.main.listPage.buildClassListPanel(null, null);
 
 		view.classListTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -45,25 +48,40 @@ public class Controller implements ActionListener{
 				    if (selectedRow >= 0) {
 				       String classId = view.classListTable.getValueAt(selectedRow, 0).toString();
 				       System.out.println(selectedRow);
-				       selectedCourseStage(classId);
+				       displayCoursePage(classId);
 
 				    }
 				}
 		});
 		
 		view.main.courseDetailPage.normalPageBBN.addActionListener(this);
-		displayCourseListPage();
+		defaultPage();
 	}
 	
-	public void selectedCourseStage(String classId){
+	public void defaultPage() {
+		displayCourseListPage();
+
+	}
+	
+	
+	public void displayCoursePage(String classId){
 	       view.main.courseDetailPage.displayNormalMode(
 	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()));
+//			displayPage = "CoursePage";
 	}
 	
 	public void displayCourseListPage() {
-		view.main.displayClassListPanel(classListTableQuery, 
+		view.main.listPage.displayClassListPanel(view.main.listPage.getHeader(), 
 				model.getClassListTable(classListTableQuery,null));
-		
+		displayPage = "CourseListPage";
+		view.bar.clickBarButton(view.classListBN);
+	}
+	
+	public void displayTeachingRequestListPage() {
+		view.main.listPage.displayTeachingRequestListPanel(view.main.listPage.getHeader(), 
+				model.getClassListTable(classListTableQuery,null));
+		displayPage = "TeachingRequestListPage";
+		view.bar.clickBarButton(view.requestListBN);
 	}
 	
 	
@@ -72,7 +90,7 @@ public class Controller implements ActionListener{
 		if(e.getSource() == view.semesterBN) {
 			int semester = view.semester.getSelecetedSemester();
 			if(model.selectSemester(semester)) {
-				this.initialisePage();
+				this.initialise();
 			}else {
 				view.semester.displayLatestSemester();
 			}
@@ -83,11 +101,25 @@ public class Controller implements ActionListener{
 		}
 		
 		if(e.getSource() == view.main.courseDetailPage.normalPageBBN) {
-			displayCourseListPage();
+			back();
+		}
+		if(e.getSource()==view.requestListBN) {
+			displayTeachingRequestListPage();
+			System.out.println("yo");
 		}
 	
 	}
 
-	
+	public void back() {
+		if(this.displayPage.equals("TeachingRequestListPage")) {
+			displayTeachingRequestListPage();
+
+
+		}
+		else if(this.displayPage.equals("CourseListPage")) {
+			displayCourseListPage();
+
+		}
+	}
 	
 }

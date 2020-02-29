@@ -16,12 +16,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
+
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.table.TableRowSorter;
+
+import javax.swing.RowFilter;
+
+import javax.swing.SortOrder;
+import javax.swing.RowSorter;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -36,26 +46,28 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
+import java.util.HashMap;
 
 
 
 public class View extends JFrame  implements ActionListener{
 //	JLabel title,courseDirctor; 
 	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,myClassListBN,requestListBN,createCourse,createClassOKBN,createClassCBN;
+	public List<JButton> barBNs ;
+	
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new Color(56, 151, 240);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
@@ -86,8 +98,7 @@ public class View extends JFrame  implements ActionListener{
 		this.setTitle("PTT Manage System");
 		this.setSize(800,550);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-//		this.setLocation(50,50);
+		this.setLocation(50,50);
 		semester = new Semester();
 		login = new Login();
 		bar = new Bar();
@@ -97,6 +108,7 @@ public class View extends JFrame  implements ActionListener{
 		barPanel=null;
 		rootPanel = new JPanel();
 		page = new CardLayout();
+		barBNs= new LinkedList<JButton>();
 		rootPanel.setLayout(page);
 		this.add(rootPanel);
 		this.setVisible(true);
@@ -130,6 +142,7 @@ public class View extends JFrame  implements ActionListener{
 			loginPanel.setFocusable(true);
 //			loginPanel.setBorder(BorderFactory.createEmptyBorder(70,200,90,200));
 			loginPanel.setLayout(null);
+			
 			JLabel title = new JLabel("LOGIN");
 			Font f = new Font("Arial",Font.PLAIN,18);
 			title.setFont(f);
@@ -155,6 +168,7 @@ public class View extends JFrame  implements ActionListener{
 			passwordTF.setBounds(288,258,195,41);
 			
 			loginBN = buildBlueButton("OK");
+			
 			loginBN.setBounds(288,320,195,35);
 	
 			loginPanel.add(title);
@@ -182,7 +196,8 @@ public class View extends JFrame  implements ActionListener{
 		public void cleanLogin() {
 			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
 			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
-			JOptionPane.showMessageDialog(null, "The username does not exist or the password is wrong!\nPlease re-enter!", "System info", JOptionPane.ERROR_MESSAGE); 
+			JOptionPane.showMessageDialog(null, "The username does not exist or the password is wrong!\nPlease re-enter!", 
+					"System info", JOptionPane.ERROR_MESSAGE); 
 		}
 		
 		public int logOutCheck() {
@@ -192,6 +207,8 @@ public class View extends JFrame  implements ActionListener{
 			UIManager.put("Panel.background", Color.white);
 			UIManager.put("OptionPane.background", Color.white);
 			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "wanring",JOptionPane.YES_NO_OPTION);
+			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
+			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
 			return n;
 		}
 		
@@ -272,6 +289,7 @@ public class View extends JFrame  implements ActionListener{
 		public CourseDetailPage courseDetailPage;
 		public SelectTeacherPage selectTeacherPage;
 		public CreateClassPage createClassPage;		
+		public ListPage listPage;		
 		Main(){
 			centerPage =new CardLayout();
 			centerPanel = new JPanel(centerPage);
@@ -279,6 +297,7 @@ public class View extends JFrame  implements ActionListener{
 			courseDetailPage = new CourseDetailPage();
 			selectTeacherPage = new SelectTeacherPage();
 			createClassPage = new CreateClassPage();
+			listPage= new ListPage();	
 		}
 		
 		public class CreateClassPage{
@@ -389,7 +408,6 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void displayCreateClassPanel() {
 			centerPage.show(centerPanel, "createClassPanel");
-			
 			View.this.refresh();
 		}
 		
@@ -425,15 +443,21 @@ public class View extends JFrame  implements ActionListener{
 	
 		}
 		
-		
-		
+		public class ListPage{
+			JLabel ListTitleL;
+			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"
+					};
+		public String [] getHeader() {
+			return tableHeader;
+			
+		}
 		public void buildClassListPanel(String[] header, String[][] list) {
 			classListPanel = new JPanel(new BorderLayout());
-			classListPanel.setBorder(new EmptyBorder(50, 20, 5, 20));
+			classListPanel.setBorder(new EmptyBorder(50, 50, 5, 50));
 			classListPanel.setBackground(Color.white);
-			JLabel courseListTitleL = new JLabel("Course list");
-			courseListTitleL.setFont(new Font("Arial",Font.PLAIN,18));
-			classListPanel.add(courseListTitleL, BorderLayout.NORTH);
+			ListTitleL = new JLabel("Course list");
+			ListTitleL.setFont(new Font("Arial",Font.PLAIN,22));
+			classListPanel.add(ListTitleL, BorderLayout.NORTH);
 			classListTable = buildModelListTable(header, list);
 			
 			enableTableHoverEffect(classListTable);
@@ -448,36 +472,37 @@ public class View extends JFrame  implements ActionListener{
 			centerPanel.add(classListPanel, "classListPanel");
 		}
 		
-		
-		
-//		public class ForcedListSelectionModel extends DefaultListSelectionModel {
-//
-//		    public ForcedListSelectionModel () {
-//		        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		    }
-//
-//		    @Override
-//		    public void clearSelection() {
-//		    }
-//
-//		    @Override
-//		    public void removeSelectionInterval(int index0, int index1) {
-//		    }
-//
-//		}
-		
+		public void displayMyCourseListPanel(String[] header, String[][] list) {	
+			displayClassListPanel(header,list);
+			ListTitleL.setText("My course list");
+		}
 		
 		public void displayClassListPanel(String[] header, String[][] list) {	
-			
-			
-			
-			
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
+			View.this.classListTable.setRowSorter(null);
 			centerPage.show(centerPanel, "classListPanel");
+			ListTitleL.setText("Course list");
 			refresh();
 		}
 		
+
+		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
+			TableModel m = new DefaultTableModel(list, header) ;
+			View.this.classListTable.setModel(m);
+			List<RowFilter<Object,Object>> rfs =  new ArrayList<RowFilter<Object,Object>>();
+			rfs.add(RowFilter.regexFilter("Submitted"));
+			rfs.add(RowFilter.regexFilter("Approved"));
+			RowFilter<Object,Object> af = RowFilter.orFilter(rfs);
+			TableRowSorter sorter = new TableRowSorter(View.this.classListTable.getModel());
+			sorter.setRowFilter(af);
+			View.this.classListTable.setRowSorter(sorter);
+
+			ListTitleL.setText("Teaching request list");
+			centerPage.show(centerPanel, "classListPanel");
+			refresh();
+		}
+		}
 		
 		public class CourseDetailPage {
 			JLabel classNameL;
@@ -498,6 +523,7 @@ public class View extends JFrame  implements ActionListener{
 			JTextArea trainingTA;
 			String [] query = {"Semester","Name","ClassID","ClassDirectorID","ClassDirectorName", 
 					"TeacherStatus", "TeacherID", "TeacherName", "Requirements", "Trainning"};
+			
 			public JButton courseDetailWBN;
 			public JButton courseDetailCBN;
 			public JButton courseDetailSBN;
@@ -667,7 +693,7 @@ public class View extends JFrame  implements ActionListener{
 				
 				
 				
-				GridLayout submitBNLayout = new GridLayout (1,2,8,1);
+
 				submitButtonsPanel.setBounds(20, 113, 470, 28);
 				submitButtonsPanel.setBackground(Color.white);
 
@@ -724,30 +750,7 @@ public class View extends JFrame  implements ActionListener{
 			}
 			
 			
-			public void buildSubmittedBNPanel(JButton withdrawBN, JButton cancelBN, JButton okBN, String key) {
-				JButton[] tem  = new JButton [3];
-				JPanel subBP = new JPanel (null);
-				subBP.setBackground(Color.white);
-				GridLayout innerRightBPLayout = new GridLayout (1,2,8,1);
-				JPanel innerRightBP = new JPanel (innerRightBPLayout);
-				innerRightBP.setBackground(Color.white);
-				cancelBN = buildBlackButton("Cancel");		
-				okBN = buildBlackButton("Submit");
-				innerRightBP.setBounds(285, 0, 170, 28);
-				innerRightBP.setBackground(Color.white);
-				innerRightBP.add(cancelBN);
-				innerRightBP.add(okBN);
-				
-				JPanel innerLeftBP = new JPanel (new GridLayout (1,2,3,1));
-				withdrawBN = buildBlackButton("Withdraw");
-				innerLeftBP.setBounds(0, 0, 70, 28);
-				innerLeftBP.add(withdrawBN);
-				innerLeftBP.setBackground(Color.white);
-				subBP.add(innerLeftBP);
-				subBP.add(innerRightBP);
-				
-				submitButtonsPanel.add(subBP, key);
-			}
+			
 			
 			
 			public int withdrawCheck() {
@@ -890,7 +893,7 @@ public class View extends JFrame  implements ActionListener{
 				updateData(data);
 				courseDetailWBN.setText("Withdraw");
 				courseDetailCBN.setText("Cancel");				
-				courseDetailSBN.setText("Submit");
+				courseDetailSBN.setText("Approve");
 				courseDetailWBN.setVisible(true);
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
@@ -1033,16 +1036,25 @@ public class View extends JFrame  implements ActionListener{
 		           return false;    
 			}
 		};
-		// sort
-		modelTable.setAutoCreateRowSorter(true);
-		
+		DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) 	
+				modelTable.getTableHeader().getDefaultRenderer();
+		renderer.setHorizontalAlignment(JLabel.LEFT);					//Align table headers
 		modelTable.setBackground(Color.WHITE);
 		modelTable.getTableHeader().setBackground(Color.WHITE);
 		modelTable.getTableHeader().setReorderingAllowed(false);
 		modelTable.setFillsViewportHeight(true);
+		modelTable.setRowHeight(32);
+		modelTable.setShowVerticalLines(false);
+		modelTable.setGridColor(new Color(222, 222, 222));
+		
+
+		Dimension size = modelTable.getTableHeader().getPreferredSize();
+        size.height = 42;
+        modelTable.getTableHeader().setPreferredSize(size);
+        UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(0,0,0,0));
+//        setTableColumnCenter(modelTable);
 		return modelTable;		
 	}
-	
 	
 	
 	public void enableTableHoverEffect(JTable modelTable) {
@@ -1076,8 +1088,15 @@ public class View extends JFrame  implements ActionListener{
 		
 	// Course Director 
 	public class Bar {
-		
-		
+		public HashMap<String, BarListener> BNListenerList ;
+		String myClassListBNName = "         My course list";
+		String createClassBNName = "         + Course";		
+		String requestListBNName = "         Teaching Request list";
+		String classListBNName = "         Course list";
+		String logoutBNName = "         Log out";
+		Bar(){
+			BNListenerList = new HashMap<String, BarListener>();
+		}
 		public void addSelfListener() {
 			classListBN.addActionListener(View.this);
 		}
@@ -1105,16 +1124,17 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			createClassBN = buildBlueBorderlessButton("         + Course");
-			myClassListBN = buildBlueBorderlessButton("         My course list");
-			classListBN = buildBlueBorderlessButton("         Course list");
-			requestListBN = buildBlueBorderlessButton("         Request list");
-			logoutBN = buildBlueBorderlessButton("         Log out");
+			createClassBN = buildBlueBorderlessButton(createClassBNName);
+			myClassListBN = buildBlueBorderlessButton(myClassListBNName);
+			classListBN = buildBlueBorderlessButton(classListBNName);
+			requestListBN = buildBlueBorderlessButton(requestListBNName);
+			logoutBN = buildBlueBorderlessButton(logoutBNName);
 			listPS.add(createClassBN);
 			listPS.add(myClassListBN);
 			listPS.add(classListBN);
 			listPS.add(requestListBN);
 			listPS.add(logoutBN);
+	
 			for(JButton bn : listPS) {
 				bn.setBorder(BorderFactory.createEmptyBorder(8,0,10,0));
 				bn.setHorizontalAlignment(SwingConstants.LEFT);
@@ -1151,9 +1171,9 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton("         Course list");
-			requestListBN = buildBlueBorderlessButton("         Request list");
-			logoutBN = buildBlueBorderlessButton("         Log out");
+			classListBN = buildBlueBorderlessButton(classListBNName);
+			requestListBN = buildBlueBorderlessButton(requestListBNName);
+			logoutBN = buildBlueBorderlessButton(logoutBNName);
 			listPS.add(classListBN);
 			listPS.add(requestListBN);
 			listPS.add(logoutBN);
@@ -1162,6 +1182,7 @@ public class View extends JFrame  implements ActionListener{
 				bn.setHorizontalAlignment(SwingConstants.LEFT);
 				list.add(bn);
 			}
+	
 			
 			
 			westPanel.add(list,BorderLayout.CENTER);
@@ -1194,9 +1215,9 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton("         Course list");
-			requestListBN = buildBlueBorderlessButton("         Request list");
-			logoutBN = buildBlueBorderlessButton("         Log out");
+			classListBN = buildBlueBorderlessButton(classListBNName);
+			requestListBN = buildBlueBorderlessButton(requestListBNName);
+			logoutBN = buildBlueBorderlessButton(logoutBNName);
 			listPS.add(classListBN);
 			listPS.add(requestListBN);
 			listPS.add(logoutBN);
@@ -1205,11 +1226,81 @@ public class View extends JFrame  implements ActionListener{
 				bn.setHorizontalAlignment(SwingConstants.LEFT);
 				list.add(bn);
 			}
-			
+
 			
 			westPanel.add(list,BorderLayout.CENTER);
 			addSelfListener();
 			barPanel = westPanel;
+		}
+		
+		
+		private JButton buildBlueBorderlessButton(String name) {
+			JButton btn = new JButton(name);
+			btn.setOpaque(true);
+			btn.setBackground(new Color(56, 151, 240));
+			btn.setForeground(Color.white);
+			btn.setBorder(BorderFactory.createEmptyBorder());
+			btn.setFocusPainted(false);
+			btn.setFont(new Font("Arial", Font.PLAIN, 12));
+	    	btn.setBorder(BorderFactory.createEmptyBorder());
+	    	BarListener listener = new BarListener(btn);
+	    	btn.getModel().addChangeListener(listener);
+	    	BNListenerList.put(name,listener);
+			return btn;
+		}
+		
+		public void clickBarButton(JButton btn) {
+			 btn.setBackground(Color.white);
+		     btn.setForeground(blue);
+			 for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
+		    	   if(entry.getKey().equals(btn.getText())) {
+		    		   entry.getValue().press=true;
+		    		   System.out.println(entry.getKey());}
+		    	   else {
+			    	   System.out.println(entry.getKey()+"!!");
+		    		   entry.getValue().setDefault();
+		    	   }
+		    	   View.this.refresh();
+			 }
+			
+		}
+		
+		public class BarListener implements ChangeListener{
+			JButton btn;
+	        public Boolean press = false;
+	        BarListener(JButton btn){
+		    	this.btn = btn;
+		    }
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        ButtonModel model = (ButtonModel) e.getSource();
+		        if(press==false) {
+		        	if (model.isPressed()) {
+				       btn.setBackground(Color.white);
+				       btn.setForeground(blue);
+				       btn.setBorder(BorderFactory.createEmptyBorder());
+				       btn.setFont(new Font("Arial", Font.PLAIN, 12));
+				      
+				        press = true;		        
+				    } else if (model.isRollover()) {
+				       btn.setBackground(Color.white);
+					   btn.setForeground(blue);
+					   btn.setBorder(BorderFactory.createEmptyBorder());		
+				     } else {
+				       btn.setBackground(blue);
+					   btn.setForeground(Color.white);
+					   btn.setBorder(BorderFactory.createEmptyBorder());
+				    }
+		       	}
+		    }
+		    
+		    public void setDefault() {
+		    	 btn.setBackground(blue);
+				 btn.setForeground(Color.white);
+				 btn.setBorder(BorderFactory.createEmptyBorder());
+				 press=false;
+		    }
+		
 		}
 	}
 	
@@ -1224,20 +1315,26 @@ public class View extends JFrame  implements ActionListener{
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
 		btn.setFocusPainted(false);
 		btn.setOpaque(true);
-		btn.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(Color.white);
-		    	btn.setForeground(darkGrey);
-		    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
-		    }
-
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(darkGrey);
-		    	btn.setForeground(Color.white);
-		    	btn.setBorder(BorderFactory.createEmptyBorder());
-		    }
-		});
-
+		btn.getModel().addChangeListener(new ChangeListener() {
+			    @Override
+			    public void stateChanged(ChangeEvent e) {
+			        ButtonModel model = (ButtonModel) e.getSource();
+			        if (model.isRollover()) {
+			        	btn.setBackground(Color.white);
+				    	btn.setForeground(darkGrey);
+				    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
+			        } else if (model.isPressed()) {
+			        	btn.setBackground(Color.white);
+				    	btn.setForeground(darkGrey);
+				    	btn.setBorder(BorderFactory.createEmptyBorder());
+			        } else {
+			        	btn.setBackground(darkGrey);
+				    	btn.setForeground(Color.white);
+				    	btn.setBorder(BorderFactory.createEmptyBorder());
+			        }
+			    }
+	
+		});		
 		return btn;
 	}
 	private JButton buildBlueButton(String name) {
@@ -1249,46 +1346,33 @@ public class View extends JFrame  implements ActionListener{
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
 		btn.setFocusPainted(false);
 		btn.setOpaque(true);
-		btn.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(Color.white);
-		    	btn.setForeground(blue);
-		    	btn.setBorder(BorderFactory.createLineBorder(blue, 1));
+		btn.getModel().addChangeListener(new ChangeListener() {
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        ButtonModel model = (ButtonModel) e.getSource();
+		        if (model.isRollover()) {
+		        	btn.setBackground(Color.white);
+			    	btn.setForeground(blue);
+			    	btn.setBorder(BorderFactory.createLineBorder(blue, 1));
+		        } else if (model.isPressed()) {
+		        	
+		        } else {
+		        	btn.setBackground(blue);
+			    	btn.setForeground(Color.white);
+			    	btn.setBorder(BorderFactory.createEmptyBorder());
+		        }
 		    }
 
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(blue);
-		    	btn.setForeground(Color.white);
-		    	btn.setBorder(BorderFactory.createEmptyBorder());
-		    }
-		});
+	});		
+		
 
 		return btn;
 	}
 	
-	private JButton buildBlueBorderlessButton(String name) {
-		JButton btn = new JButton(name);
-		btn.setOpaque(true);
-		btn.setBackground(new Color(56, 151, 240));
-		btn.setForeground(Color.white);
-		btn.setBorder(BorderFactory.createEmptyBorder());
-		btn.setFocusPainted(false);
-		btn.setFont(new Font("Arial", Font.PLAIN, 12));
-    	btn.setBorder(BorderFactory.createEmptyBorder());
-		btn.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(Color.white);
-		    	btn.setForeground(blue);
-		    }
+	
+	
 
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-		    	btn.setBackground(blue);
-		    	btn.setForeground(Color.white);
-		    }
-		});
-
-		return btn;
-	}
+	
 //	
 //	
 //	
@@ -1357,7 +1441,7 @@ public class View extends JFrame  implements ActionListener{
 //	}
 //	
 //	
+	}	
 	
 	
-	
-}
+

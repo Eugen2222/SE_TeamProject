@@ -172,13 +172,24 @@ public  class Model <T extends Populated>{
 		cls.add(currentUserID);
 		cls.add("");
 		cls.add("");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
+		 LocalDateTime now = LocalDateTime.now();  
+		cls.add(dtf.format(now));
 		CDClass tClass = new CDClass(cls);
 		classList.add(tClass);
 		
 		System.out.print("\nSuccessfully created a class");
 	}
 	
-	
+	public List<CDClass> getSelectedSemesterClass(){
+		List<CDClass> table1 = new LinkedList<>();
+		for(CDClass c : classList) {
+			if(c.getSemester().equals(Integer.toString(this.selectedSem))) {
+				table1.add(c);
+			}
+		}
+		return table1;
+	}
 
 	
 	public String[][] getStaffListTable(String [] query) {
@@ -200,18 +211,16 @@ public  class Model <T extends Populated>{
 			return null;
 		}else {
 			List<String[]> table1 = new LinkedList<String[]>();
-			for(int i=0 ; i < classList.size() ; i++) {
-				if(this.classList.get(i).getSemester().equals(Integer.toString(this.selectedSem))) {
-					if(DirectorID == null) {
-						table1.add(getRowData(query,(T)this.classList.get(i)));
-					}else if(this.classList.get(i).getElement("ClassDirectorID").equals(DirectorID)) {
-						table1.add(getRowData(query,(T)this.classList.get(i)));
-					}
+			List<CDClass> list = getSelectedSemesterClass();
+			for(CDClass c : list) {
+				if(DirectorID == null) {
+					table1.add(getRowData(query,(T)c));
+				}else if(c.getElement("ClassDirectorID").equals(DirectorID)) {
+					table1.add(getRowData(query,(T)c));
 				}
-				
-			}
-			String [][] table2 = table1.toArray(new String[ table1.size()][]);
-			return table2;
+			}		
+		String [][] table2 = table1.toArray(new String[ table1.size()][]);
+		return table2;
 		}
 	}
 	
@@ -229,7 +238,6 @@ public  class Model <T extends Populated>{
 			if(a.getTableHeaderList().containsKey(query[j])){
 				row.add(a.getElement(query[j]));
 			}else if(classListFKDataHeader.containsKey(query[j])){
-				System.out.println("!!!!!!!!!!!!!!");
 				row.add(getFKData(query[j],a));
 			}else {
 				row.add(null);
@@ -243,20 +251,14 @@ public  class Model <T extends Populated>{
 	public String getFKData(String fkWord, T OData) {
 		String fk = OData.getElement(classListFKDataHeader.get(fkWord)[0]);
 		List<T> fTable = new LinkedList<>();
-		System.out.println(database.containsKey(classListFKDataHeader.get(fkWord)[1])+"!!!!!");
-		if(database.containsKey(classListFKDataHeader.get(fkWord)[1])) {
-			System.out.println(classListFKDataHeader.get(fkWord)[1]);
-				System.out.println(database.get(classListFKDataHeader.get(fkWord)[1]));			
+		if(database.containsKey(classListFKDataHeader.get(fkWord)[1])) {		
 			fTable = database.get(classListFKDataHeader.get(fkWord)[1]);
 		}
 		
 		String targetEle = classListFKDataHeader.get(fkWord)[2];
 		
 		for (T fData : fTable) {
-
 			if(fData.getPKID().equals(fk)) {
-	
-				System.out.println(fData.getElement(targetEle));
 				return fData.getElement(targetEle);
 			}
 		}

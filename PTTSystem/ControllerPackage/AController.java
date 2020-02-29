@@ -11,11 +11,11 @@ public class AController extends Controller {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialisePage() {
-		super.initialisePage();
+	public void initialise() {
+
 		view.bar.buildABar(model.getUser()[0], model.getUser()[1]);
-		view.logoutBN.addActionListener(this.logC);
-		view.classListBN.addActionListener(this);	
+		
+		super.initialise();
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
 		view.main.selectTeacherPage.buildSelectTeacherPanel();
@@ -24,10 +24,14 @@ public class AController extends Controller {
 		view.main.courseDetailPage.assignTeacherBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
+		view.logoutBN.addActionListener(this.logC);
+		view.classListBN.addActionListener(this);	
+		view.requestListBN.addActionListener(this);	
 	}
 	
 	
-	public void selectedCourseStage(String classId){
+	
+	public void displayCoursePage(String classId){
 	       view.main.courseDetailPage.displayAdminsMode(model.getClass(classId, view.main.courseDetailPage.getQuery()));
 	       this.classId=classId;
 	}
@@ -41,11 +45,11 @@ public class AController extends Controller {
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.assignCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
-			displayCourseListPage();
+			back();
 		}
 		
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
-			displayCourseListPage();
+			back();
 		}
 		
 		

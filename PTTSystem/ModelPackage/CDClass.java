@@ -12,11 +12,10 @@ public class CDClass  implements Populated{
 	
 	private String semester;
 	private String classDirectorID;//FK
-	private String classDirectorName;
 	public 	String teacherStatus;
 	private String teacherID;//FK
 	private String training;
-	private Date date;
+	private String date;
 	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
 	private String tableTitle;
 	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
@@ -31,7 +30,13 @@ public class CDClass  implements Populated{
 		this.setTeacherStatus(s.get(4));
 		this.classDirectorID = s.get(5);
 		this.teacherID = s.get(6);
-		this.training = s.get(7).replaceAll("\\$n\\$","\n");	
+		this.training = s.get(7).replaceAll("\\$n\\$","\n");
+		if(s.size()>8) {
+			this.date = s.get(8);
+			System.out.println(this.date);
+		}else {
+			date="";
+		}
 		tableHeaderList.put("Semester",0);
 		tableHeaderList.put("ClassID",1);
 		tableHeaderList.put("Name",2);
@@ -123,6 +128,7 @@ public class CDClass  implements Populated{
 		rowData.add(this.classDirectorID);	
 		rowData.add(this.teacherID);		
 		rowData.add(this.training);	
+		rowData.add(this.date);	
 		
 	}
 	//setup FK 
@@ -192,6 +198,7 @@ public class CDClass  implements Populated{
 		s.add(this.classDirectorID);
 		s.add(""+this.teacherID);
 		s.add(this.training.replaceAll("\\n", "\\$n\\$"));
+		s.add(this.date);
 		return s;
 	}
 	

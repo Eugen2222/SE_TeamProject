@@ -1,6 +1,6 @@
 -------------------------------------------------
 <USER ACCOUNT TABLE>
-[Type, ID, Password, Name]
+ID, Password, Type, Name
 -------------------------------------------------
 "0001", "1", "CD", "John Wick", 
 "0002", "6666", "A", "PoPo", 
@@ -12,13 +12,14 @@
 "0008", "1", "S", "Po Xi", 
 -------------------------------------------------
 <CD CLASS TABLE>
-[Semester, Trainning, ClassID, TeacherStatus, ClassDirectorID, TeacherID, Requirements, Date, Name]
+Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date
 -------------------------------------------------
-"1", "1", "CS", "English, Math, French", "Assigned", "0001", "0007", "Can Run can hide", 
-"5", "2", "Programming", "Need teacher who knows Python", "Pending", "0001", "0008", "Python", 
-"5", "3", "History", "Need one teacher who knows java", "Submitted", "0001", "0004", "Java", 
-"5", "4", "Math", "Need one teacher", "Approved", "0001", "0004", "Law", 
-"5", "5", "Statistic", "Should count", "Assigned", "0004", "0004", "Can count very quickly.", 
-"5", "6", "Finance", "Need to know money.", "Assigned", "0004", "0004", "Have a lots$n$of$n$money$n$in$n$his$n$bag.", 
-"5", "7", "hello", "you$n$are$n$good", "Assigned", "0001", "0007", "you$n$ar$n$", 
-"4", "8", "higjl", ",l;;,,m.mnv,b,", "Pending", "0001", "", "", 
+"1", "1", "CS", "English, Math, French", "Assigned", "0001", "0007", "Can Run can hide", "2020/02/20", 
+"5", "2", "Programming", "Need teacher who knows Python", "Pending", "0001", "0008", "Python", "2020/02/20", 
+"5", "3", "History", "Need one teacher who knows java", "Submitted", "0001", "0004", "Java", "2020/02/20", 
+"5", "4", "Math", "Need one teacher", "Approved", "0001", "0004", "Law", "2020/02/20", 
+"5", "5", "Statistic", "Should count", "Assigned", "0004", "0004", "Can count very quickly.", "2020/02/20", 
+"5", "6", "Finance", "Need to know money.", "Assigned", "0004", "0004", "Have a lots$n$of$n$money$n$in$n$his$n$bag.", "2020/02/20", 
+"5", "7", "hello", "you$n$are$n$good", "Submitted", "0001", "0007", "you$n$ar$n$", "2020/02/20", 
+"5", "8", "Sleep", "Like to sleep", "Pending", "0004", "", "", "2020/02/20", 
+"5", "9", "Sleep a lot", "no$n$n$n$in", "Submitted", "0001", "0007", "yo$n$l$n$l$n$l$n$l", "2020/02/20", 

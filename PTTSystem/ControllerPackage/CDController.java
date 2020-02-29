@@ -1,6 +1,7 @@
 package ControllerPackage;
 import ModelPackage.Model;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ViewPackage.View;
@@ -13,13 +14,15 @@ public class CDController extends Controller implements ActionListener{
 		
 	}
 	
-	public void initialisePage() {
-		super.initialisePage();		
+	public void initialise() {
+			
 		
 		view.barPanel=null;
 		view.bar.buildCDBar(model.getUser()[0], model.getUser()[1]);
-		view.logoutBN.addActionListener(this.logC);
-		view.classListBN.addActionListener(this);	
+		
+		super.initialise();	
+		
+		
 		view.frame.buildFramePanel(view.barPanel);
 		view.frame.displayFramePanel();
 		view.main.createClassPage.buildCreateClassPanel();
@@ -33,26 +36,48 @@ public class CDController extends Controller implements ActionListener{
 		view.main.courseDetailPage.courseDetailWBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailCBN.addActionListener(this);
 		view.main.courseDetailPage.courseDetailSBN.addActionListener(this);
+		view.logoutBN.addActionListener(this.logC);
+		view.classListBN.addActionListener(this);	
+		view.requestListBN.addActionListener(this);	
 		view.myClassListBN.addActionListener(this);
+
+
 	}
 	
 	
+	public void defaultPage(){
+		myCourseListPage();
+		
+	}
 	
 	
+	public void myCourseListPage() {
+		view.main.listPage.displayMyCourseListPanel(view.main.listPage.getHeader(), 
+				model.getClassListTable(classListTableQuery,model.getUser()[0]));
+		this.displayPage = "myCourseListPage";
+		view.bar.clickBarButton(view.myClassListBN);
+	}
 
-	public void selectedCourseStage(String classId){
+	public void displayCoursePage(String classId){
 	       view.main.courseDetailPage.displayDCMode(
 	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()), model.getUser()[0]);
 	}
 	
 	
+	public void back() {
+		super.back();
+		if(this.displayPage.equals("myCourseListPage")) {
+			myCourseListPage();
 
+		}
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if(e.getSource()==view.createClassBN) {
 			view.main.createClassPage.updatePage(model.getCreateClassInfom());
 			view.main.createClassPage.displayCreateClassPanel();
+			view.bar.clickBarButton(view.createClassBN);
 		}
 		
 		
@@ -64,32 +89,34 @@ public class CDController extends Controller implements ActionListener{
 			}else{
 				this.model.createClass(class1);
 				this.model.save();
-				displayCourseListPage();
+				back();
 			}
 		}
 		
 		else if(e.getSource()==view.createClassCBN) {
-			displayCourseListPage();
+
+			back();
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.submitTeachingRequest(view.main.courseDetailPage.getClassInform());
-			displayCourseListPage();
+
+			back();
 		}
 		
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
-			displayCourseListPage();
+
+			back();
 		}
 		else if(e.getSource()==view.myClassListBN) {
-			view.main.displayClassListPanel(classListTableQuery, 
-					model.getClassListTable(classListTableQuery,model.getUser()[0]));
+			myCourseListPage();
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
 			if(view.main.courseDetailPage.withdrawCheck()==0) {
-				System.out.println(view.main.courseDetailPage.getClassInform()[0]);
 				model.withdrawAssignedTeacher(view.main.courseDetailPage.getClassInform());
-				displayCourseListPage();
+				back();
 			}
 		}
+		
 		
 	}
 }
