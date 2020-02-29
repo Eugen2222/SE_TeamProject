@@ -34,6 +34,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -304,6 +305,7 @@ public class View extends JFrame  implements ActionListener{
 		public class CreateClassPage{
 			JLabel classIDL;
 			JLabel timeL;
+
 			public void buildCreateClassPanel() {
 				JPanel centerP = new JPanel();
 			//centerP.setBorder(BorderFactory.createEmptyBorder(20,180,100,180));
@@ -445,7 +447,8 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public class ListPage{
-			JLabel ListTitleL;
+			JLabel listTitleL;
+			JComboBox statusList;
 			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"
 					};
 		public String [] getHeader() {
@@ -456,26 +459,32 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel = new JPanel(new BorderLayout());
 			classListPanel.setBorder(new EmptyBorder(50, 50, 5, 50));
 			classListPanel.setBackground(Color.white);
-			ListTitleL = new JLabel("Course list");
-			ListTitleL.setFont(new Font("Arial",Font.PLAIN,22));
-			classListPanel.add(ListTitleL, BorderLayout.NORTH);
+			listTitleL = new JLabel("Course list");
+			listTitleL.setFont(new Font("Arial",Font.PLAIN,22));
+			classListPanel.add(listTitleL, BorderLayout.NORTH);
 			classListTable = buildModelListTable(header, list);
-			
+			JPanel centerP = new JPanel(new BorderLayout());
+			String[] s = {"Pending"};
+//			statusList = new JComboBox(s);
+//			statusList.setSelectedIndex(0);
+//			statusList.addActionListener(View.this);
+//			centerP.setBorder(new EmptyBorder(20, 0, 0, 0));
+//			centerP.add(statusList, BorderLayout.NORTH);
 			enableTableHoverEffect(classListTable);
 			JScrollPane sp=new JScrollPane();
-			sp.setBorder(new EmptyBorder(40, 0, 0, 0));
+			sp.setBorder(new EmptyBorder(10, 0, 0, 0));
 	        sp.setViewportView(classListTable);
 	        sp.getViewport().setBackground(Color.WHITE);
 	        sp.setBackground(Color.white);
-			
-			classListPanel.add(sp, BorderLayout.CENTER);
+	        centerP.add(sp, BorderLayout.CENTER);
+			classListPanel.add(centerP, BorderLayout.CENTER);
 			classListPanel.setVisible(true);
 			centerPanel.add(classListPanel, "classListPanel");
 		}
 		
 		public void displayMyCourseListPanel(String[] header, String[][] list) {	
 			displayClassListPanel(header,list);
-			ListTitleL.setText("My course list");
+			listTitleL.setText("My course list");
 		}
 		
 		public void displayClassListPanel(String[] header, String[][] list) {	
@@ -484,7 +493,7 @@ public class View extends JFrame  implements ActionListener{
 			View.this.classListTable.setRowSorter(null);
 			View.this.classListTable.setAutoCreateRowSorter(true);
 			centerPage.show(centerPanel, "classListPanel");
-			ListTitleL.setText("Course list");
+			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
 			classListTable.getRowSorter().toggleSortOrder(0);
 			refresh();
@@ -511,7 +520,7 @@ public class View extends JFrame  implements ActionListener{
 
 			View.this.classListTable.setAutoCreateRowSorter(true);
 			classListTable.getRowSorter().toggleSortOrder(0);
-			ListTitleL.setText("Teaching request list");
+			listTitleL.setText("Teaching request list");
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -1063,7 +1072,7 @@ public class View extends JFrame  implements ActionListener{
 
 
 		Dimension size = modelTable.getTableHeader().getPreferredSize();
-        size.height = 42;
+        size.height = 30;
         modelTable.getTableHeader().setPreferredSize(size);
         UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(0,0,0,0));
 //        setTableColumnCenter(modelTable);

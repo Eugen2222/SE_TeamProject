@@ -148,7 +148,7 @@ public  class Model <T extends Populated>{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		 LocalDateTime now = LocalDateTime.now();  
 		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
-		s[0] = Integer.toString(classID);
+		s[0] = String.format("%04d", classID);
 		s[1] = dtf.format(now);
 		return s;
 	}
