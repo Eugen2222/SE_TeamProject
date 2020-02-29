@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface Populated {
 	public List<String> getRawData();
-	public List<Object> getData(List <Integer> l);
+
 	public String getTableTitle();
 	public HashMap<String, Integer>  getTableHeaderList();
 	public String  getTableHeader();
 	public void setTableTitle(String s);
 	public String getFKID();
-	public List<Object> getFKList();
+	public <String, T extends Populated> HashMap<String, T> getFKList();
 	public String getPKID();
 
 	public String getName();

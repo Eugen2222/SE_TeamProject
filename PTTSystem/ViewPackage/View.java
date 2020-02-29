@@ -491,14 +491,14 @@ public class View extends JFrame  implements ActionListener{
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
 			View.this.classListTable.setRowSorter(null);
-			View.this.classListTable.setAutoCreateRowSorter(true);
+			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
 			centerPage.show(centerPanel, "classListPanel");
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
 			classListTable.getRowSorter().toggleSortOrder(0);
 			refresh();
 		}
-		
+			
 
 		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
 			DefaultTableModel  m = new DefaultTableModel(null, header) ;
@@ -518,8 +518,9 @@ public class View extends JFrame  implements ActionListener{
 				}
 			}
 
-			View.this.classListTable.setAutoCreateRowSorter(true);
+			classListTable.setAutoCreateRowSorter(true);
 			classListTable.getRowSorter().toggleSortOrder(0);
+			classListTable = main.setMainTableColSize(classListTable);
 			listTitleL.setText("Teaching request list");
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
@@ -758,7 +759,7 @@ public class View extends JFrame  implements ActionListener{
 	
 				operateP.add(submitButtonsPanel);
 				
-				assignTeacherBN = buildBlackButton("Assign");
+				assignTeacherBN = buildBlueButton("Assign");
 				assignTeacherBN.setBounds(75, 13, 40, 16);
 				assignTeacherBN.setFont(new Font("Arial", Font.BOLD, 8));
 				assignTeacherBN.setVisible(false);
@@ -791,10 +792,26 @@ public class View extends JFrame  implements ActionListener{
 			
 			public String[] getAssignTeacher() {
 				String [] s = new String [3];
+				String teacherWarning = "Please assign a teacher.";
+				String trainingWarning= "The length of the training must be larger than 5.";
 				s[0] =	classIDL.getText();
-				s[1] = staffIDL.getText();
-				s[2] = trainingTA.getText();			
-				return s;
+				
+				if(staffIDL.getText().length()<3||staffIDL.getText().equals(teacherWarning)){
+					staffIDL.setText(teacherWarning);			
+					if(trainingTA.getText().length()<5||trainingTA.getText().equals(trainingWarning)) {
+						trainingTA.addFocusListener(new JTextFieldHintListener(trainingTA, trainingWarning));
+					}
+					return null;
+				}	
+				if(trainingTA.getText().length()<5||trainingTA.getText().equals(trainingWarning)) {
+						trainingTA.addFocusListener(new JTextFieldHintListener(trainingTA, trainingWarning));
+						return null;
+				}
+				else {
+					s[1] = staffIDL.getText();
+					s[2] = trainingTA.getText();	
+					return s;
+				}
 			}
 			
 			
@@ -1030,6 +1047,15 @@ public class View extends JFrame  implements ActionListener{
 			
 				
 			
+		}
+		
+		
+		public JTable setMainTableColSize(JTable t) {
+			JTable t1 =t;
+		     t1.getColumnModel().getColumn(0).setPreferredWidth(10);
+	         t1.getColumnModel().getColumn(3).setPreferredWidth(18);
+	         t1.getColumnModel().getColumn(4).setPreferredWidth(18);
+	         return t1;
 		}
 	}
 	

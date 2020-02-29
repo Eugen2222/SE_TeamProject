@@ -44,8 +44,12 @@ public class AController extends Controller {
 					model.getSelectedSem());
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
+			if(view.main.courseDetailPage.getAssignTeacher()!=null) {
 			model.assignCourseTeacher(view.main.courseDetailPage.getAssignTeacher());
 			back();
+			}else {
+				
+			}
 		}
 		
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {

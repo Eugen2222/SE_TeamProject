@@ -48,8 +48,8 @@ public  class Model <T extends Populated>{
 		accountList =  new LinkedList<Account>();
 		classList = new LinkedList<CDClass>();
 		database = new HashMap <String,LinkedList<T>> ();
-		String[] s = new String[] {"TeacherID", "accountList", "Name"};
-		String[] s1 = new String[] {"ClassDirectorID", "accountList", "Name"};
+		String[] s = new String[] {"teacher", "Name"};
+		String[] s1 = new String[] {"classDirector", "Name"};
 		classListFKDataHeader.put("ClassDirectorName", s1);
 		classListFKDataHeader.put("TeacherName", s);
 
@@ -162,7 +162,7 @@ public  class Model <T extends Populated>{
 		
 		List<String> cls= new LinkedList<String>();
 		cls.add(Integer.toString(selectedSem));
-		cls.add(Integer.toString(classID));
+		cls.add(String.format("%04d", classID));
 		cls.add(className);
 		cls.add(classRequirements);
 		cls.add("Pending");
@@ -172,7 +172,7 @@ public  class Model <T extends Populated>{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		 LocalDateTime now = LocalDateTime.now();  
 		cls.add(dtf.format(now));
-		CDClass tClass = new CDClass(cls);
+		CDClass tClass = new CDClass(cls, accountList);
 		classList.add(tClass);
 		
 		System.out.print("\nSuccessfully created a class");
@@ -245,17 +245,12 @@ public  class Model <T extends Populated>{
 	}
 	
 	public String getFKData(String fkWord, T OData) {
-		String fk = OData.getElement(classListFKDataHeader.get(fkWord)[0]);
-		List<T> fTable = new LinkedList<>();
-		if(database.containsKey(classListFKDataHeader.get(fkWord)[1])) {		
-			fTable = database.get(classListFKDataHeader.get(fkWord)[1]);
-		}
-		
-		String targetEle = classListFKDataHeader.get(fkWord)[2];
-		
-		for (T fData : fTable) {
-			if(fData.getPKID().equals(fk)) {
-				return fData.getElement(targetEle);
+		String fkObjectKey = classListFKDataHeader.get(fkWord)[0];
+		if(OData.getFKList().containsKey(fkObjectKey)) {
+			Populated FKData = OData.getFKList().get(fkObjectKey);
+			if(FKData!=null) {
+				String data = FKData.getElement(classListFKDataHeader.get(fkWord)[1]);
+				return data;
 			}
 		}
 		return null;
@@ -265,14 +260,14 @@ public  class Model <T extends Populated>{
 	
 	
 	private class ManageFile{	
-		public void readFile() {
+		public <T extends Populated> void readFile() {
 			FileReader fr = null;
 			try {
 				String fN = "data.txt";
 				fr = new FileReader(fN);
 				Scanner s = new Scanner(fr);
-				accountList= createObjectList(s, Account.class, "<USER ACCOUNT TABLE>");
-				classList= createObjectList(s, CDClass.class, "<CD CLASS TABLE>");
+				accountList= createObjectList(s, Account.class, "<USER ACCOUNT TABLE>", null);
+				classList= createObjectList(s, CDClass.class, "<CD CLASS TABLE>", accountList);
 				
 //				for(List<String> a : accountTable) {
 //					Account tem = new Account(a);
@@ -322,7 +317,7 @@ public  class Model <T extends Populated>{
 			}
 		}
 
-		private <T extends Populated> List<T> createObjectList(Scanner s, Class<T> T, String key) throws Exception {
+		private <T extends Populated> List<T> createObjectList(Scanner s, Class<T> T, String key, List<?> FKlist) throws Exception {
 			
 			//load data
 			String line = s.nextLine();
@@ -353,8 +348,8 @@ public  class Model <T extends Populated>{
 				Constructor<T> constructor;
 				try {
 
-					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class});
-					T object = constructor.newInstance(new Object[]{a });
+					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class, List.class});
+					T object = constructor.newInstance(new Object[]{a, FKlist});
 					list.add(object);
 					object.setTableTitle(key);
 					
