@@ -70,6 +70,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
 	public Color blue = new Color(56, 151, 240);
+	public Color red = new Color(238, 73, 87);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
 					classListPanel, rootPanel, classDetailPanel, selectTeacherPanel;
 	public JTable classListTable, staffListTable;
@@ -87,7 +88,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	}
 	public void initialise() {
-		
+		this.setResizable(false);
 		try {
 		    UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
 		 } catch (Exception e) {
@@ -201,7 +202,7 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public int logOutCheck() {
-			UIManager.put("Button.background", new Color(20,20,20));
+			UIManager.put("Button.background", new Color(150,150,150));
 			UIManager.put("Button.FocusPainted",false);
 			UIManager.put("Button.foreground", Color.white);
 			UIManager.put("Panel.background", Color.white);
@@ -481,23 +482,35 @@ public class View extends JFrame  implements ActionListener{
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
 			View.this.classListTable.setRowSorter(null);
+			View.this.classListTable.setAutoCreateRowSorter(true);
 			centerPage.show(centerPanel, "classListPanel");
 			ListTitleL.setText("Course list");
+			View.this.classListTable.setAutoCreateRowSorter(true);
+			classListTable.getRowSorter().toggleSortOrder(0);
 			refresh();
 		}
 		
 
 		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
-			TableModel m = new DefaultTableModel(list, header) ;
+			DefaultTableModel  m = new DefaultTableModel(null, header) ;
 			View.this.classListTable.setModel(m);
-			List<RowFilter<Object,Object>> rfs =  new ArrayList<RowFilter<Object,Object>>();
-			rfs.add(RowFilter.regexFilter("Submitted"));
-			rfs.add(RowFilter.regexFilter("Approved"));
-			RowFilter<Object,Object> af = RowFilter.orFilter(rfs);
-			TableRowSorter sorter = new TableRowSorter(View.this.classListTable.getModel());
-			sorter.setRowFilter(af);
-			View.this.classListTable.setRowSorter(sorter);
+			int key = -1;
+			for(int i = 0 ; i<header.length; i++) {
+				if(header[i].equals("TeachingStatus")) {
+					key=i;
+				}
+			}
 
+			for(int i =0 ; i< list.length ; i++) {
+
+				if(list[i][key].equals("Submitted")||list[i][key].equals("Approved")) {		
+					m.addRow(list[i]);
+				}else {
+				}
+			}
+
+			View.this.classListTable.setAutoCreateRowSorter(true);
+			classListTable.getRowSorter().toggleSortOrder(0);
 			ListTitleL.setText("Teaching request list");
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
@@ -698,7 +711,7 @@ public class View extends JFrame  implements ActionListener{
 				submitButtonsPanel.setBackground(Color.white);
 
 				
-				courseDetailWBN = buildBlackButton("");
+				courseDetailWBN = buildRedButton("");
 				courseDetailCBN = buildBlackButton("");						
 				courseDetailSBN = buildBlueButton("");
 				
@@ -754,7 +767,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			
 			public int withdrawCheck() {
-				UIManager.put("Button.background", new Color(20,20,20));
+				UIManager.put("Button.background", red);
 				UIManager.put("Button.foreground", Color.white);
 				UIManager.put("Panel.background", Color.white);
 				UIManager.put("OptionPane.background", Color.white);
@@ -812,11 +825,10 @@ public class View extends JFrame  implements ActionListener{
 				}
 				
 				
-				System.out.println();
+
 				
 				for(JLabel l : labelList) {
 					if(i<data.length) {
-						System.out.print(data[i]);
 						l.setText(data[i]);
 						i++;
 					}
@@ -824,7 +836,6 @@ public class View extends JFrame  implements ActionListener{
 				for(JTextArea l : TAList) {
 
 					if(i<data.length) {
-						System.out.print(data[i]);
 						l.setText(data[i]);
 						i++;
 					}
@@ -954,7 +965,7 @@ public class View extends JFrame  implements ActionListener{
 
 				
 				staffListTable = buildModelListTable(null, null);	
-				
+
 				staffListTable.addMouseListener(new java.awt.event.MouseAdapter() {
 					@Override
 					public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -992,6 +1003,9 @@ public class View extends JFrame  implements ActionListener{
 			public void displaySelectTeacherPanel(String [][] staffList, String semester) {
 				TableModel m = new DefaultTableModel(staffList, query) ;
 				View.this.staffListTable.setModel(m);
+				staffListTable.setAutoCreateRowSorter(true);		
+				staffListTable.getRowSorter().toggleSortOrder(0);
+
 				semesterlabel.setText("Semester: "+semester);
 				centerPage.show(centerPanel, "selectTeacherPanel");
 				refresh();
@@ -1037,16 +1051,16 @@ public class View extends JFrame  implements ActionListener{
 			}
 		};
 		DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) 	
-				modelTable.getTableHeader().getDefaultRenderer();
+		modelTable.getTableHeader().getDefaultRenderer();
 		renderer.setHorizontalAlignment(JLabel.LEFT);					//Align table headers
 		modelTable.setBackground(Color.WHITE);
-		modelTable.getTableHeader().setBackground(Color.WHITE);
+		modelTable.getTableHeader().setBackground(new Color(240,240,240));
 		modelTable.getTableHeader().setReorderingAllowed(false);
 		modelTable.setFillsViewportHeight(true);
 		modelTable.setRowHeight(32);
 		modelTable.setShowVerticalLines(false);
 		modelTable.setGridColor(new Color(222, 222, 222));
-		
+
 
 		Dimension size = modelTable.getTableHeader().getPreferredSize();
         size.height = 42;
@@ -1255,9 +1269,9 @@ public class View extends JFrame  implements ActionListener{
 			 for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
 		    	   if(entry.getKey().equals(btn.getText())) {
 		    		   entry.getValue().press=true;
-		    		   System.out.println(entry.getKey());}
+		    	   }
 		    	   else {
-			    	   System.out.println(entry.getKey()+"!!");
+
 		    		   entry.getValue().setDefault();
 		    	   }
 		    	   View.this.refresh();
@@ -1307,7 +1321,7 @@ public class View extends JFrame  implements ActionListener{
 	
 	private JButton buildBlackButton(String name) {
 		JButton btn = new JButton(name);
-		Color darkGrey = new Color(30,30,30);
+		Color darkGrey = new Color(150,150,150);
 		Color lightGrey = new Color(150,150,150);
 		btn.setBackground(darkGrey);
 		btn.setBorder(BorderFactory.createEmptyBorder());
@@ -1337,6 +1351,40 @@ public class View extends JFrame  implements ActionListener{
 		});		
 		return btn;
 	}
+	
+	private JButton buildRedButton(String name) {
+		JButton btn = new JButton(name);
+		Color darkGrey = new Color(238,73,87);
+		Color lightGrey = new Color(150,150,150);
+		btn.setBackground(darkGrey);
+		btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.setForeground(Color.WHITE);
+		btn.setFont(new Font("Arial", Font.PLAIN, 12));
+		btn.setFocusPainted(false);
+		btn.setOpaque(true);
+		btn.getModel().addChangeListener(new ChangeListener() {
+			    @Override
+			    public void stateChanged(ChangeEvent e) {
+			        ButtonModel model = (ButtonModel) e.getSource();
+			        if (model.isRollover()) {
+			        	btn.setBackground(Color.white);
+				    	btn.setForeground(darkGrey);
+				    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
+			        } else if (model.isPressed()) {
+			        	btn.setBackground(Color.white);
+				    	btn.setForeground(darkGrey);
+				    	btn.setBorder(BorderFactory.createEmptyBorder());
+			        } else {
+			        	btn.setBackground(darkGrey);
+				    	btn.setForeground(Color.white);
+				    	btn.setBorder(BorderFactory.createEmptyBorder());
+			        }
+			    }
+	
+		});		
+		return btn;
+	}
+	
 	private JButton buildBlueButton(String name) {
 		JButton btn = new JButton(name);
 		

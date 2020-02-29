@@ -47,7 +47,6 @@ public class Controller implements ActionListener{
 		//		    int selectedCol = view.classListTable.columnAtPoint(evt.getPoint());
 				    if (selectedRow >= 0) {
 				       String classId = view.classListTable.getValueAt(selectedRow, 0).toString();
-				       System.out.println(selectedRow);
 				       displayCoursePage(classId);
 
 				    }
@@ -105,7 +104,7 @@ public class Controller implements ActionListener{
 		}
 		if(e.getSource()==view.requestListBN) {
 			displayTeachingRequestListPage();
-			System.out.println("yo");
+
 		}
 	
 	}

@@ -33,7 +33,6 @@ public class CDClass  implements Populated{
 		this.training = s.get(7).replaceAll("\\$n\\$","\n");
 		if(s.size()>8) {
 			this.date = s.get(8);
-			System.out.println(this.date);
 		}else {
 			date="";
 		}
@@ -65,6 +64,9 @@ public class CDClass  implements Populated{
 	}
 	
 	
+	public String getTypeName() {
+		return tableHeader;
+	}
 	
 	
 	public void submitTeachingRequest() {

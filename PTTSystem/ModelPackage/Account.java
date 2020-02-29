@@ -24,7 +24,7 @@ public class Account implements Populated{
 		tableHeaderList.put("Name",3);		
 		rowData.add(this.ID );
 		rowData.add(this.PW );
-		rowData.add(this.type );
+		rowData.add(this.getTypeName() );
 		rowData.add(this.name);
 		tableHeader = "ID, Password, Type, Name";
 	}

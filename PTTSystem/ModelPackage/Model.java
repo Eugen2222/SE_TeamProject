@@ -133,10 +133,7 @@ public  class Model <T extends Populated>{
 	}
 	
 	public void withdrawAssignedTeacher(String[]s) {
-		System.out.println(s[0]);
 		findCourse(s[0]).setTeacherStatus("Pending");
-		System.out.println(findCourse(s[0]).getElement("TeacherStatus"));
-		System.out.println(findCourse(s[0]).teacherStatus);
 	}
 	
 	public void withdrawTeachingRequest(String[]s) {
@@ -226,7 +223,6 @@ public  class Model <T extends Populated>{
 	
 
 	public  String[] getClass(String id,String [] query) {
-		System.out.println(id + findCourse(id).getPKID());
 		return getRowData(query, (T)findCourse(id)) ;
 	}
 	
@@ -319,7 +315,7 @@ public  class Model <T extends Populated>{
 				String data = populateTable(dataList);
 				bw.write(data);
 				bw.close();
-				System.out.println("Test log has been created successfully!");
+				System.out.println("Data has been saved successfully!");
 			} catch (IOException e) {
 				System.out.println("Exception occurred:");
 				e.printStackTrace();

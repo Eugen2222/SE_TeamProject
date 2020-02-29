@@ -100,7 +100,7 @@ public class CDController extends Controller implements ActionListener{
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.submitTeachingRequest(view.main.courseDetailPage.getClassInform());
 
-			back();
+			myCourseListPage();
 		}
 		
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
