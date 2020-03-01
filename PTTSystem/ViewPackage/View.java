@@ -62,12 +62,17 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -170,7 +175,7 @@ public class View extends JFrame  implements ActionListener{
 			usernameTF = new JTextField(16);
 //			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, " Username"));
 			usernameTF.setBounds(288,194,195,41); 
-			
+			usernameTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 			JLabel lblPassword = new JLabel("Password");
 			lblPassword.setFont(new Font("Arial", Font.PLAIN, 12));
 			lblPassword.setForeground(new Color(114, 114, 114));
@@ -178,7 +183,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			passwordTF = new JTextField(16);
 //			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, " Password"));
-//			passwordTF.setBorder(BorderFactory.createLineBorder(blue));
+			passwordTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 			passwordTF.setBounds(288,258,195,41);
 			
 			loginBN = buildBlueButton("OK");
@@ -210,6 +215,11 @@ public class View extends JFrame  implements ActionListener{
 		public void cleanLogin() {
 			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
 			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
+			UIManager.put("Button.background", new Color(150,150,150));
+			UIManager.put("Button.FocusPainted",false);
+			UIManager.put("Button.foreground", Color.white);
+			UIManager.put("Panel.background", Color.white);
+			UIManager.put("OptionPane.background", Color.white);
 			JOptionPane.showMessageDialog(null, "The username does not exist or the password is wrong!\nPlease re-enter!", 
 					"System info", JOptionPane.ERROR_MESSAGE); 
 		}
@@ -399,10 +409,11 @@ public class View extends JFrame  implements ActionListener{
 					
 					JScrollPane reqScrollPanel = buildStylishScrollP();
 					reqScrollPanel.setViewportView(requirementTA);
+					reqScrollPanel.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 					requirementTA.setEditable(true);
 					reqScrollPanel.setBounds(148, 253, 319, 160);
 
-					reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
+//					reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
 					
 					centerP.add(reqScrollPanel);
 					
@@ -480,7 +491,7 @@ public class View extends JFrame  implements ActionListener{
 		}
 		public void buildClassListPanel(String[] header, String[][] list) {
 			classListPanel = new JPanel(new BorderLayout());
-			classListPanel.setBorder(new EmptyBorder(50, 50, 5, 50));
+			classListPanel.setBorder(new EmptyBorder(50, 60, 5, 60));
 			classListPanel.setBackground(Color.white);
 			listTitleL = new JLabel("Course list");
 			listTitleL.setFont(new Font("Arial",Font.PLAIN,22));
@@ -491,11 +502,57 @@ public class View extends JFrame  implements ActionListener{
 			statusList = new JComboBox(s);
 			statusList.setSelectedIndex(0);
 			statusList.setBackground(Color.white);
+			statusList.setForeground(new Color(70,70,70));
+			statusList.setUI(new BasicComboBoxUI() {
+			    @Override
+			    protected JButton createArrowButton() {
+			        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
+		            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
+		            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+		            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+		            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
+		            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
+		   
+//		            button.setBackground(blue);
+		            statusList.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
+		            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
+		            button.setBorderPainted(true);
+		            button.setContentAreaFilled(false);
+		            
+		            button.getModel().addChangeListener(new ChangeListener() {
+		    		    @Override
+		    		    public void stateChanged(ChangeEvent e) {
+		    		        ButtonModel model = (ButtonModel) e.getSource();
+		    		        if (model.isRollover()) {
+		    		        	button.setBackground(new Color(140,140,140));
+		    		        } else if (model.isPressed()) {
+		    		        	button.setBackground(new Color(140,140,140));
+		    		        } else {
+		    		        	button.setBackground(new Color(230,230,230));
+		    		        	
+		    		        }
+		    		    }
+
+		            });		
+//		            button.setFocusPainted(false);
+//		            button.setFocusable(false);
+		            return button; 
+			    }
+			    
+			    protected ComboPopup createPopup() {
+			        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
+			        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
+			        return basicComboPopup;
+			    }
+
+			});
+		    statusList.setFocusable(false);		
+			statusList.setBorder(BorderFactory.createLineBorder( new Color(230,230,230)));
 			statusList.setFont(new Font("Arial",Font.PLAIN,12));
-			statusList.setBounds(425, 0, 80, 20);
+			statusList.setBounds(405, 0, 80, 20);
 			
 			JPanel boxP = new JPanel(null);
-			boxP.setPreferredSize(new Dimension(200,20));
+			boxP.setPreferredSize(new Dimension(200,30));
 			boxP.setBackground(Color.white);
 			boxP.add(statusList);
 			centerP.setBorder(new EmptyBorder(15, 0, 0, 0));
@@ -503,7 +560,7 @@ public class View extends JFrame  implements ActionListener{
 			centerP.add(boxP, BorderLayout.NORTH);
 			enableTableHoverEffect(classListTable);
 			listScrollP= buildStylishScrollP ();
-			listScrollP.setBorder(new EmptyBorder(5, 0, 0, 0));
+			listScrollP.setBorder(new EmptyBorder(0, 0, 0, 0));
 			listScrollP.setViewportView(classListTable);
 			
 	        
@@ -521,6 +578,7 @@ public class View extends JFrame  implements ActionListener{
 		
 		public void displayMyCourseListPanel(String[] header, String[][] list) {	
 			displayClassListPanel(header,list);
+			statusList.repaint();
 			listTitleL.setText("My course list");
 
 		}
@@ -572,13 +630,6 @@ public class View extends JFrame  implements ActionListener{
 			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
-			listScrollP.setComponentZOrder(listScrollP.getVerticalScrollBar(), 0);
-			listScrollP.setComponentZOrder(listScrollP.getViewport(), 1);
-			listScrollP.getVerticalScrollBar().setOpaque(false);
-			
-
-
-
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -785,6 +836,7 @@ public class View extends JFrame  implements ActionListener{
 				requirementTA.setText("");
 				requirementSP.getVerticalScrollBar().setUI(new stylishScrollBar());
 				requirementSP.setViewportView(requirementTA);
+				requirementSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 				TAList.add(requirementTA);
 				
 				trainingSP = buildStylishScrollP();
@@ -800,6 +852,7 @@ public class View extends JFrame  implements ActionListener{
 				trainingTA.setText("");
 				trainingSP.getVerticalScrollBar().setUI(new stylishScrollBar());
 				trainingSP.setViewportView(trainingTA);
+				trainingSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 
 				
 				TAList.add(trainingTA);
@@ -1154,9 +1207,11 @@ public class View extends JFrame  implements ActionListener{
 		
 		public JTable setMainTableColSize(JTable t) {
 			JTable t1 =t;
-		     t1.getColumnModel().getColumn(0).setPreferredWidth(10);
-	         t1.getColumnModel().getColumn(3).setPreferredWidth(18);
-	         t1.getColumnModel().getColumn(4).setPreferredWidth(18);
+		     t1.getColumnModel().getColumn(0).setPreferredWidth(8);
+	         t1.getColumnModel().getColumn(1).setPreferredWidth(40);
+	         t1.getColumnModel().getColumn(3).setPreferredWidth(14);
+	         t1.getColumnModel().getColumn(4).setPreferredWidth(14);
+	         t1.getColumnModel().getColumn(5).setPreferredWidth(18);
 	         return t1;
 		}
 	}
@@ -1199,11 +1254,11 @@ public class View extends JFrame  implements ActionListener{
 		modelTable.setGridColor(new Color(222, 222, 222));
 
 
+
 		Dimension size = modelTable.getTableHeader().getPreferredSize();
         size.height = 30;
         modelTable.getTableHeader().setPreferredSize(size);
         UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(0,0,0,0));
-//        setTableColumnCenter(modelTable);
 		return modelTable;		
 	}
 	
@@ -1598,7 +1653,7 @@ public class View extends JFrame  implements ActionListener{
 		sp.getVerticalScrollBar().setUI(new stylishScrollBar());
 		sp.getViewport().setBackground(Color.WHITE);
 		sp.setBackground(Color.white);
-		sp.getVerticalScrollBar().setBackground(Color.white);
+		sp.getVerticalScrollBar().setBackground(Color.WHITE);
 		sp.getVerticalScrollBar().setForeground(Color.WHITE);
 		sp.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
 		return sp;
@@ -1636,11 +1691,11 @@ public class View extends JFrame  implements ActionListener{
 	        if(!sb.isEnabled() || r.width>r.height) {
 	          return;
 	        }else if(isDragging) {
-	          color = new Color(200,200,100,200);
+	          color = new Color(114,114,114,200);
 	        }else if(isThumbRollover()) {
-	          color = new Color(255,255,100,200);
+	          color = new Color(114,114,114,200);
 	        }else {
-	          color = new Color(220,220,200,200);
+	          color = new Color(220,220,220,200);
 	        }
 	        g2.setPaint(color);
 	        g2.fillRoundRect(r.x,r.y,r.width,r.height,10,10);
@@ -1652,30 +1707,32 @@ public class View extends JFrame  implements ActionListener{
 	      protected void setThumbBounds(int x, int y, int width, int height) {
 	        super.setThumbBounds(x, y, width, height);
 	        scrollbar.repaint();
-	      }
-////		listScrollP.setLayout(new ScrollPaneLayout() {
+	      
+//	       main.listPage.listScrollP.setLayout(new ScrollPaneLayout() {
 //	      @Override
 //	      public void layoutContainer(Container parent) {
+//	    	  super.layoutContainer(parent);
 //	        JScrollPane scrollPane = (JScrollPane)parent;
-//
+//	        
 //	        Rectangle availR = scrollPane.getBounds();
-//	        availR.x = availR.y = 0;
-//
-//	        Insets insets = parent.getInsets();
-//	        availR.x = insets.left;
-//	        availR.y = insets.top;
-//	        availR.width  -= insets.left + insets.right;
-//	        availR.height -= insets.top  + insets.bottom;
+//////	        availR.x = availR.y = 0;
+////	        Rectangle availR = colHead.getBounds();
+////	        Insets insets = parent.getInsets();
+////	        availR.x = insets.left;
+////	        availR.y = insets.top;
+////	        availR.width  -= insets.left + insets.right;
+////	        availR.height -= insets.top  + insets.bottom;
 //
 //	        Rectangle vsbR = new Rectangle();
-//	        vsbR.width  = 12;
+//	        vsbR.width  = 7;
 //	        vsbR.height = availR.height;
 //	        vsbR.x = availR.x + availR.width - vsbR.width;
 //	        vsbR.y = availR.y;
 //
-//	        if(viewport != null) {
-//	          viewport.setBounds(availR);
-//	        }
+////	        if(viewport != null) {
+//////	          viewport.setBounds(availR);
+////	          colHead.setBounds(availR);
+////	        }
 //	        if(vsb != null) {
 //	          vsb.setVisible(true);
 //	          vsb.setBounds(vsbR);
@@ -1684,7 +1741,7 @@ public class View extends JFrame  implements ActionListener{
 //});
 	}
 
-
+	}
 
 }	
 	
