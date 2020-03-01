@@ -39,15 +39,17 @@ public class LoginController implements ActionListener{
 				if(usertype==-1) {
 					view.login.cleanLogin();
 				}
-				if(usertype == 1) {
+				else if(usertype == 1) {
 					CDController controller = new CDController(model, view, this);
 				}
-				if(usertype == 2) {
+				else if(usertype == 2) {
 					AController controller = new AController(model, view, this);
 				}
-				if(usertype == 3) {
+				else if(usertype == 3) {
 					PDController controller = new PDController(model, view, this);
-				} 
+				}else {
+					Controller controller = new Controller(model, view, this);
+				}
 			}
 		}	
 		if(e.getSource() == view.logoutBN) {

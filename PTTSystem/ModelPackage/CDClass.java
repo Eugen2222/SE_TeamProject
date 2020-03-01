@@ -149,9 +149,10 @@ public class CDClass <T extends Populated > implements Populated{
 	}
 	
 	
-	public void assignTeacher(String[] s) {
+	public <T extends Populated >void assignTeacher(String[] s, List<T> list) {
 		this.teacherID=s[1];
 		this.training=s[2];
+		setTeacher((List<Account>)list);
 		this.setTeacherStatus("Assigned");	
 		updateRowData();
 	}

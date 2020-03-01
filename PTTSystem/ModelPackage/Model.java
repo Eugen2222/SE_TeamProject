@@ -53,9 +53,6 @@ public  class Model <T extends Populated>{
 		classListFKDataHeader.put("ClassDirectorName", s1);
 		classListFKDataHeader.put("TeacherName", s);
 
-		
-		
-		
 		mf = new ManageFile();
 		mf.readFile();
 		try {
@@ -120,7 +117,7 @@ public  class Model <T extends Populated>{
 	
 	
 	public void assignCourseTeacher(String[]s) {
-		findCourse(s[0]).assignTeacher(s);
+		findCourse(s[0]).assignTeacher(s, accountList);
 	}
 	
 	public void submitTeachingRequest(String[]s) {
@@ -146,7 +143,7 @@ public  class Model <T extends Populated>{
 		String []s =new String[2]; 
 		int classID = 0;
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
-		 LocalDateTime now = LocalDateTime.now();  
+		LocalDateTime now = LocalDateTime.now();  
 		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 		s[0] = String.format("%04d", classID);
 		s[1] = dtf.format(now);
@@ -170,7 +167,7 @@ public  class Model <T extends Populated>{
 		cls.add("");
 		cls.add("");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
-		 LocalDateTime now = LocalDateTime.now();  
+		LocalDateTime now = LocalDateTime.now();  
 		cls.add(dtf.format(now));
 		CDClass tClass = new CDClass(cls, accountList);
 		classList.add(tClass);

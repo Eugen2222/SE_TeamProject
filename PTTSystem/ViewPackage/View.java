@@ -4,13 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,6 +58,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -59,6 +66,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -453,7 +461,7 @@ public class View extends JFrame  implements ActionListener{
 		public class ListPage{
 			JLabel listTitleL;
 			JComboBox statusList;
-
+			JScrollPane listScrollP;
 			int classListClickedHeader= 0;
 			SortOrder order = SortOrder.ASCENDING;
 			String courseClickedFilter="All";
@@ -487,12 +495,23 @@ public class View extends JFrame  implements ActionListener{
 			centerP.setBackground(Color.white);
 			centerP.add(boxP, BorderLayout.NORTH);
 			enableTableHoverEffect(classListTable);
-			JScrollPane sp=new JScrollPane();
-			sp.setBorder(new EmptyBorder(5, 0, 0, 0));
-	        sp.setViewportView(classListTable);
-	        sp.getViewport().setBackground(Color.WHITE);
-	        sp.setBackground(Color.white);
-	        centerP.add(sp, BorderLayout.CENTER);
+			listScrollP= new JScrollPane(
+					 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			
+			
+		
+			listScrollP.setBorder(new EmptyBorder(5, 0, 0, 0));
+			listScrollP.setViewportView(classListTable);
+			listScrollP.getViewport().setBackground(Color.WHITE);
+			listScrollP.setBackground(Color.white);
+			listScrollP.getVerticalScrollBar().setBackground(Color.white);
+			listScrollP.getVerticalScrollBar().setForeground(Color.WHITE);
+			listScrollP.getVerticalScrollBar().setPreferredSize(new Dimension(10, 0));
+	        
+	        
+	      
+	        centerP.add(listScrollP, BorderLayout.CENTER);
 	        JPanel emptyP = new JPanel(null);
 	        emptyP.setPreferredSize(new Dimension(200,30));
 	        emptyP.setBackground(Color.white);
@@ -553,12 +572,46 @@ public class View extends JFrame  implements ActionListener{
 			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
-		
+			listScrollP.setComponentZOrder(listScrollP.getVerticalScrollBar(), 0);
+			listScrollP.setComponentZOrder(listScrollP.getViewport(), 1);
+			listScrollP.getVerticalScrollBar().setOpaque(false);
+
+////			listScrollP.setLayout(new ScrollPaneLayout() {
+//				      @Override
+//				      public void layoutContainer(Container parent) {
+//				        JScrollPane scrollPane = (JScrollPane)parent;
+//
+//				        Rectangle availR = scrollPane.getBounds();
+//				        availR.x = availR.y = 0;
+//
+//				        Insets insets = parent.getInsets();
+//				        availR.x = insets.left;
+//				        availR.y = insets.top;
+//				        availR.width  -= insets.left + insets.right;
+//				        availR.height -= insets.top  + insets.bottom;
+//
+//				        Rectangle vsbR = new Rectangle();
+//				        vsbR.width  = 12;
+//				        vsbR.height = availR.height;
+//				        vsbR.x = availR.x + availR.width - vsbR.width;
+//				        vsbR.y = availR.y;
+//
+//				        if(viewport != null) {
+//				          viewport.setBounds(availR);
+//				        }
+//				        if(vsb != null) {
+//				          vsb.setVisible(true);
+//				          vsb.setBounds(vsbR);
+//				        }
+//				      }
+//		});
+			listScrollP.getVerticalScrollBar().setUI(new stylishScrollBar());
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
+		
 	
-	
+		
 
 		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
 			DefaultTableModel  m = new DefaultTableModel(null, header) ;
@@ -579,7 +632,6 @@ public class View extends JFrame  implements ActionListener{
 			}
 
 			classListTable.setAutoCreateRowSorter(true);
-			classListTable.getRowSorter().toggleSortOrder(0);
 			classListTable = main.setMainTableColSize(classListTable);
 			listTitleL.setText("Teaching request list");
 			centerPage.show(centerPanel, "classListPanel");
@@ -604,6 +656,7 @@ public class View extends JFrame  implements ActionListener{
 			JLabel trainingTitleL;
 			JTextArea requirementTA;
 			JTextArea trainingTA;
+			JScrollPane trainingSP;
 			String [] query = {"Semester","Name","ClassID","ClassDirectorID","ClassDirectorName", 
 					"TeacherStatus", "TeacherID", "TeacherName", "Requirements", "Trainning"};
 			
@@ -757,10 +810,11 @@ public class View extends JFrame  implements ActionListener{
 				requirementTA.setWrapStyleWord(true);
 				requirementTA.setLineWrap(true);
 				requirementTA.setText("");
+				requirementSP.getVerticalScrollBar().setUI(new stylishScrollBar());
 				requirementSP.setViewportView(requirementTA);
 				TAList.add(requirementTA);
 				
-				JScrollPane trainingSP = new JScrollPane();
+				trainingSP = new JScrollPane();
 				trainingSP.setToolTipText("");
 				trainingSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				trainingSP.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -771,7 +825,10 @@ public class View extends JFrame  implements ActionListener{
 				trainingTA.setLineWrap(true);
 				trainingTA.setEditable(false);
 				trainingTA.setText("");
+				trainingSP.getVerticalScrollBar().setUI(new stylishScrollBar());
 				trainingSP.setViewportView(trainingTA);
+
+				
 				TAList.add(trainingTA);
 				
 				
@@ -930,15 +987,20 @@ public class View extends JFrame  implements ActionListener{
 				View.this.refresh();
 			}
 			
+			private void defualtTextArea() {
+				trainingTA.setSelectionStart(0);
+				trainingTA.setSelectionEnd(0);
+				requirementTA.setSelectionStart(0);
+				requirementTA.setSelectionEnd(0);
+			}
 			
-			
-			public void displayDCMode(String[] data, String DCID) {
+			public void displayCDMode(String[] data, String DCID) {
 				updateData(data);
 				courseDetailWBN.setText("Withdraw");
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Submit");
-
-
+				defualtTextArea();
+				
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
@@ -960,6 +1022,7 @@ public class View extends JFrame  implements ActionListener{
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Submit");
 				courseDetailWBN.setVisible(false);
+				defualtTextArea();
 				if(View.this.main.courseDetailPage.statusIndex == 1) {	
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "activeMode");		
 					trainingTA.setEditable(true);
@@ -992,6 +1055,7 @@ public class View extends JFrame  implements ActionListener{
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Approve");
 				courseDetailWBN.setVisible(true);
+				defualtTextArea();
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "normalMode");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
@@ -1003,9 +1067,10 @@ public class View extends JFrame  implements ActionListener{
 				}
 				refresh();
 			}
+		
 			public void displayNormalMode(String[] data) {
 				updateData(data);
-				
+				defualtTextArea();
 				if(View.this.main.courseDetailPage.statusIndex == 1) {
 					View.this.main.courseDetailPage.submitButtonsLayout.show(submitButtonsPanel, "emptyP");
 				}else if(View.this.main.courseDetailPage.statusIndex == 2) {
@@ -1063,7 +1128,9 @@ public class View extends JFrame  implements ActionListener{
 					}
 				});
 
-				scrollPane.setViewportView(staffListTable);			
+				scrollPane.setViewportView(staffListTable);	
+				scrollPane.getVerticalScrollBar().setUI(new stylishScrollBar());
+				
 				ListP.add(scrollPane, BorderLayout.CENTER);
 				JPanel buttonP = new JPanel(new GridLayout(1,1));
 				buttonP.setPreferredSize(new Dimension(50, 80));
@@ -1072,6 +1139,8 @@ public class View extends JFrame  implements ActionListener{
 				selectTeacherSubmitBN = buildBlueButton("Select");
 				selectTeacherSubmitBN.addActionListener(View.this);
 				selectTeacherSubmitBN.setBounds(240, 10, 60, 30);
+				
+				
 				subbuttonP.setBorder(new EmptyBorder(30, 180, 0, 180));
 				subbuttonP.setBackground(Color.white);
 				subbuttonP.add(selectTeacherSubmitBN);
@@ -1149,7 +1218,7 @@ public class View extends JFrame  implements ActionListener{
 		modelTable.getTableHeader().getDefaultRenderer();
 		renderer.setHorizontalAlignment(JLabel.LEFT);					//Align table headers
 		modelTable.setBackground(Color.WHITE);
-		modelTable.getTableHeader().setBackground(new Color(240,240,240));
+		modelTable.getTableHeader().setBackground(Color.white);
 		modelTable.getTableHeader().setReorderingAllowed(false);
 		modelTable.setFillsViewportHeight(true);
 		modelTable.setRowHeight(32);
@@ -1390,15 +1459,15 @@ public class View extends JFrame  implements ActionListener{
 				View.this.main.listPage.statusList.setSelectedIndex(0);
 				View.this.main.listPage.classListClickedHeader=0;
 				View.this.main.listPage.buildSorter();
+				main.listPage.order = SortOrder.ASCENDING;
 				System.out.println(main.listPage.courseClickedFilter);
+				System.out.println(main.listPage.order);
 				selectedButton= btn;
 				btn.setBackground(Color.white);
 			    btn.setForeground(blue);
 				for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
 					if(entry.getKey().equals(btn.getText())) {
 						entry.getValue().press=true;
-
-
 			    	}
 					else {
 						entry.getValue().setDefault();
@@ -1548,78 +1617,60 @@ public class View extends JFrame  implements ActionListener{
 	}
 	
 	
-	
+	public class stylishScrollBar extends BasicScrollBarUI {
+		 private final Dimension d = new Dimension();
+	      @Override 
+	      protected JButton createDecreaseButton(int orientation) {
+	        return new JButton() {
+	          @Override 
+	          public Dimension getPreferredSize() {
+	            return d;
+	          }
+	        };
+	      }
+	      @Override 
+	      protected JButton createIncreaseButton(int orientation) {
+	        return new JButton() {
+	          @Override 
+	          public Dimension getPreferredSize() {
+	            return d;
+	          }
+	        };
+	      }
+	      @Override
+	      protected void paintTrack(Graphics g, JComponent c, Rectangle r) {}
+	      @Override
+	      protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
+	        Graphics2D g2 = (Graphics2D)g.create();
+	        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	                            RenderingHints.VALUE_ANTIALIAS_ON);
+	        Color color = null;
+	        JScrollBar sb = (JScrollBar)c;
+	        if(!sb.isEnabled() || r.width>r.height) {
+	          return;
+	        }else if(isDragging) {
+	          color = new Color(200,200,100,200);
+	        }else if(isThumbRollover()) {
+	          color = new Color(255,255,100,200);
+	        }else {
+	          color = new Color(220,220,200,200);
+	        }
+	        g2.setPaint(color);
+	        g2.fillRoundRect(r.x,r.y,r.width,r.height,10,10);
+	        g2.setPaint(Color.WHITE);
+	        g2.drawRoundRect(r.x,r.y,r.width,r.height,10,10);
+	        g2.dispose();
+	      }
+	      @Override
+	      protected void setThumbBounds(int x, int y, int width, int height) {
+	        super.setThumbBounds(x, y, width, height);
+	        scrollbar.repaint();
+	      }
+	}
 
-	
-//	
-//	
-//	
-//	public JPanel centerPanel() {
-//		JPanel centerPanel = new JPanel(new BorderLayout());
-//		JPanel centerTop = new JPanel(new BorderLayout());
-//		centerPanel.setBackground(Color.white);
-//		centerTop.setBackground(Color.white);
-//		
-//		createCourse = new JButton("create new course");
-//		createCourse.setFocusPainted(false);
-//	
-//		centerTop.setBorder(BorderFactory.createEmptyBorder(20,10,10,50));
-//		centerTop.add(createCourse,BorderLayout.EAST);
-//		centerPanel.add(centerTop,BorderLayout.NORTH);
-//		return centerPanel;
-//	}
-//	
-//	// Create course
-//	public JPanel CreateCoursePanel() {
-//		JPanel center = new JPanel(new GridLayout(5,1,0,10));
-//		center.setBorder(BorderFactory.createEmptyBorder(40,180,100,180));
-//		JPanel buttonPanel = new JPanel(new FlowLayout());
-//		
-//		center.setBackground(Color.white);
-//		buttonPanel.setBackground(Color.white);
-//		
-//		JLabel label = new JLabel("create new course", SwingConstants.CENTER);
-//		Font f = new Font("TimesRoman",Font.PLAIN,23);
-//		label.setFont(f);
-//		
-//		courseNameTF = new JTextField();
-//		requirment1TF= new JTextField();
-//		requirment2TF= new JTextField();
-//		
-//		courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, "class name"));
-//		requirment1TF.addFocusListener(new JTextFieldHintListener(requirment1TF, "requirment 1"));
-//		requirment2TF.addFocusListener(new JTextFieldHintListener(requirment2TF, "requirment 2"));
-//		
-//		courseNameTF.setBorder(BorderFactory.createLineBorder(blue));
-//		requirment1TF.setBorder(BorderFactory.createLineBorder(blue));
-//		requirment2TF.setBorder(BorderFactory.createLineBorder(blue));
-//		
-////		add = new JButton("add a new requirement");
-//		ok = new JButton("Ok");
-//		cancel = new JButton("Cancel");
-//		
-//		ok.setBackground(blue);
-//		ok.setFocusPainted(false);
-//	
-//		
-//		cancel.setBackground(blue);
-//		cancel.setFocusPainted(false);
-//
-//		
-//		buttonPanel.add(ok);
-//		buttonPanel.add(cancel);
-//		
-//		center.add(label);
-//		center.add(courseNameTF);
-//		center.add(requirment1TF);
-//		center.add(requirment2TF);
-////		center.add(add);
-//		center.add(buttonPanel);
-//		return center;
-//	}
-//	
-//	
-	}	
+
+
+}	
 	
 	
 

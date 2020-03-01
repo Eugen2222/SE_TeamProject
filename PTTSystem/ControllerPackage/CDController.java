@@ -59,7 +59,7 @@ public class CDController extends Controller implements ActionListener{
 	}
 
 	public void displayCoursePage(String classId){
-	       view.main.courseDetailPage.displayDCMode(
+	       view.main.courseDetailPage.displayCDMode(
 	    		   model.getClass(classId, view.main.courseDetailPage.getQuery()), model.getUser()[0]);
 	}
 	

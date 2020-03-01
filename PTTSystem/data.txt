@@ -15,7 +15,7 @@ ID, Password, Type, Name
 Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date
 -------------------------------------------------
 "1", "0001", "CS", "English, Math, French", "Assigned", "0001", "0007", "Can Run can hide", "2020/02/20", 
-"5", "0002", "Programming", "Need teacher who knows Python", "Pending", "0001", "0008", "Python", "2020/02/20", 
+"5", "0002", "Programming", "Need teacher who knows Python", "Pending", "0001", "0002", "go to sleep", "2020/02/20", 
 "5", "0003", "History", "Need one teacher who knows java", "Submitted", "0001", "0004", "Java", "2020/02/20", 
 "5", "0004", "Math", "Need one teacher", "Approved", "0001", "0004", "Law", "2020/02/20", 
 "5", "0005", "Statistic", "Should count", "Assigned", "0004", "0004", "Can count very quickly.", "2020/02/20", 
@@ -32,3 +32,5 @@ Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID
 "5", "0016", "Finance", "Need to know money.", "Assigned", "0004", "0004", "Have a lots$n$of$n$money$n$in$n$his$n$bag.", "2020/02/20", 
 "5", "0017", "test", "test$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$$n$test", "Submitted", "0001", "", "000$n$01$n$1$n$1$n$$n$1$n$1$n$1$n$1$n$1$n$1$n$$n$1$n$", "2020/02/29", 
 "5", "0018", "213", "321", "Pending", "0001", "", "", "2020/03/01", 
+"5", "0019", "How to use Google ", "table100$n$can speak French", "Submitted", "0001", "0008", "french lesson", "2020/03/01", 
+"5", "0020", "GG", "GGGG$n$G$n$G$n$G", "Assigned", "0001", "0007", "123123", "2020/03/01", 
