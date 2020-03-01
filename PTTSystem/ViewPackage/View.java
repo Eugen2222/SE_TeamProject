@@ -14,6 +14,9 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.event.ChangeListener;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.table.TableRowSorter;
 
@@ -449,6 +453,10 @@ public class View extends JFrame  implements ActionListener{
 		public class ListPage{
 			JLabel listTitleL;
 			JComboBox statusList;
+
+			int classListClickedHeader= 0;
+			SortOrder order = SortOrder.ASCENDING;
+			String courseClickedFilter="All";
 			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"
 					};
 		public String [] getHeader() {
@@ -464,15 +472,23 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel.add(listTitleL, BorderLayout.NORTH);
 			classListTable = buildModelListTable(header, list);
 			JPanel centerP = new JPanel(new BorderLayout());
-			String[] s = {"Pending"};
-//			statusList = new JComboBox(s);
-//			statusList.setSelectedIndex(0);
-//			statusList.addActionListener(View.this);
-//			centerP.setBorder(new EmptyBorder(20, 0, 0, 0));
-//			centerP.add(statusList, BorderLayout.NORTH);
+			String[] s = {"All", "Pending", "Assigned", "Submitted", "Approved"};
+			statusList = new JComboBox(s);
+			statusList.setSelectedIndex(0);
+			statusList.setBackground(Color.white);
+			statusList.setFont(new Font("Arial",Font.PLAIN,12));
+			statusList.setBounds(425, 0, 80, 20);
+			
+			JPanel boxP = new JPanel(null);
+			boxP.setPreferredSize(new Dimension(200,20));
+			boxP.setBackground(Color.white);
+			boxP.add(statusList);
+			centerP.setBorder(new EmptyBorder(15, 0, 0, 0));
+			centerP.setBackground(Color.white);
+			centerP.add(boxP, BorderLayout.NORTH);
 			enableTableHoverEffect(classListTable);
 			JScrollPane sp=new JScrollPane();
-			sp.setBorder(new EmptyBorder(10, 0, 0, 0));
+			sp.setBorder(new EmptyBorder(5, 0, 0, 0));
 	        sp.setViewportView(classListTable);
 	        sp.getViewport().setBackground(Color.WHITE);
 	        sp.setBackground(Color.white);
@@ -485,20 +501,60 @@ public class View extends JFrame  implements ActionListener{
 		public void displayMyCourseListPanel(String[] header, String[][] list) {	
 			displayClassListPanel(header,list);
 			listTitleL.setText("My course list");
+
 		}
 		
+		public void buildSorter() {
+			statusList.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+				courseClickedFilter = (String) statusList.getSelectedItem();
+
+			     RowFilter<DefaultTableModel, Object> rf = null;
+
+			     try {
+			    	 if(courseClickedFilter.equals("All")) {}
+			    	 else {
+			    		 rf = RowFilter.regexFilter(courseClickedFilter,
+			    				 classListTable.getColumnModel().getColumnIndex("TeachingStatus"));
+			    		 
+			    	 }
+			      } catch (PatternSyntaxException ex) {
+			                     ex.printStackTrace();
+			      }
+			      ((TableRowSorter)classListTable.getRowSorter()).setRowFilter(rf);
+
+			     }
+
+			});
+		
+			JTableHeader listHeader = classListTable.getTableHeader();
+			listHeader.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					classListClickedHeader = (listHeader.columnAtPoint(e.getPoint()));
+					RowSorter.SortKey key = classListTable.getRowSorter().getSortKeys().get(0);
+					order= key.getSortOrder();
+					System.out.print(order);
+				}
+				
+			});
+			classListTable.getRowSorter().toggleSortOrder(classListClickedHeader);
+			
+
+		}
 		public void displayClassListPanel(String[] header, String[][] list) {	
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
 			View.this.classListTable.setRowSorter(null);
 			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
-			centerPage.show(centerPanel, "classListPanel");
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
-			classListTable.getRowSorter().toggleSortOrder(0);
+		
+			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
-			
+	
+	
 
 		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
 			DefaultTableModel  m = new DefaultTableModel(null, header) ;
@@ -1143,6 +1199,7 @@ public class View extends JFrame  implements ActionListener{
 		String requestListBNName = "         Teaching Request list";
 		String classListBNName = "         Course list";
 		String logoutBNName = "         Log out";
+		JButton selectedButton = null;
 		Bar(){
 			BNListenerList = new HashMap<String, BarListener>();
 		}
@@ -1299,19 +1356,53 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public void clickBarButton(JButton btn) {
-			 btn.setBackground(Color.white);
-		     btn.setForeground(blue);
-			 for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
-		    	   if(entry.getKey().equals(btn.getText())) {
-		    		   entry.getValue().press=true;
-		    	   }
-		    	   else {
+			if(selectedButton!=null&&selectedButton.equals(btn)) {
+				System.out.println(main.listPage.courseClickedFilter+"2");
+				RowFilter<DefaultTableModel, Object> rf = null;
+				try {					
+				    if(main.listPage.courseClickedFilter.equals("All")) {}
+				    else {
+				    	 rf=RowFilter.regexFilter(main.listPage.courseClickedFilter,
+				    	 classListTable.getColumnModel().getColumnIndex("TeachingStatus"));
+				    		 
+				    }
+				} catch (PatternSyntaxException ex) {
+				                  ex.printStackTrace();
+				}
 
-		    		   entry.getValue().setDefault();
-		    	   }
-		    	   View.this.refresh();
-			 }
-			
+
+		    	TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(classListTable.getModel());
+		   
+		    	classListTable.setRowSorter(sorter);
+
+		    	List<RowSorter.SortKey> sortKeys = new ArrayList<>(1);
+		    	System.out.println(main.listPage.order);
+		    	sortKeys.add(new RowSorter.SortKey(main.listPage.classListClickedHeader, main.listPage.order));
+		    	sorter.setSortKeys(sortKeys);
+		    	classListTable.setRowSorter(sorter);
+		    	((TableRowSorter)classListTable.getRowSorter()).setRowFilter(rf);
+			}			
+			else {
+				View.this.main.listPage.statusList.setSelectedIndex(0);
+				View.this.main.listPage.classListClickedHeader=0;
+				View.this.main.listPage.buildSorter();
+				System.out.println(main.listPage.courseClickedFilter);
+				selectedButton= btn;
+				btn.setBackground(Color.white);
+			    btn.setForeground(blue);
+				for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
+					if(entry.getKey().equals(btn.getText())) {
+						entry.getValue().press=true;
+
+
+			    	}
+					else {
+						entry.getValue().setDefault();
+					}
+				}
+			}
+			 
+	    	View.this.refresh();
 		}
 		
 		public class BarListener implements ChangeListener{
