@@ -85,7 +85,7 @@ public class CDController extends Controller implements ActionListener{
 			String class1 = view.main.createClassPage.getCreateClassString();
 
 			if(class1==null) {
-				view.main.createClassPage.cleanCreateClassText();
+				view.main.createClassPage.emptyTextWarning();
 			}else{
 				this.model.createClass(class1);
 				this.model.save();
@@ -94,7 +94,7 @@ public class CDController extends Controller implements ActionListener{
 		}
 		
 		else if(e.getSource()==view.createClassCBN) {
-
+			view.main.createClassPage.cleanText();
 			back();
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {

@@ -397,7 +397,9 @@ public class View extends JFrame  implements ActionListener{
 					
 //					requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
 					
-					JScrollPane reqScrollPanel = new JScrollPane( requirementTA );
+					JScrollPane reqScrollPanel = buildStylishScrollP();
+					reqScrollPanel.setViewportView(requirementTA);
+					requirementTA.setEditable(true);
 					reqScrollPanel.setBounds(148, 253, 319, 160);
 
 					reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
@@ -449,12 +451,17 @@ public class View extends JFrame  implements ActionListener{
 			return s;
 		}
 		
-		public void cleanCreateClassText() {
+		public void emptyTextWarning() {
 			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
 			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
 
 		}
 		
+		public void cleanText() {
+			courseNameTF.setText("");
+			requirementTA.setText("");
+			
+		}
 	
 		}
 		
@@ -495,19 +502,10 @@ public class View extends JFrame  implements ActionListener{
 			centerP.setBackground(Color.white);
 			centerP.add(boxP, BorderLayout.NORTH);
 			enableTableHoverEffect(classListTable);
-			listScrollP= new JScrollPane(
-					 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-				      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			
-			
-		
+			listScrollP= buildStylishScrollP ();
 			listScrollP.setBorder(new EmptyBorder(5, 0, 0, 0));
 			listScrollP.setViewportView(classListTable);
-			listScrollP.getViewport().setBackground(Color.WHITE);
-			listScrollP.setBackground(Color.white);
-			listScrollP.getVerticalScrollBar().setBackground(Color.white);
-			listScrollP.getVerticalScrollBar().setForeground(Color.WHITE);
-			listScrollP.getVerticalScrollBar().setPreferredSize(new Dimension(10, 0));
+			
 	        
 	        
 	      
@@ -565,6 +563,8 @@ public class View extends JFrame  implements ActionListener{
 			
 
 		}
+		
+		
 		public void displayClassListPanel(String[] header, String[][] list) {	
 			TableModel m = new DefaultTableModel(list, header) ;
 			View.this.classListTable.setModel(m);
@@ -575,37 +575,10 @@ public class View extends JFrame  implements ActionListener{
 			listScrollP.setComponentZOrder(listScrollP.getVerticalScrollBar(), 0);
 			listScrollP.setComponentZOrder(listScrollP.getViewport(), 1);
 			listScrollP.getVerticalScrollBar().setOpaque(false);
+			
 
-////			listScrollP.setLayout(new ScrollPaneLayout() {
-//				      @Override
-//				      public void layoutContainer(Container parent) {
-//				        JScrollPane scrollPane = (JScrollPane)parent;
-//
-//				        Rectangle availR = scrollPane.getBounds();
-//				        availR.x = availR.y = 0;
-//
-//				        Insets insets = parent.getInsets();
-//				        availR.x = insets.left;
-//				        availR.y = insets.top;
-//				        availR.width  -= insets.left + insets.right;
-//				        availR.height -= insets.top  + insets.bottom;
-//
-//				        Rectangle vsbR = new Rectangle();
-//				        vsbR.width  = 12;
-//				        vsbR.height = availR.height;
-//				        vsbR.x = availR.x + availR.width - vsbR.width;
-//				        vsbR.y = availR.y;
-//
-//				        if(viewport != null) {
-//				          viewport.setBounds(availR);
-//				        }
-//				        if(vsb != null) {
-//				          vsb.setVisible(true);
-//				          vsb.setBounds(vsbR);
-//				        }
-//				      }
-//		});
-			listScrollP.getVerticalScrollBar().setUI(new stylishScrollBar());
+
+
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -800,7 +773,7 @@ public class View extends JFrame  implements ActionListener{
 				operateP.add(trainingTitleL);
 				
 				
-				JScrollPane requirementSP = new JScrollPane();
+				JScrollPane requirementSP = buildStylishScrollP();
 				requirementSP.setBounds(65, 170, 495, 106);
 				classDetailPanel.add(requirementSP);
 				
@@ -814,7 +787,7 @@ public class View extends JFrame  implements ActionListener{
 				requirementSP.setViewportView(requirementTA);
 				TAList.add(requirementTA);
 				
-				trainingSP = new JScrollPane();
+				trainingSP = buildStylishScrollP();
 				trainingSP.setToolTipText("");
 				trainingSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				trainingSP.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -1112,7 +1085,7 @@ public class View extends JFrame  implements ActionListener{
 
 				ListP.add(semesterlabel, BorderLayout.NORTH);
 				
-				JScrollPane scrollPane = new JScrollPane();
+				JScrollPane scrollPane = buildStylishScrollP();
 
 				
 				staffListTable = buildModelListTable(null, null);	
@@ -1616,6 +1589,20 @@ public class View extends JFrame  implements ActionListener{
 		return btn;
 	}
 	
+	public JScrollPane buildStylishScrollP () {
+		JScrollPane sp = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sp.setComponentZOrder(sp.getVerticalScrollBar(), 0);
+		sp.setComponentZOrder(sp.getViewport(), 1);
+		sp.getVerticalScrollBar().setOpaque(false);
+		sp.getVerticalScrollBar().setUI(new stylishScrollBar());
+		sp.getViewport().setBackground(Color.WHITE);
+		sp.setBackground(Color.white);
+		sp.getVerticalScrollBar().setBackground(Color.white);
+		sp.getVerticalScrollBar().setForeground(Color.WHITE);
+		sp.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+		return sp;
+	}
 	
 	public class stylishScrollBar extends BasicScrollBarUI {
 		 private final Dimension d = new Dimension();
@@ -1666,6 +1653,35 @@ public class View extends JFrame  implements ActionListener{
 	        super.setThumbBounds(x, y, width, height);
 	        scrollbar.repaint();
 	      }
+////		listScrollP.setLayout(new ScrollPaneLayout() {
+//	      @Override
+//	      public void layoutContainer(Container parent) {
+//	        JScrollPane scrollPane = (JScrollPane)parent;
+//
+//	        Rectangle availR = scrollPane.getBounds();
+//	        availR.x = availR.y = 0;
+//
+//	        Insets insets = parent.getInsets();
+//	        availR.x = insets.left;
+//	        availR.y = insets.top;
+//	        availR.width  -= insets.left + insets.right;
+//	        availR.height -= insets.top  + insets.bottom;
+//
+//	        Rectangle vsbR = new Rectangle();
+//	        vsbR.width  = 12;
+//	        vsbR.height = availR.height;
+//	        vsbR.x = availR.x + availR.width - vsbR.width;
+//	        vsbR.y = availR.y;
+//
+//	        if(viewport != null) {
+//	          viewport.setBounds(availR);
+//	        }
+//	        if(vsb != null) {
+//	          vsb.setVisible(true);
+//	          vsb.setBounds(vsbR);
+//	        }
+//	      }
+//});
 	}
 
 
