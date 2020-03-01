@@ -493,7 +493,11 @@ public class View extends JFrame  implements ActionListener{
 	        sp.getViewport().setBackground(Color.WHITE);
 	        sp.setBackground(Color.white);
 	        centerP.add(sp, BorderLayout.CENTER);
+	        JPanel emptyP = new JPanel(null);
+	        emptyP.setPreferredSize(new Dimension(200,30));
+	        emptyP.setBackground(Color.white);
 			classListPanel.add(centerP, BorderLayout.CENTER);
+			classListPanel.add(emptyP, BorderLayout.SOUTH);
 			classListPanel.setVisible(true);
 			centerPanel.add(classListPanel, "classListPanel");
 		}
