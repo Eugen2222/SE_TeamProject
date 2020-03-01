@@ -42,6 +42,7 @@ import javax.swing.RowSorter;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -447,6 +448,7 @@ public class View extends JFrame  implements ActionListener{
 		
 		public String getCreateClassString() {
 			String s = "";
+			s+= encodeString(classIDL.getText());
 			if(courseNameTF.getText().equals(defaultClassName)|| courseNameTF.getText().equals("")) {
 				return null;
 			}
@@ -483,8 +485,12 @@ public class View extends JFrame  implements ActionListener{
 			int classListClickedHeader= 0;
 			SortOrder order = SortOrder.ASCENDING;
 			String courseClickedFilter="All";
-			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"
-					};
+			String [] courseListFilters = {"All", "Pending", "Assigned", "Submitted", "Approved"};
+			String [] requestListFilters = {"All","Submitted", "Approved"};
+			DefaultComboBoxModel courseListModel = new DefaultComboBoxModel(courseListFilters)  ;
+			DefaultComboBoxModel requestListModel = new DefaultComboBoxModel( requestListFilters );
+
+			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"};
 		public String [] getHeader() {
 			return tableHeader;
 			
@@ -498,8 +504,8 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel.add(listTitleL, BorderLayout.NORTH);
 			classListTable = buildModelListTable(header, list);
 			JPanel centerP = new JPanel(new BorderLayout());
-			String[] s = {"All", "Pending", "Assigned", "Submitted", "Approved"};
-			statusList = new JComboBox(s);
+
+			statusList = new JComboBox(courseListModel);
 			statusList.setSelectedIndex(0);
 			statusList.setBackground(Color.white);
 			statusList.setForeground(new Color(70,70,70));
@@ -573,7 +579,9 @@ public class View extends JFrame  implements ActionListener{
 			classListPanel.add(centerP, BorderLayout.CENTER);
 			classListPanel.add(emptyP, BorderLayout.SOUTH);
 			classListPanel.setVisible(true);
+
 			centerPanel.add(classListPanel, "classListPanel");
+
 		}
 		
 		public void displayMyCourseListPanel(String[] header, String[][] list) {	
@@ -630,6 +638,7 @@ public class View extends JFrame  implements ActionListener{
 			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
+			statusList.setModel(courseListModel);
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -658,6 +667,7 @@ public class View extends JFrame  implements ActionListener{
 			classListTable.setAutoCreateRowSorter(true);
 			classListTable = main.setMainTableColSize(classListTable);
 			listTitleL.setText("Teaching request list");
+			statusList.setModel(requestListModel);
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -834,23 +844,23 @@ public class View extends JFrame  implements ActionListener{
 				requirementTA.setWrapStyleWord(true);
 				requirementTA.setLineWrap(true);
 				requirementTA.setText("");
-				requirementSP.getVerticalScrollBar().setUI(new stylishScrollBar());
+				requirementSP.getVerticalScrollBar().setUI(new stylishDarkScrollBar());
 				requirementSP.setViewportView(requirementTA);
 				requirementSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 				TAList.add(requirementTA);
 				
-				trainingSP = buildStylishScrollP();
-				trainingSP.setToolTipText("");
-				trainingSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-				trainingSP.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-				trainingSP.setBounds(158, 36, 319, 70);
-				operateP.add(trainingSP);
+				
 				trainingTA  = new JTextArea();
 				trainingTA.setWrapStyleWord(true);
 				trainingTA.setLineWrap(true);
 				trainingTA.setEditable(false);
 				trainingTA.setText("");
-				trainingSP.getVerticalScrollBar().setUI(new stylishScrollBar());
+				
+				trainingSP = buildStylishScrollP();
+				trainingSP.setToolTipText("");
+				trainingSP.setBounds(158, 36, 319, 70);
+				operateP.add(trainingSP);
+				trainingSP.getVerticalScrollBar().setUI(new stylishDarkScrollBar());
 				trainingSP.setViewportView(trainingTA);
 				trainingSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 
@@ -1739,11 +1749,61 @@ public class View extends JFrame  implements ActionListener{
 //	        }
 //	      }
 //});
-	}
+	      	}
+		}
+	      public class stylishDarkScrollBar extends BasicScrollBarUI {
+	 		 private final Dimension d = new Dimension();
+	 	      @Override 
+	 	      protected JButton createDecreaseButton(int orientation) {
+	 	        return new JButton() {
+	 	          @Override 
+	 	          public Dimension getPreferredSize() {
+	 	            return d;
+	 	          }
+	 	        };
+	 	      }
+	 	      @Override 
+	 	      protected JButton createIncreaseButton(int orientation) {
+	 	        return new JButton() {
+	 	          @Override 
+	 	          public Dimension getPreferredSize() {
+	 	            return d;
+	 	          }
+	 	        };
+	 	      }
+	 	      @Override
+	 	      protected void paintTrack(Graphics g, JComponent c, Rectangle r) {}
+	 	      @Override
+	 	      protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
+	 	        Graphics2D g2 = (Graphics2D)g.create();
+	 	        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	 	                            RenderingHints.VALUE_ANTIALIAS_ON);
+	 	        Color color = null;
+	 	        JScrollBar sb = (JScrollBar)c;
+	 	        if(!sb.isEnabled() || r.width>r.height) {
+	 	          return;
+	 	        }else if(isDragging) {
+	 	          color = new Color(30,30,30,200);
+	 	        }else if(isThumbRollover()) {
+	 	          color = new Color(30,30,30,200);
+	 	        }else {
+	 	          color = new Color(114,114,114,200);
+	 	        }
+	 	        g2.setPaint(color);
+	 	        g2.fillRoundRect(r.x,r.y,r.width,r.height,10,10);
+	 	        g2.setPaint(Color.WHITE);
+	 	        g2.drawRoundRect(r.x,r.y,r.width,r.height,10,10);
+	 	        g2.dispose();
+	 	      }
+	 	      @Override
+	 	      protected void setThumbBounds(int x, int y, int width, int height) {
+	 	        super.setThumbBounds(x, y, width, height);
+	 	        scrollbar.repaint();
+	 	      
+	 	      }
+	      }
+}
 
-	}
-
-}	
 	
 	
 

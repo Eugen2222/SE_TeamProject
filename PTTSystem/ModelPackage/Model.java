@@ -24,7 +24,7 @@ public  class Model <T extends Populated>{
 	//Semester
 	private int latestSem = 5;
 	private int selectedSem = 0;
-	
+	private int newClassID = 0;
 	protected List<CDClass> classList;
 	protected List<Account> accountList;
 	private HashMap<String,LinkedList<T>> database;
@@ -52,13 +52,14 @@ public  class Model <T extends Populated>{
 		String[] s1 = new String[] {"classDirector", "Name"};
 		classListFKDataHeader.put("ClassDirectorName", s1);
 		classListFKDataHeader.put("TeacherName", s);
-
+		
 		mf = new ManageFile();
 		mf.readFile();
 		try {
 			database.put("accountList", (LinkedList<T>) accountList);
 			database.put("classList", (LinkedList<T>) classList);
-
+			newClassID = (this.classList.isEmpty()) ?  1 : 
+				(Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 		}catch(ClassCastException e) {
 			e.printStackTrace();
 		}
@@ -141,21 +142,19 @@ public  class Model <T extends Populated>{
 	
 	public String[] getCreateClassInfom() {
 		String []s =new String[2]; 
-		int classID = 0;
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		LocalDateTime now = LocalDateTime.now();  
-		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
-		s[0] = String.format("%04d", classID);
+		s[0] = String.format("%04d", newClassID);
 		s[1] = dtf.format(now);
+		newClassID++;
 		return s;
 	}
 	
 	public void createClass(String s) {
-		int classID = 0;
-		classID = (this.classList.isEmpty()) ?  1 : (Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 		List<String> tem = this.getWordInQuotes(s);
-		String className = tem.get(0);
-		String classRequirements = tem.get(1);
+		String classID = tem.get(0);
+		String className = tem.get(1);
+		String classRequirements = tem.get(2);
 		
 		List<String> cls= new LinkedList<String>();
 		cls.add(Integer.toString(selectedSem));
