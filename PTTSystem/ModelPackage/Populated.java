@@ -12,7 +12,7 @@ public interface Populated {
 	public String  getTableHeader();
 	public void setTableTitle(String s);
 	public String getFKID();
-	public <String, T extends Populated> HashMap<String, T> getFKList();
+	public  HashMap<String, Populated> getFKList();
 	public String getPKID();
 
 	public String getName();

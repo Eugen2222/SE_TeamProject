@@ -1,7 +1,5 @@
 package ControllerPackage;
 import ModelPackage.Model;
-
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ViewPackage.View;
@@ -55,7 +53,7 @@ public class CDController extends Controller implements ActionListener{
 		view.main.listPage.displayMyCourseListPanel(view.main.listPage.getHeader(), 
 				model.getClassListTable(classListTableQuery,model.getUser()[0]));
 		this.displayPage = "myCourseListPage";
-		view.bar.clickBarButton(view.myClassListBN);
+
 	}
 
 	public void displayCoursePage(String classId){
@@ -77,7 +75,7 @@ public class CDController extends Controller implements ActionListener{
 		if(e.getSource()==view.createClassBN) {
 			view.main.createClassPage.updatePage(model.getCreateClassInfom());
 			view.main.createClassPage.displayCreateClassPanel();
-			view.bar.clickBarButton(view.createClassBN);
+
 		}
 		
 		

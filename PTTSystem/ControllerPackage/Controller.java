@@ -73,14 +73,14 @@ public class Controller implements ActionListener{
 		view.main.listPage.displayClassListPanel(view.main.listPage.getHeader(), 
 				model.getClassListTable(classListTableQuery,null));
 		displayPage = "CourseListPage";
-		view.bar.clickBarButton(view.classListBN);
+
 	}
 	
 	public void displayTeachingRequestListPage() {
 		view.main.listPage.displayTeachingRequestListPanel(view.main.listPage.getHeader(), 
 				model.getClassListTable(classListTableQuery,null));
 		displayPage = "TeachingRequestListPage";
-		view.bar.clickBarButton(view.requestListBN);
+
 	}
 	
 	

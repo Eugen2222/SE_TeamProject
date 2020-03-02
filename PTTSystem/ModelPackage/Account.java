@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Account <T extends Populated> implements Populated{
+public class Account implements Populated{
 	private String ID = "";
 	private String PW = "";
 	private String type = "";
@@ -13,7 +13,7 @@ public class Account <T extends Populated> implements Populated{
 	private List<String> rowData = new LinkedList<String>();
 	private String tableHeader = "";
 	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
-	public  <T extends Populated >  Account(List<String> a, List<T> fkList) {
+	public <T extends Populated>  Account(List<String> a, List<T> fkList) {
 		this.ID = a.get(0);
 		this.PW = a.get(1);
 		this.type = a.get(2);
@@ -69,14 +69,6 @@ public class Account <T extends Populated> implements Populated{
 		return -1;
 	}
 	
-	public List<String> getData() {
-		List<String> s = new LinkedList<String>();
-		s.add(this.ID);
-		s.add(this.PW);
-		s.add(this.getTypeName());
-		s.add(this.name);
-		return s;
-	}
 	
 	public List<String> getRawData() {
 		List<String> s = new LinkedList<String>();
@@ -132,7 +124,7 @@ public class Account <T extends Populated> implements Populated{
 	}
 
 	@Override
-	public HashMap<String, T>  getFKList() {
+	public HashMap<String, Populated>  getFKList() {
 		// TODO Auto-generated method stub
 		return null;
 	}

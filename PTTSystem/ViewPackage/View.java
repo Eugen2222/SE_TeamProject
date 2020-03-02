@@ -6,18 +6,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -40,10 +36,8 @@ import javax.swing.SortOrder;
 import javax.swing.RowSorter;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -56,8 +50,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
@@ -436,6 +428,7 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public void displayCreateClassPanel() {
+			bar.switchMainPage(createClassBN);
 			centerPage.show(centerPanel, "createClassPanel");
 			View.this.refresh();
 		}
@@ -585,9 +578,15 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public void displayMyCourseListPanel(String[] header, String[][] list) {	
-			displayClassListPanel(header,list);
-			statusList.repaint();
+			TableModel m = new DefaultTableModel(list, header) ;
+			View.this.classListTable.setModel(m);
+			View.this.classListTable.setRowSorter(null);
+			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
 			listTitleL.setText("My course list");
+			View.this.classListTable.setAutoCreateRowSorter(true);
+			statusList.setModel(courseListModel);
+			bar.switchMainPage(myClassListBN);
+			centerPage.show(centerPanel, "classListPanel");
 
 		}
 		
@@ -639,6 +638,7 @@ public class View extends JFrame  implements ActionListener{
 			listTitleL.setText("Course list");
 			View.this.classListTable.setAutoCreateRowSorter(true);
 			statusList.setModel(courseListModel);
+			bar.switchMainPage(classListBN);
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -668,6 +668,7 @@ public class View extends JFrame  implements ActionListener{
 			classListTable = main.setMainTableColSize(classListTable);
 			listTitleL.setText("Teaching request list");
 			statusList.setModel(requestListModel);
+			bar.switchMainPage(requestListBN);
 			centerPage.show(centerPanel, "classListPanel");
 			refresh();
 		}
@@ -1466,8 +1467,14 @@ public class View extends JFrame  implements ActionListener{
 			return btn;
 		}
 		
-		public void clickBarButton(JButton btn) {
+		public void switchMainPage(JButton btn) {
+			System.out.println("yo");
+			System.out.println(btn.getText());
+			if(selectedButton!=null) {
+				System.out.println(selectedButton.getText());
+			}
 			if(selectedButton!=null&&selectedButton.equals(btn)) {
+				System.out.println("yo");
 				System.out.println(main.listPage.courseClickedFilter+"2");
 				RowFilter<DefaultTableModel, Object> rf = null;
 				try {					
@@ -1487,7 +1494,7 @@ public class View extends JFrame  implements ActionListener{
 		    	classListTable.setRowSorter(sorter);
 
 		    	List<RowSorter.SortKey> sortKeys = new ArrayList<>(1);
-		    	System.out.println(main.listPage.order);
+		    	System.out.println(main.listPage.order+"1");
 		    	sortKeys.add(new RowSorter.SortKey(main.listPage.classListClickedHeader, main.listPage.order));
 		    	sorter.setSortKeys(sortKeys);
 		    	classListTable.setRowSorter(sorter);
@@ -1498,8 +1505,8 @@ public class View extends JFrame  implements ActionListener{
 				View.this.main.listPage.classListClickedHeader=0;
 				View.this.main.listPage.buildSorter();
 				main.listPage.order = SortOrder.ASCENDING;
-				System.out.println(main.listPage.courseClickedFilter);
-				System.out.println(main.listPage.order);
+				System.out.println(main.listPage.courseClickedFilter+"22");
+				System.out.println(main.listPage.order+"22");
 				selectedButton= btn;
 				btn.setBackground(Color.white);
 			    btn.setForeground(blue);

@@ -1,8 +1,7 @@
 package ModelPackage;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-public class CDClass <T extends Populated > implements Populated{
+
+public class CDClass implements Populated{
 	private String classID;
 	private String name;
 //	private List<String> requirementList = new ArrayList<String>(); 
@@ -20,11 +19,11 @@ public class CDClass <T extends Populated > implements Populated{
 	private String tableTitle;
 	private Account classDirector;
 	private Account teacher;
+	private HashMap<String, Populated> FKHeaderList = new HashMap<String, Populated>();
 	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
 	private List<Object> rowData = new LinkedList<Object>();
-	private HashMap<String, T> FKHeaderList = new HashMap<String, T>();
 	private String tableHeader = "";
-	public CDClass(List<String> s, List<T> fkList) {
+	public <T extends Populated> CDClass(List<String> s, List<T> fkList) {
 		this.semester = s.get(0);
 		this.classID = s.get(1);
 		this.name = s.get(2);
@@ -54,35 +53,39 @@ public class CDClass <T extends Populated > implements Populated{
 
 		
 		
-		this.FKHeaderList.put("teacher", (T) this.teacher);	//FK classDirectorID;
-		this.FKHeaderList.put("classDirector", (T) this.classDirector);	//FK teacherID;
+		this.FKHeaderList.put("teacher",  this.teacher);	//FK classDirectorID;
+		this.FKHeaderList.put("classDirector", this.classDirector);	//FK teacherID;
 	}
 	
-	public <T extends Populated > void setupFK(List <T> list) {
+	public <T extends Populated> void setupFK(List <T> list) {
 		if(list.get(0) instanceof Account) {
-				setDC((List<Account>)list);
+				setDC(list);
 				System.out.println(this.classDirector.getName());
 				if(this.teacherID!=""||this.teacherID!=null) {
-					setTeacher((List<Account>)list);
+					setTeacher(list);
 				}
 		}
 	}
 	
 	
-	public void setDC(List <Account> list) {
-		for(Account a : list) {
-			if(a.getPKID().equals(this.classDirectorID)) {
-				this.classDirector = a;
-				break;
+	public <T extends Populated> void setDC(List<T> list) {
+		if(list.get(0) instanceof Account) {
+			for(T a : list) {
+				if(a.getPKID().equals(this.classDirectorID)) {
+					this.classDirector = (Account) a;
+					break;
+				}
 			}
+		}else {
+			System.out.println("Error FK table");
 		}
 		
 	}
 	
-	public void setTeacher(List <Account> list) {
-		for(Account a : list) {
+	public<T extends Populated> void setTeacher(List<T> list) {
+		for(T a : list) {
 			if(a.getPKID().equals(this.teacherID)) {
-				this.teacher = a;
+				this.teacher = (Account) a;
 				break;
 			}
 		}
@@ -91,7 +94,7 @@ public class CDClass <T extends Populated > implements Populated{
 	
 	
 	
-	public HashMap<String, T> getFKList() {
+	public HashMap<String, Populated> getFKList() {
 		return this.FKHeaderList;
 	}
 	
@@ -149,10 +152,10 @@ public class CDClass <T extends Populated > implements Populated{
 	}
 	
 	
-	public <T extends Populated >void assignTeacher(String[] s, List<T> list) {
+	public <T extends Populated> void assignTeacher(String[] s, List<T> list) {
 		this.teacherID=s[1];
 		this.training=s[2];
-		setTeacher((List<Account>)list);
+		setTeacher(list);
 		this.setTeacherStatus("Assigned");	
 		updateRowData();
 	}
@@ -176,15 +179,15 @@ public class CDClass <T extends Populated > implements Populated{
 	}
 	
 
-	
-	public  List<Object> getData(List<Integer> listOfHeaderIndex ) {
-		List<Object> s = new ArrayList<Object>() ;
-		for(Integer i : listOfHeaderIndex) {
-			s.add(rowData.get(i));
-		}
-		return s;
-	}
-	
+//	
+//	public  List<Object> getData(List<Integer> listOfHeaderIndex ) {
+//		List<Object> s = new ArrayList<Object>() ;
+//		for(Integer i : listOfHeaderIndex) {
+//			s.add(rowData.get(i));
+//		}
+//		return s;
+//	}
+//	
 	public  String getElement(String s) {
 		if(tableHeaderList.containsKey(s)){
 			return rowData.get(tableHeaderList.get(s)).toString();

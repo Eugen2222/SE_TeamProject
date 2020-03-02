@@ -6,10 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -22,13 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 public  class Model <T extends Populated>{
 	
 	//Semester
-	private int latestSem = 5;
+	private int latestSem = 0;
 	private int selectedSem = 0;
 	private int newClassID = 0;
 	protected List<CDClass> classList;
 	protected List<Account> accountList;
-	private HashMap<String,LinkedList<T>> database;
-	
+	protected List<Semester> semesterList;
+	private final String semesterTableTitle = "<SEMESTER TABLE>";
+	private final String accountTableTitle = "<USER ACCOUNT TABLE>";
+	private final String courseTableTitle = "<CD CLASS TABLE>";
 	private String currentUserID = "";
 	private String currentUserName = "";
 	private ManageFile mf;
@@ -44,10 +46,10 @@ public  class Model <T extends Populated>{
 	
 	
 	public Model() {
-
+		semesterList = new LinkedList<Semester>();
 		accountList =  new LinkedList<Account>();
 		classList = new LinkedList<CDClass>();
-		database = new HashMap <String,LinkedList<T>> ();
+
 		String[] s = new String[] {"teacher", "Name"};
 		String[] s1 = new String[] {"classDirector", "Name"};
 		classListFKDataHeader.put("ClassDirectorName", s1);
@@ -56,10 +58,14 @@ public  class Model <T extends Populated>{
 		mf = new ManageFile();
 		mf.readFile();
 		try {
-			database.put("accountList", (LinkedList<T>) accountList);
-			database.put("classList", (LinkedList<T>) classList);
+
 			newClassID = (this.classList.isEmpty()) ?  1 : 
 				(Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
+			
+			for(Semester sems : semesterList) {
+				latestSem=sems.getSemester();
+			}
+
 		}catch(ClassCastException e) {
 			e.printStackTrace();
 		}
@@ -150,7 +156,7 @@ public  class Model <T extends Populated>{
 		return s;
 	}
 	
-	public void createClass(String s) {
+	public <T extends Populated>  void createClass(String s) {
 		List<String> tem = this.getWordInQuotes(s);
 		String classID = tem.get(0);
 		String className = tem.get(1);
@@ -158,7 +164,7 @@ public  class Model <T extends Populated>{
 		
 		List<String> cls= new LinkedList<String>();
 		cls.add(Integer.toString(selectedSem));
-		cls.add(String.format("%04d", classID));
+		cls.add(classID);
 		cls.add(className);
 		cls.add(classRequirements);
 		cls.add("Pending");
@@ -168,7 +174,7 @@ public  class Model <T extends Populated>{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		LocalDateTime now = LocalDateTime.now();  
 		cls.add(dtf.format(now));
-		CDClass tClass = new CDClass(cls, accountList);
+		CDClass tClass = new CDClass(cls,(List<T>) accountList);
 		classList.add(tClass);
 		
 		System.out.print("\nSuccessfully created a class");
@@ -207,9 +213,9 @@ public  class Model <T extends Populated>{
 			List<CDClass> list = getSelectedSemesterClass();
 			for(CDClass c : list) {
 				if(DirectorID == null) {
-					table1.add(getRowData(query,(T)c));
+					table1.add(getRowData(query,c));
 				}else if(c.getElement("ClassDirectorID").equals(DirectorID)) {
-					table1.add(getRowData(query,(T)c));
+					table1.add(getRowData(query,c));
 				}
 			}		
 		String [][] table2 = table1.toArray(new String[ table1.size()][]);
@@ -219,12 +225,12 @@ public  class Model <T extends Populated>{
 	
 
 	public  String[] getClass(String id,String [] query) {
-		return getRowData(query, (T)findCourse(id)) ;
+		return getRowData(query, findCourse(id)) ;
 	}
 	
 	
 	
-	public String[] getRowData(String []query, T a) {
+	public String[] getRowData(String []query, Populated a) {
 		List<String> row = new LinkedList<String>();
 		for(int j = 0 ; j< query.length ; j ++) {	
 			if(a.getTableHeaderList().containsKey(query[j])){
@@ -240,7 +246,7 @@ public  class Model <T extends Populated>{
 		return row2;
 	}
 	
-	public String getFKData(String fkWord, T OData) {
+	public String getFKData(String fkWord, Populated OData) {
 		String fkObjectKey = classListFKDataHeader.get(fkWord)[0];
 		if(OData.getFKList().containsKey(fkObjectKey)) {
 			Populated FKData = OData.getFKList().get(fkObjectKey);
@@ -256,14 +262,15 @@ public  class Model <T extends Populated>{
 	
 	
 	private class ManageFile{	
-		public <T extends Populated> void readFile() {
+		public void readFile() {
 			FileReader fr = null;
 			try {
 				String fN = "data.txt";
 				fr = new FileReader(fN);
 				Scanner s = new Scanner(fr);
-				accountList= createObjectList(s, Account.class, "<USER ACCOUNT TABLE>", null);
-				classList= createObjectList(s, CDClass.class, "<CD CLASS TABLE>", accountList);
+				semesterList= createObjectList(s, Semester.class, semesterTableTitle, null);
+				accountList= createObjectList(s, Account.class, accountTableTitle, null);
+				classList= createObjectList(s, CDClass.class, courseTableTitle, accountList);
 				
 //				for(List<String> a : accountTable) {
 //					Account tem = new Account(a);
@@ -288,7 +295,7 @@ public  class Model <T extends Populated>{
 			}
 		}
 		
-		public void save() {
+		public <T extends Populated>void save() {
 			try {
 				File file = new File("data.txt");
 				if (!file.exists()) {
@@ -301,6 +308,7 @@ public  class Model <T extends Populated>{
 				FileWriter fw = new FileWriter(file, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				List<List<T>> dataList = new ArrayList<List<T>>();
+				dataList.add((List<T>)Model.this.semesterList);
 				dataList.add((List<T>)Model.this.accountList);
 				dataList.add((List<T>)Model.this.classList);
 				String data = populateTable(dataList);
@@ -325,7 +333,7 @@ public  class Model <T extends Populated>{
 			if(!s.hasNextLine()) {
 				throw new Exception("Can't find the "+key+" table");
 			}
-			line = s.nextLine(); //below col name
+			line = s.nextLine(); //below headers
 			line = s.nextLine(); //below line
 			while (s.hasNextLine()) {
 				line = s.nextLine();
@@ -348,7 +356,7 @@ public  class Model <T extends Populated>{
 					T object = constructor.newInstance(new Object[]{a, FKlist});
 					list.add(object);
 					object.setTableTitle(key);
-					
+					System.out.println(object);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException e) {
 					// TODO Auto-generated catch block
