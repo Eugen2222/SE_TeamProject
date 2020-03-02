@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class Populated {
+public abstract class PopulatedData {
 	protected HashMap<String, PopulatedData> FKList = new HashMap<String, PopulatedData>();
 	protected HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
 	protected String tableTitle;
-	protected List<Object> dataList = new LinkedList<Object>();
+	protected List<String> dataList = new LinkedList<String>();
 	protected String tableHeader;
 	protected String ID;
-	
 	public <T extends PopulatedData> PopulatedData(List<String> s, List<List<T>> database){
 		
 	}

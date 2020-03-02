@@ -191,10 +191,7 @@ public class View extends JFrame  implements ActionListener{
 			loginPanel.add(loginBN);
 			View.this.rootPanel.add(loginPanel,"LoginPage");
 		}
-		
-		public JPanel getLoginPanel() {
-			return loginPanel;
-		}
+	
 		
 		//get login input
 		public String[] getAccount() {
@@ -213,7 +210,7 @@ public class View extends JFrame  implements ActionListener{
 			UIManager.put("Button.foreground", Color.white);
 			UIManager.put("Panel.background", Color.white);
 			UIManager.put("OptionPane.background", Color.white);
-			JOptionPane.showMessageDialog(null, "The username does not exist or the password is wrong!\nPlease re-enter!", 
+			JOptionPane.showMessageDialog(null, "Unauthorised user!\nPlease re-enter!", 
 					"System info", JOptionPane.ERROR_MESSAGE); 
 		}
 		
@@ -847,7 +844,7 @@ public class View extends JFrame  implements ActionListener{
 				requirementTA.setText("");
 				requirementSP.getVerticalScrollBar().setUI(new stylishDarkScrollBar());
 				requirementSP.setViewportView(requirementTA);
-				requirementSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
+				requirementSP.getVerticalScrollBar().setPreferredSize(new Dimension(4, 0));
 				TAList.add(requirementTA);
 				
 				
@@ -863,7 +860,7 @@ public class View extends JFrame  implements ActionListener{
 				operateP.add(trainingSP);
 				trainingSP.getVerticalScrollBar().setUI(new stylishDarkScrollBar());
 				trainingSP.setViewportView(trainingTA);
-				trainingSP.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
+				trainingSP.getVerticalScrollBar().setPreferredSize(new Dimension(4, 0));
 
 				
 				TAList.add(trainingTA);

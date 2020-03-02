@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-public  class Model <T extends Populated>{
+public  class Model <T extends PopulatedData>{
 	
 	//Semester
 	private int latestSem = 0;
@@ -35,7 +35,7 @@ public  class Model <T extends Populated>{
 	private String currentUserName = "";
 	private ManageFile mf;
 	private HashMap<String, String[]> classListFKDataHeader = new HashMap<String, String[]>();
-	
+	private List<List<T>> dataBase;
 	
 	public String[] getUser() {
 		String [] s = new String[2];
@@ -54,7 +54,7 @@ public  class Model <T extends Populated>{
 		String[] s1 = new String[] {"classDirector", "Name"};
 		classListFKDataHeader.put("ClassDirectorName", s1);
 		classListFKDataHeader.put("TeacherName", s);
-		
+		dataBase = new LinkedList<List<T>>();
 		mf = new ManageFile();
 		mf.readFile();
 		try {
@@ -156,7 +156,7 @@ public  class Model <T extends Populated>{
 		return s;
 	}
 	
-	public <T extends Populated>  void createClass(String s) {
+	public <T extends PopulatedData>  void createClass(String s) {
 		List<String> tem = this.getWordInQuotes(s);
 		String classID = tem.get(0);
 		String className = tem.get(1);
@@ -174,7 +174,7 @@ public  class Model <T extends Populated>{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		LocalDateTime now = LocalDateTime.now();  
 		cls.add(dtf.format(now));
-		CDClass tClass = new CDClass(cls,(List<T>) accountList);
+		CDClass tClass = new CDClass(cls, dataBase);
 		classList.add(tClass);
 		
 		System.out.print("\nSuccessfully created a class");
@@ -230,7 +230,7 @@ public  class Model <T extends Populated>{
 	
 	
 	
-	public String[] getRowData(String []query, Populated a) {
+	public String[] getRowData(String []query, PopulatedData a) {
 		List<String> row = new LinkedList<String>();
 		for(int j = 0 ; j< query.length ; j ++) {	
 			if(a.getTableHeaderList().containsKey(query[j])){
@@ -246,10 +246,10 @@ public  class Model <T extends Populated>{
 		return row2;
 	}
 	
-	public String getFKData(String fkWord, Populated OData) {
+	public String getFKData(String fkWord, PopulatedData OData) {
 		String fkObjectKey = classListFKDataHeader.get(fkWord)[0];
 		if(OData.getFKList().containsKey(fkObjectKey)) {
-			Populated FKData = OData.getFKList().get(fkObjectKey);
+			PopulatedData FKData = OData.getFKList().get(fkObjectKey);
 			if(FKData!=null) {
 				String data = FKData.getElement(classListFKDataHeader.get(fkWord)[1]);
 				return data;
@@ -268,10 +268,12 @@ public  class Model <T extends Populated>{
 				String fN = "data.txt";
 				fr = new FileReader(fN);
 				Scanner s = new Scanner(fr);
-				semesterList= createObjectList(s, Semester.class, semesterTableTitle, null);
-				accountList= createObjectList(s, Account.class, accountTableTitle, null);
-				classList= createObjectList(s, CDClass.class, courseTableTitle, accountList);
-				
+				semesterList= createObjectList(s, Semester.class, semesterTableTitle);
+				dataBase.add((List<T>) semesterList);
+				accountList= createObjectList(s, Account.class, accountTableTitle);
+				dataBase.add((List<T>) accountList);
+				classList= createObjectList(s, CDClass.class, courseTableTitle);
+				dataBase.add((List<T>) classList);
 //				for(List<String> a : accountTable) {
 //					Account tem = new Account(a);
 //					Model.this.accountList.add(tem);
@@ -295,7 +297,7 @@ public  class Model <T extends Populated>{
 			}
 		}
 		
-		public <T extends Populated>void save() {
+		public <T extends PopulatedData>void save() {
 			try {
 				File file = new File("data.txt");
 				if (!file.exists()) {
@@ -307,11 +309,11 @@ public  class Model <T extends Populated>{
 				}
 				FileWriter fw = new FileWriter(file, true);
 				BufferedWriter bw = new BufferedWriter(fw);
-				List<List<T>> dataList = new ArrayList<List<T>>();
-				dataList.add((List<T>)Model.this.semesterList);
-				dataList.add((List<T>)Model.this.accountList);
-				dataList.add((List<T>)Model.this.classList);
-				String data = populateTable(dataList);
+//				List<List<T>> dataList = new ArrayList<List<T>>();
+//				dataList.add((List<T>)Model.this.semesterList);
+//				dataList.add((List<T>)Model.this.accountList);
+//				dataList.add((List<T>)Model.this.classList);
+				String data = produceTable(dataBase);
 				bw.write(data);
 				bw.close();
 				System.out.println("Data has been saved successfully!");
@@ -321,7 +323,7 @@ public  class Model <T extends Populated>{
 			}
 		}
 
-		private <T extends Populated> List<T> createObjectList(Scanner s, Class<T> T, String key, List<?> FKlist) throws Exception {
+		private <T extends PopulatedData> List<T> createObjectList(Scanner s, Class<T> T, String key) throws Exception {
 			
 			//load data
 			String line = s.nextLine();
@@ -353,7 +355,7 @@ public  class Model <T extends Populated>{
 				try {
 
 					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class, List.class});
-					T object = constructor.newInstance(new Object[]{a, FKlist});
+					T object = constructor.newInstance(new Object[]{a, dataBase});
 					list.add(object);
 					object.setTableTitle(key);
 					System.out.println(object);
@@ -384,7 +386,7 @@ public  class Model <T extends Populated>{
 		
 		
 		
-		public <T extends Populated> String populateTable(List<List<T>> dataList) {
+		public <T extends PopulatedData> String produceTable(List<List<T>> dataList) {
 			String database = "";
 			for(List<T> subList : dataList) {
 				database += "-------------------------------------------------"+"\n";

@@ -36,10 +36,8 @@ public class LoginController implements ActionListener{
 			String [] testUser = view.login.getAccount();
 			if(testUser!=null) {
 				int usertype = model.verify(testUser); //for testing only return 1 Class director
-				if(usertype==-1) {
-					view.login.cleanLogin();
-				}
-				else if(usertype == 1) {
+				
+				if(usertype == 1) {
 					CDController controller = new CDController(model, view, this);
 				}
 				else if(usertype == 2) {
@@ -48,7 +46,7 @@ public class LoginController implements ActionListener{
 				else if(usertype == 3) {
 					PDController controller = new PDController(model, view, this);
 				}else {
-					Controller controller = new Controller(model, view, this);
+					view.login.cleanLogin();
 				}
 			}
 		}	

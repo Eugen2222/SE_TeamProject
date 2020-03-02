@@ -8,27 +8,25 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Semester implements Populated {
+public class Semester extends PopulatedData {
 	private int semester;
 	private Date beginningDate;
 	private Date endDate;
 	private String pattern = "yyyy/MM/dd";
 	private String tableHeader = "";
 	private String tableTitle;
-	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
 
 	// Create an instance of SimpleDateFormat used for formatting 
 	// the string representation of date according to the chosen pattern
 	DateFormat df = new SimpleDateFormat(pattern);
-	public <T extends Populated> Semester(List<String> list, List<T> fkList) {
-		this.semester = Integer.parseInt(list.get(0));
+	public <T extends PopulatedData> Semester(List<String> rowData, List<List<T>> database) {
+		super(rowData, database);		
+		
+		this.semester = Integer.parseInt(rowData.get(0));
 		try {
-			this.beginningDate = df.parse(list.get(1));
-			this.endDate = df.parse(list.get(2));
-			
-			
-			
-			
+			this.beginningDate = df.parse(rowData.get(1));
+			this.endDate = df.parse(rowData.get(2));
+
 			tableHeaderList.put("Semester",0);
 			tableHeaderList.put("BeginningDate",1);
 			tableHeaderList.put("EndDate",2);
@@ -82,35 +80,7 @@ public class Semester implements Populated {
 		this.tableTitle= s;
 	}
 
-	@Override
-	public String getFKID() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public HashMap<String, Populated> getFKList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPKID() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getElement(String s) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public String toString(){
 		String s ="";

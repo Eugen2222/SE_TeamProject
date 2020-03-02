@@ -1,7 +1,7 @@
 package ModelPackage;
 import java.util.*;
 
-public class CDClass implements Populated{
+public class CDClass extends PopulatedData{
 	private String classID;
 	private String name;
 //	private List<String> requirementList = new ArrayList<String>(); 
@@ -15,25 +15,23 @@ public class CDClass implements Populated{
 	private String teacherID;//FK
 	private String training;
 	private String date;
-	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
-	private String tableTitle;
+//	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
+
 	private Account classDirector;
 	private Account teacher;
-	private HashMap<String, Populated> FKHeaderList = new HashMap<String, Populated>();
-	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
-	private List<Object> rowData = new LinkedList<Object>();
-	private String tableHeader = "";
-	public <T extends Populated> CDClass(List<String> s, List<T> fkList) {
-		this.semester = s.get(0);
-		this.classID = s.get(1);
-		this.name = s.get(2);
-		setRequirement(s.get(3));
-		this.setTeacherStatus(s.get(4));
-		this.classDirectorID = s.get(5);
-		this.teacherID = s.get(6);
-		this.training = s.get(7).replaceAll("\\$n\\$","\n");
-		if(s.size()>8) {
-			this.date = s.get(8);
+	
+	public <T extends PopulatedData> CDClass(List<String> rowData, List<List<T>> database) {
+		super(rowData, database);
+		this.semester = rowData.get(0);
+		this.classID = rowData.get(1);
+		this.name = rowData.get(2);
+		setRequirement(rowData.get(3));
+		this.setTeacherStatus(rowData.get(4));
+		this.classDirectorID = rowData.get(5);
+		this.teacherID = rowData.get(6);
+		this.training = rowData.get(7).replaceAll("\\$n\\$","\n");
+		if(rowData.size()>8) {
+			this.date = rowData.get(8);
 		}else {
 			date="";
 		}
@@ -48,27 +46,30 @@ public class CDClass implements Populated{
 		tableHeaderList.put("Date",8);		
 		tableHeader = "Semester, ClassID, Name, Requirements, "
 				+ "TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date";
-		setupFK(fkList);
-		updateRowData();
+		setupFK(database);
+		updateDataList();
 
 		
 		
-		this.FKHeaderList.put("teacher",  this.teacher);	//FK classDirectorID;
-		this.FKHeaderList.put("classDirector", this.classDirector);	//FK teacherID;
+		this.FKList.put("teacher",  this.teacher);	//FK classDirectorID;
+		this.FKList.put("classDirector", this.classDirector);	//FK teacherID;
 	}
 	
-	public <T extends Populated> void setupFK(List <T> list) {
-		if(list.get(0) instanceof Account) {
+	public <T extends PopulatedData> void setupFK(List<List<T>> database) {
+		for(List<T> list : database) {
+			if(list.get(0) instanceof Account) {
 				setDC(list);
 				System.out.println(this.classDirector.getName());
 				if(this.teacherID!=""||this.teacherID!=null) {
 					setTeacher(list);
 				}
+				break;
+			}
 		}
 	}
 	
 	
-	public <T extends Populated> void setDC(List<T> list) {
+	public <T extends PopulatedData> void setDC(List<T> list) {
 		if(list.get(0) instanceof Account) {
 			for(T a : list) {
 				if(a.getPKID().equals(this.classDirectorID)) {
@@ -82,7 +83,7 @@ public class CDClass implements Populated{
 		
 	}
 	
-	public<T extends Populated> void setTeacher(List<T> list) {
+	public<T extends PopulatedData> void setTeacher(List<T> list) {
 		for(T a : list) {
 			if(a.getPKID().equals(this.teacherID)) {
 				this.teacher = (Account) a;
@@ -94,8 +95,8 @@ public class CDClass implements Populated{
 	
 	
 	
-	public HashMap<String, Populated> getFKList() {
-		return this.FKHeaderList;
+	public HashMap<String, PopulatedData> getFKList() {
+		return this.FKList;
 	}
 	
 	public String getTableHeader() {
@@ -103,9 +104,6 @@ public class CDClass implements Populated{
 	}
 	
 	
-	public String getTypeName() {
-		return tableHeader;
-	}
 	
 	
 	public void submitTeachingRequest() {
@@ -141,7 +139,7 @@ public class CDClass implements Populated{
 
 			s=s.replaceAll("\\$n\\$","\n");
 			this.requirement = s;
-			updateRowData();
+			updateDataList();
 			return true;
 		}
 	}
@@ -152,45 +150,45 @@ public class CDClass implements Populated{
 	}
 	
 	
-	public <T extends Populated> void assignTeacher(String[] s, List<T> list) {
+	public <T extends PopulatedData> void assignTeacher(String[] s, List<T> list) {
 		this.teacherID=s[1];
 		this.training=s[2];
 		setTeacher(list);
 		this.setTeacherStatus("Assigned");	
-		updateRowData();
+		updateDataList();
 	}
 	
-	public void updateRowData() {
-		rowData.clear();
-		rowData.add(this.semester);
-		rowData.add(this.classID);		
-		rowData.add(this.name);		
-		rowData.add(this.requirement);	
-		rowData.add(this.teacherStatus);	
-		rowData.add(this.classDirectorID);	
-		rowData.add(this.teacherID);		
-		rowData.add(this.training);	
-		rowData.add(this.date);	
+	public void updateDataList() {
+		dataList.clear();
+		dataList.add(this.semester);
+		dataList.add(this.classID);		
+		dataList.add(this.name);		
+		dataList.add(this.requirement);	
+		dataList.add(this.teacherStatus);	
+		dataList.add(this.classDirectorID);	
+		dataList.add(this.teacherID);		
+		dataList.add(this.training);	
+		dataList.add(this.date);	
 		
 	}
-	//setup FK 
-	public void addTeachingRequestID(int id) {
-		teachingRequestListID.add(id);
-	}
-	
+//	//setup FK 
+//	public void addTeachingRequestID(int id) {
+//		teachingRequestListID.add(id);
+//	}
+//	
 
 //	
 //	public  List<Object> getData(List<Integer> listOfHeaderIndex ) {
 //		List<Object> s = new ArrayList<Object>() ;
 //		for(Integer i : listOfHeaderIndex) {
-//			s.add(rowData.get(i));
+//			s.add(dataList.get(i));
 //		}
 //		return s;
 //	}
 //	
 	public  String getElement(String s) {
 		if(tableHeaderList.containsKey(s)){
-			return rowData.get(tableHeaderList.get(s)).toString();
+			return dataList.get(tableHeaderList.get(s)).toString();
 		}
 		return null;
 	}
@@ -232,25 +230,6 @@ public class CDClass implements Populated{
 		return s;
 	}
 	
-	public HashMap<String, Integer> getTableHeaderList() {
-		return tableHeaderList;
-	}
-	
-	
-	public String getTableTitle() {
-		return tableTitle;
-	}
-	
-	public void setTableTitle(String s) {
-		this.tableTitle = s;
-	}
-	
-	
-	//FK
-	public String getFKID() {
-		return this.classDirectorID;
-	}
-	
 	
 	public void setTeacherStatus(String s) {
 		if(s.equals("Pending")||s.equals("")||s==null) {
@@ -265,7 +244,7 @@ public class CDClass implements Populated{
 		if(s.equals("Approved")) {
 			this.teacherStatus = "Approved";
 		}
-		updateRowData();
+		updateDataList();
 	}
 
 	

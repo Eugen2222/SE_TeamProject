@@ -4,28 +4,26 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Account implements Populated{
-	private String ID = "";
+public class Account extends PopulatedData{
 	private String PW = "";
 	private String type = "";
 	private String name = "";	
-	private String tableTitle = "";
-	private List<String> rowData = new LinkedList<String>();
-	private String tableHeader = "";
-	private HashMap<String, Integer> tableHeaderList = new HashMap<String, Integer>();
-	public <T extends Populated>  Account(List<String> a, List<T> fkList) {
-		this.ID = a.get(0);
-		this.PW = a.get(1);
-		this.type = a.get(2);
-		this.name = a.get(3);
+
+
+	public <T extends PopulatedData>  Account(List<String> rowData, List<List<T>> database) {
+		super(rowData, database);
+		this.ID = rowData.get(0);
+		this.PW = rowData.get(1);
+		this.type = rowData.get(2);
+		this.name = rowData.get(3);
 		tableHeaderList.put("ID",0);
 		tableHeaderList.put("Password" ,1);		
 		tableHeaderList.put("Type",2);
 		tableHeaderList.put("Name",3);		
-		rowData.add(this.ID );
-		rowData.add(this.PW );
-		rowData.add(this.getTypeName() );
-		rowData.add(this.name);
+		this.dataList.add(this.ID );
+		this.dataList.add(this.PW );
+		this.dataList.add(this.getTypeName() );
+		this.dataList.add(this.name);
 		tableHeader = "ID, Password, Type, Name";
 	}
 	
@@ -37,18 +35,10 @@ public class Account implements Populated{
 		return this.name;
 	}
 	
-	public String getPKID() {
-		return this.ID;
-	}
-	
 	public String getID() {
 		return this.ID;
 	}
-	
-	public String getFKID() {
-		return null;
-	}
-	
+
 	protected String getPW() {
 		return this.PW;
 	}
@@ -80,7 +70,7 @@ public class Account implements Populated{
 	}
 	public  String getElement(String s) {
 		if(tableHeaderList.containsKey(s)){
-			return rowData.get(tableHeaderList.get(s));
+			return dataList.get(tableHeaderList.get(s));
 		}
 		return null;
 	}
@@ -106,33 +96,7 @@ public class Account implements Populated{
 		}
 	}
 	
-	
-	public String getTableTitle() {
-		return tableTitle;
-	}
-	
-	public void setTableTitle(String s) {
-		this.tableTitle = s;
-	}
 
 	
-
-	@Override
-	public HashMap<String, Integer> getTableHeaderList() {
-		// TODO Auto-generated method stub
-		return tableHeaderList;
-	}
-
-	@Override
-	public HashMap<String, Populated>  getFKList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getTableHeader() {
-		// TODO Auto-generated method stub
-		return tableHeader;
-	}
 }
 	
