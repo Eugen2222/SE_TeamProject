@@ -110,7 +110,7 @@ public class View extends JFrame  implements ActionListener{
 		this.setTitle("PTT Manage System");
 		this.setSize(800,550);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocation(50,50);
+		this.setLocation(240,80);
 		semester = new Semester();
 		login = new Login();
 		bar = new Bar();
