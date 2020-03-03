@@ -84,7 +84,7 @@ public class CDController extends Controller implements ActionListener{
 			String class1 = view.main.createClassPage.getCreateClassString();
 
 			if(class1==null) {
-				view.main.createClassPage.emptyTextWarning();
+
 			}else{
 				this.model.createClass(class1);
 				this.model.save();

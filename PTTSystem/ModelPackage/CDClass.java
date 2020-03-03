@@ -11,10 +11,16 @@ public class CDClass extends PopulatedData{
 	
 	private String semester;
 	private String classDirectorID;//FK
-	public 	String teacherStatus;
+	public 	String teachingStatus;
 	private String teacherID;//FK
 	private String training;
 	private String date;
+	private String adminID;
+	private String PDID;
+	
+	
+	
+	
 //	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
 
 	private Account classDirector;
@@ -30,11 +36,11 @@ public class CDClass extends PopulatedData{
 		this.classDirectorID = rowData.get(5);
 		this.teacherID = rowData.get(6);
 		this.training = rowData.get(7).replaceAll("\\$n\\$","\n");
-		if(rowData.size()>8) {
-			this.date = rowData.get(8);
-		}else {
-			date="";
-		}
+		this.date = rowData.get(8);
+		this.adminID = rowData.get(9);
+		this.PDID = rowData.get(10);
+		
+		
 		tableHeaderList.put("Semester",0);
 		tableHeaderList.put("ClassID",1);
 		tableHeaderList.put("Name",2);
@@ -44,8 +50,11 @@ public class CDClass extends PopulatedData{
 		tableHeaderList.put("TeacherID",6);
 		tableHeaderList.put("Trainning",7);
 		tableHeaderList.put("Date",8);		
+		tableHeaderList.put("AdminID",9);	
+		tableHeaderList.put("PDID",10);	
 		tableHeader = "Semester, ClassID, Name, Requirements, "
-				+ "TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date";
+				+ "TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date"
+				+ ", AdminID, PDID";
 		setupFK(database);
 		updateDataList();
 
@@ -104,19 +113,34 @@ public class CDClass extends PopulatedData{
 	}
 	
 	
-	
-	
-	public void submitTeachingRequest() {
-		this.setTeacherStatus("Submited");		
+	public <T extends PopulatedData> void assignTeacher(String[] s, List<T> list, String adminID) {
+		this.teacherID=s[1];
+		this.training=s[2];
+		this.adminID = adminID;
+		setTeacher(list);
+		this.setTeacherStatus("Assigned");	
+		updateDataList();
 	}
 	
-	public void approveTeachingRequest() {
+	public void submitTeachingRequest() {
+		this.setTeacherStatus("Submitted");	
+		System.out.println("yoyo");
+	}
+	
+	public void approveTeachingRequest(String PDID) {
+		this.PDID = PDID;
 		this.setTeacherStatus("Approved");
+		updateDataList();
 	}
 	
 	public void withdrawAssignedTeacher() {	
 		this.setTeacherStatus("Pending");
 	}
+	
+	public void withdrawTeachingRequest() {	
+		this.setTeacherStatus("Assigned");
+	}
+	
 	
 //	public boolean setRequirement(String s) {
 //		if(!hasRequirement()) {
@@ -150,13 +174,7 @@ public class CDClass extends PopulatedData{
 	}
 	
 	
-	public <T extends PopulatedData> void assignTeacher(String[] s, List<T> list) {
-		this.teacherID=s[1];
-		this.training=s[2];
-		setTeacher(list);
-		this.setTeacherStatus("Assigned");	
-		updateDataList();
-	}
+	
 	
 	public void updateDataList() {
 		dataList.clear();
@@ -164,11 +182,13 @@ public class CDClass extends PopulatedData{
 		dataList.add(this.classID);		
 		dataList.add(this.name);		
 		dataList.add(this.requirement);	
-		dataList.add(this.teacherStatus);	
+		dataList.add(this.teachingStatus);	
 		dataList.add(this.classDirectorID);	
 		dataList.add(this.teacherID);		
 		dataList.add(this.training);	
 		dataList.add(this.date);	
+		dataList.add(this.adminID);
+		dataList.add(this.PDID);
 		
 	}
 //	//setup FK 
@@ -222,27 +242,29 @@ public class CDClass extends PopulatedData{
 		s.add(this.classID);
 		s.add(this.name);
 		s.add(this.requirement.replaceAll("\\n", "\\$n\\$"));
-		s.add(this.teacherStatus);
+		s.add(this.teachingStatus);
 		s.add(this.classDirectorID);
 		s.add(""+this.teacherID);
 		s.add(this.training.replaceAll("\\n", "\\$n\\$"));
 		s.add(this.date);
+		s.add(this.adminID);
+		s.add(this.PDID);
 		return s;
 	}
 	
 	
 	public void setTeacherStatus(String s) {
 		if(s.equals("Pending")||s.equals("")||s==null) {
-			this.teacherStatus = "Pending";
+			this.teachingStatus = "Pending";
 		}
 		if(s.equals("Assigned")) {
-			this.teacherStatus = "Assigned";
+			this.teachingStatus = "Assigned";
 		}
 		if(s.equals("Submitted")) {
-			this.teacherStatus = "Submitted";
+			this.teachingStatus = "Submitted";
 		}
 		if(s.equals("Approved")) {
-			this.teacherStatus = "Approved";
+			this.teachingStatus = "Approved";
 		}
 		updateDataList();
 	}

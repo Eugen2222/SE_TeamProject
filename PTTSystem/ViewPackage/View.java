@@ -341,7 +341,7 @@ public class View extends JFrame  implements ActionListener{
 //					buttonPanel.setBackground(Color.white);
 //					textAreaPanel.setBackground(Color.white);
 					
-					JLabel createClassTitleL = new JLabel("Create a new Course", SwingConstants.CENTER);
+					JLabel createClassTitleL = new JLabel("Create a new course", SwingConstants.CENTER);
 					createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 24));
 					createClassTitleL.setBounds(150, 50, 300, 62);
 					centerP.add(createClassTitleL);
@@ -451,16 +451,21 @@ public class View extends JFrame  implements ActionListener{
 		
 		
 			public String getCreateClassString() {
+				boolean finished = true;
 				String s = "";
 				s+= encodeString(classIDL.getText());
 				if(courseNameTF.getText().equals(defaultClassName)|| courseNameTF.getText().equals("")) {
-					return null;
+					courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+					finished = false;
 				}
 				s += encodeString(courseNameTF.getText());
 				String req ="";
 				if(requirementTA.getText().equals(" ")|| requirementTA.getText().equals("")) {
-					return null;
+					requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
+					finished = false;
 				}
+				
+				if(finished==false) {return null;}
 				req += requirementTA.getText();
 				
 				s += encodeString(req);
@@ -497,204 +502,211 @@ public class View extends JFrame  implements ActionListener{
 			DefaultComboBoxModel requestListModel = new DefaultComboBoxModel( requestListFilters );
 
 			String [] tableHeader = {"ID","Name","TeachingStatus","DCID","TID", "Date"};
-		public String [] getHeader() {
-			return tableHeader;
-			
-		}
-		public void buildClassListPanel(String[] header, String[][] list) {
-			classListPanel = new JPanel(new BorderLayout());
-			classListPanel.setBorder(new EmptyBorder(50, 60, 5, 60));
-			classListPanel.setBackground(Color.white);
-			listTitleL = new JLabel("Course list");
-			listTitleL.setFont(new Font("Arial",Font.PLAIN,22));
-			classListPanel.add(listTitleL, BorderLayout.NORTH);
-			classListTable = buildModelListTable(header, list);
-			JPanel centerP = new JPanel(new BorderLayout());
-
-			statusList = new JComboBox(courseListModel);
-			statusList.setSelectedIndex(0);
-			statusList.setBackground(Color.white);
-			statusList.setForeground(new Color(70,70,70));
-			statusList.setUI(new BasicComboBoxUI() {
-			    @Override
-			    protected JButton createArrowButton() {
-			        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
-		            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
-		            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
-		            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
-		            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
-		            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
-		   
-//		            button.setBackground(themeGrey);
-		            statusList.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
-		            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
-		            button.setBorderPainted(true);
-		            button.setContentAreaFilled(false);
-		            
-		            button.getModel().addChangeListener(new ChangeListener() {
-		    		    @Override
-		    		    public void stateChanged(ChangeEvent e) {
-		    		        ButtonModel model = (ButtonModel) e.getSource();
-		    		        if (model.isRollover()) {
-		    		        	button.setBackground(new Color(200,200,205));
-		    		        } else if (model.isPressed()) {
-		    		        	button.setBackground(new Color(200,200,205));
-		    		        } else {
-		    		        	button.setBackground(new Color(230,230,230));
-		    		        	
-		    		        }
-		    		    }
-
-		            });		
-//		            button.setFocusPainted(false);
-//		            button.setFocusable(false);
-		            return button; 
-			    }
-			    
-			    protected ComboPopup createPopup() {
-			        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
-			        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
-			        return basicComboPopup;
-			    }
-
-			});
-		    statusList.setFocusable(false);		
-			statusList.setBorder(BorderFactory.createLineBorder( new Color(230,230,230)));
-			statusList.setFont(new Font("Arial",Font.PLAIN,12));
-			statusList.setBounds(405, 0, 80, 20);
-			
-			JPanel boxP = new JPanel(null);
-			boxP.setPreferredSize(new Dimension(200,30));
-			boxP.setBackground(Color.white);
-			boxP.add(statusList);
-			centerP.setBorder(new EmptyBorder(15, 0, 0, 0));
-			centerP.setBackground(Color.white);
-			centerP.add(boxP, BorderLayout.NORTH);
-			enableTableHoverEffect(classListTable);
-			listScrollP= buildStylishScrollP ();
-			listScrollP.setBorder(new EmptyBorder(0, 0, 0, 0));
-			listScrollP.setViewportView(classListTable);
-			
-	        
-	        
-	      
-	        centerP.add(listScrollP, BorderLayout.CENTER);
-	        JPanel emptyP = new JPanel(null);
-	        emptyP.setPreferredSize(new Dimension(200,30));
-	        emptyP.setBackground(Color.white);
-			classListPanel.add(centerP, BorderLayout.CENTER);
-			classListPanel.add(emptyP, BorderLayout.SOUTH);
-			classListPanel.setVisible(true);
-
-			centerPanel.add(classListPanel, "classListPanel");
-
-		}
-		
-		public void displayMyCourseListPanel(String[] header, String[][] list) {	
-			TableModel m = new DefaultTableModel(list, header) ;
-			View.this.classListTable.setModel(m);
-			View.this.classListTable.setRowSorter(null);
-			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
-			listTitleL.setText("My course list");
-			View.this.classListTable.setAutoCreateRowSorter(true);
-			statusList.setModel(courseListModel);
-			bar.switchMainPage(myClassListBN);
-			centerPage.show(centerPanel, "classListPanel");
-
-		}
-		
-		public void buildSorter() {
-			statusList.addItemListener(new ItemListener() {
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-				courseClickedFilter = (String) statusList.getSelectedItem();
-
-			     RowFilter<DefaultTableModel, Object> rf = null;
-
-			     try {
-			    	 if(courseClickedFilter.equals("All")) {}
-			    	 else {
-			    		 rf = RowFilter.regexFilter(courseClickedFilter,
-			    				 classListTable.getColumnModel().getColumnIndex("TeachingStatus"));
-			    		 
-			    	 }
-			      } catch (PatternSyntaxException ex) {
-			                     ex.printStackTrace();
-			      }
-			      ((TableRowSorter)classListTable.getRowSorter()).setRowFilter(rf);
-
-			     }
-
-			});
-			
-			
-			//set a sorter for table header
-			JTableHeader listHeader = classListTable.getTableHeader();
-			listHeader.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					classListClickedHeader = (listHeader.columnAtPoint(e.getPoint()));
-					RowSorter.SortKey key = classListTable.getRowSorter().getSortKeys().get(0);
-					order= key.getSortOrder();
-					System.out.print(order);
-				}
+			public String [] getHeader() {
+				return tableHeader;
 				
-			});
-			classListTable.getRowSorter().toggleSortOrder(classListClickedHeader);
-			
-
-		}
-		
-		
-		public void displayClassListPanel(String[] header, String[][] list) {	
-			TableModel m = new DefaultTableModel(list, header) ;
-			View.this.classListTable.setModel(m);
-			View.this.classListTable.setRowSorter(null);
-			View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
-			listTitleL.setText("Course list");
-			View.this.classListTable.setAutoCreateRowSorter(true);
-			statusList.setModel(courseListModel);
-			bar.switchMainPage(classListBN);
-			centerPage.show(centerPanel, "classListPanel");
-			refresh();
-		}
-		
+			}
+			public void buildClassListPanel(String[] header, String[][] list) {
+				classListPanel = new JPanel(new BorderLayout());
+				classListPanel.setBorder(new EmptyBorder(50, 60, 5, 60));
+				classListPanel.setBackground(Color.white);
+				listTitleL = new JLabel("Course list");
+				listTitleL.setFont(new Font("Arial",Font.PLAIN,22));
+				classListPanel.add(listTitleL, BorderLayout.NORTH);
+				classListTable = buildModelListTable(header, list);
+				JPanel centerP = new JPanel(new BorderLayout());
 	
-		
-		
-		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
-			DefaultTableModel  m = new DefaultTableModel(null, header) ;
-			View.this.classListTable.setModel(m);
-			int key = -1;
-			//find the entries that need to be added to the request list
-			for(int i = 0 ; i<header.length; i++) {
-				if(header[i].equals("TeachingStatus")) {
-					key=i;
-				}
+				statusList = new JComboBox(courseListModel);
+				statusList.setSelectedIndex(0);
+				statusList.setBackground(Color.white);
+				statusList.setForeground(new Color(70,70,70));
+				statusList.setUI(new BasicComboBoxUI() {
+				    @Override
+				    protected JButton createArrowButton() {
+				        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
+			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
+			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+			            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
+			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
+			   
+	//		            button.setBackground(themeGrey);
+			            statusList.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
+			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
+			            button.setBorderPainted(true);
+			            button.setContentAreaFilled(false);
+			            
+			            button.getModel().addChangeListener(new ChangeListener() {
+			    		    @Override
+			    		    public void stateChanged(ChangeEvent e) {
+			    		        ButtonModel model = (ButtonModel) e.getSource();
+			    		        if (model.isRollover()) {
+			    		        	button.setBackground(new Color(200,200,205));
+			    		        } else if (model.isPressed()) {
+			    		        	button.setBackground(new Color(200,200,205));
+			    		        } else {
+			    		        	button.setBackground(new Color(230,230,230));
+			    		        	
+			    		        }
+			    		    }
+	
+			            });		
+	//		            button.setFocusPainted(false);
+	//		            button.setFocusable(false);
+			            return button; 
+				    }
+				    
+				    protected ComboPopup createPopup() {
+				        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
+				        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
+				        return basicComboPopup;
+				    }
+	
+				});
+			    statusList.setFocusable(false);		
+				statusList.setBorder(BorderFactory.createLineBorder( new Color(230,230,230)));
+				statusList.setFont(new Font("Arial",Font.PLAIN,12));
+				statusList.setBounds(405, 0, 80, 20);
+				
+				JPanel boxP = new JPanel(null);
+				boxP.setPreferredSize(new Dimension(200,30));
+				boxP.setBackground(Color.white);
+				boxP.add(statusList);
+				centerP.setBorder(new EmptyBorder(15, 0, 0, 0));
+				centerP.setBackground(Color.white);
+				centerP.add(boxP, BorderLayout.NORTH);
+				enableTableHoverEffect(classListTable);
+				listScrollP= buildStylishScrollP ();
+				listScrollP.setBorder(new EmptyBorder(0, 0, 0, 0));
+				listScrollP.setViewportView(classListTable);
+				
+		        
+		        
+		      
+		        centerP.add(listScrollP, BorderLayout.CENTER);
+		        JPanel emptyP = new JPanel(null);
+		        emptyP.setPreferredSize(new Dimension(200,30));
+		        emptyP.setBackground(Color.white);
+				classListPanel.add(centerP, BorderLayout.CENTER);
+				classListPanel.add(emptyP, BorderLayout.SOUTH);
+				classListPanel.setVisible(true);
+	
+				centerPanel.add(classListPanel, "classListPanel");
+	
 			}
-
-			for(int i =0 ; i< list.length ; i++) {
-
-				if(list[i][key].equals("Submitted")||list[i][key].equals("Approved")) {		
-					m.addRow(list[i]);
-				}else {
-				}
+			
+			public void displayMyCourseListPanel(String[] header, String[][] list) {	
+				TableModel m = new DefaultTableModel(list, header) ;
+				View.this.classListTable.setModel(m);
+				View.this.classListTable.setRowSorter(null);
+				View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
+				listTitleL.setText("My course list");
+				View.this.classListTable.setAutoCreateRowSorter(true);
+				statusList.setModel(courseListModel);
+				bar.switchMainPage(myClassListBN);
+				centerPage.show(centerPanel, "classListPanel");
+	
 			}
-
-			classListTable.setAutoCreateRowSorter(true);
-			classListTable = main.setMainTableColSize(classListTable);
-			listTitleL.setText("Teaching request list");
-			statusList.setModel(requestListModel);
-			bar.switchMainPage(requestListBN);
-			centerPage.show(centerPanel, "classListPanel");
-			refresh();
-		}
+			
+		
+			
+			
+			public void displayClassListPanel(String[] header, String[][] list) {	
+				TableModel m = new DefaultTableModel(list, header) ;
+				View.this.classListTable.setModel(m);
+				View.this.classListTable.setRowSorter(null);
+				View.this.classListTable = main.setMainTableColSize(View.this.classListTable);
+				listTitleL.setText("Course list");
+				View.this.classListTable.setAutoCreateRowSorter(true);
+				statusList.setModel(courseListModel);
+				bar.switchMainPage(classListBN);
+				centerPage.show(centerPanel, "classListPanel");
+				refresh();
+			}
+			
+		
+			
+			
+			public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
+				DefaultTableModel  m = new DefaultTableModel(null, header) ;
+				View.this.classListTable.setModel(m);
+				int key = -1;
+				//find the entries that need to be added to the request list
+				for(int i = 0 ; i<header.length; i++) {
+					if(header[i].equals("TeachingStatus")) {
+						key=i;
+					}
+				}
+	
+				for(int i =0 ; i< list.length ; i++) {
+	
+					if(list[i][key].equals("Submitted")||list[i][key].equals("Approved")) {		
+						m.addRow(list[i]);
+					}else {
+					}
+				}
+	
+				classListTable.setAutoCreateRowSorter(true);
+				classListTable = main.setMainTableColSize(classListTable);
+				listTitleL.setText("Teaching request list");
+				statusList.setModel(requestListModel);
+				bar.switchMainPage(requestListBN);
+				centerPage.show(centerPanel, "classListPanel");
+				refresh();
+			}
+			
+			public void buildSorter() {
+				statusList.addItemListener(new ItemListener() {
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+					courseClickedFilter = (String) statusList.getSelectedItem();
+	
+				     RowFilter<DefaultTableModel, Object> rf = null;
+	
+				     try {
+				    	 if(courseClickedFilter.equals("All")) {}
+				    	 else {
+				    		 rf = RowFilter.regexFilter(courseClickedFilter,
+				    				 classListTable.getColumnModel().getColumnIndex("TeachingStatus"));
+				    		 
+				    	 }
+				      } catch (PatternSyntaxException ex) {
+				                     ex.printStackTrace();
+				      }
+				      ((TableRowSorter)classListTable.getRowSorter()).setRowFilter(rf);
+	
+				     }
+	
+				});
+				
+				
+				//set a sorter for table header
+				JTableHeader listHeader = classListTable.getTableHeader();
+				listHeader.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						classListClickedHeader = (listHeader.columnAtPoint(e.getPoint()));
+						RowSorter.SortKey key = classListTable.getRowSorter().getSortKeys().get(0);
+						order= key.getSortOrder();
+						System.out.print(order);
+					}
+					
+				});
+				classListTable.getRowSorter().toggleSortOrder(classListClickedHeader);
+				
+	
+			}
 		}
 		
 		public class CourseDetailPage {
 			JLabel classNameL;
+			JLabel dateL;
 			JLabel classIDTitleL;
 			JLabel directorNameTitleL;
 			JLabel directorIDTitleL;
+			JLabel admIDTitleL;
+			JLabel admIDL;
+			JLabel PTTIDTitleL;
+			JLabel PTTIDL;
 			JLabel classIDL;
 			JLabel directorNameL;
 			JLabel directorIDL;
@@ -708,7 +720,7 @@ public class View extends JFrame  implements ActionListener{
 			JTextArea requirementTA;
 			JTextArea trainingTA;
 			JScrollPane trainingSP;
-			String [] query = {"Semester","Name","ClassID","ClassDirectorID","ClassDirectorName", 
+			String [] query = {"Semester","Name","Date","ClassID","ClassDirectorID","ClassDirectorName","AdminID","PDID", 
 					"TeacherStatus", "TeacherID", "TeacherName", "Requirements", "Trainning"};
 			
 			public JButton courseDetailWBN;
@@ -745,7 +757,15 @@ public class View extends JFrame  implements ActionListener{
 				classNameL.setBounds(65, 30, 370, 62);
 				classDetailPanel.add(classNameL);
 				labelList.add(classNameL);
-			
+				
+				
+				dateL = new JLabel("");
+				dateL.setForeground(Color.black);
+				dateL.setFont(new Font("Arial", Font.PLAIN, 12));
+				dateL.setBounds(475, 50, 70, 29);
+				classDetailPanel.add(dateL);
+				labelList.add(dateL);
+				
 				classIDTitleL = new JLabel("Course ID");
 				classIDTitleL.setForeground(titleFontColor);
 				classIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -754,7 +774,7 @@ public class View extends JFrame  implements ActionListener{
 				
 				
 				
-				directorIDTitleL = new JLabel("CDID");
+				directorIDTitleL = new JLabel("CD ID");
 				directorIDTitleL.setForeground(titleFontColor);
 				directorIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
 				directorIDTitleL.setBounds(184, 91, 53, 29);
@@ -763,10 +783,27 @@ public class View extends JFrame  implements ActionListener{
 				directorNameTitleL = new JLabel("Director");
 				directorNameTitleL.setForeground(titleFontColor);
 				directorNameTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
-				directorNameTitleL.setBounds(293, 90, 116, 29);
+				directorNameTitleL.setBounds(273, 90, 140, 29);
 				classDetailPanel.add(directorNameTitleL);
 
 				
+				
+				admIDTitleL = new JLabel("Admin ID");
+				admIDTitleL.setForeground(titleFontColor);
+				admIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				admIDTitleL.setBounds(378, 90, 116, 29);
+				classDetailPanel.add(admIDTitleL);
+				
+				
+				
+				PTTIDTitleL = new JLabel("PTT ID");
+				PTTIDTitleL.setForeground(titleFontColor);
+				PTTIDTitleL.setFont(new Font("Arial", Font.PLAIN, 14));
+				PTTIDTitleL.setBounds(475, 90, 116, 29);
+				classDetailPanel.add(PTTIDTitleL);
+			
+				
+
 				classIDL= new JLabel();
 				classIDL.setForeground(Color.BLACK);
 				classIDL.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -783,14 +820,26 @@ public class View extends JFrame  implements ActionListener{
 				classDetailPanel.add(directorIDL);
 				labelList.add(directorIDL);
 				
-				
 				directorNameL = new JLabel();
 				directorNameL.setForeground(Color.BLACK);
 				directorNameL.setFont(new Font("Arial", Font.PLAIN, 14));
-				directorNameL.setBounds(292, 111, 82, 29);
+				directorNameL.setBounds(273, 111, 90, 29);
 				classDetailPanel.add(directorNameL);
 				labelList.add(directorNameL);
 				
+				admIDL = new JLabel("");
+				admIDL.setForeground(Color.BLACK);
+				admIDL.setFont(new Font("Arial", Font.PLAIN, 14));
+				admIDL.setBounds(378, 111, 82, 29);
+				classDetailPanel.add(admIDL);
+				labelList.add(admIDL);
+				
+				PTTIDL = new JLabel("");
+				PTTIDL.setForeground(Color.BLACK);
+				PTTIDL.setFont(new Font("Arial", Font.PLAIN, 14));
+				PTTIDL.setBounds(475, 111, 82, 29);
+				classDetailPanel.add(PTTIDL);
+				labelList.add(PTTIDL);
 				
 				statusTitleL = new JLabel("Status: ");
 				statusTitleL .setBounds(65, 284, 82, 29);
@@ -1001,23 +1050,23 @@ public class View extends JFrame  implements ActionListener{
 //				refinedData[8] = data[3]; //requirement
 //				refinedData[9] = data[9]; //training				
 				
-				if(data[5].equals("Pending")) {
+				if(data[8].equals("Pending")) {
 					statusIndex = 1;
-					data[5] = "Teacher is not assigned.";
+					data[8] = "Teacher is not assigned.";
 				}
-				else if(data[5].equals("Assigned")) {
+				else if(data[8].equals("Assigned")) {
 					statusIndex = 2;
-					data[5] = "Waiting for Class Director to submit teaching request.";
+					data[8] = "Waiting for Class Director to submit teaching request.";
 				}
-				else if(data[5].equals("Submitted")) {
+				else if(data[8].equals("Submitted")) {
 					statusIndex = 3;
-					data[5] = "Waiting for PTT Director to approve teaching request.";
+					data[8] = "Waiting for PTT Director to approve teaching request.";
 				}
-				else if(data[5].equals("Approved")) {
+				else if(data[8].equals("Approved")) {
 					statusIndex = 4;
-					data[5] = "Teaching request had been approved";
+					data[8] = "Teaching request had been approved";
 				}else {
-					data[5] = "Error" + data[5];
+					data[8] = "Error" + data[8];
 				}
 				
 				

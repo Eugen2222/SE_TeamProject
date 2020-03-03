@@ -124,24 +124,24 @@ public  class Model <T extends PopulatedData>{
 	
 	
 	public void assignCourseTeacher(String[]s) {
-		findCourse(s[0]).assignTeacher(s, accountList);
+		findCourse(s[0]).assignTeacher(s, accountList, this.currentUserID);
 	}
 	
 	public void submitTeachingRequest(String[]s) {
-		findCourse(s[0]).setTeacherStatus("Submitted");
+		findCourse(s[0]).submitTeachingRequest();
 		
 	}
-	
+
 	public void approveTeachingRequest(String[]s) {
-		findCourse(s[0]).setTeacherStatus("Approved");
+		findCourse(s[0]).approveTeachingRequest(this.currentUserID);
 	}
 	
 	public void withdrawAssignedTeacher(String[]s) {
-		findCourse(s[0]).setTeacherStatus("Pending");
+		findCourse(s[0]).withdrawAssignedTeacher();
 	}
 	
 	public void withdrawTeachingRequest(String[]s) {
-		findCourse(s[0]).setTeacherStatus("Assigned");
+		findCourse(s[0]).withdrawTeachingRequest();
 	}
 	
 	
@@ -152,7 +152,7 @@ public  class Model <T extends PopulatedData>{
 		LocalDateTime now = LocalDateTime.now();  
 		s[0] = String.format("%04d", newClassID);
 		s[1] = dtf.format(now);
-		newClassID++;
+		newClassID++; //to avoid providing the same ID to multiple users.
 		return s;
 	}
 	
@@ -174,9 +174,12 @@ public  class Model <T extends PopulatedData>{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
 		LocalDateTime now = LocalDateTime.now();  
 		cls.add(dtf.format(now));
+		cls.add("");
+		cls.add("");
 		CDClass tClass = new CDClass(cls, dataBase);
 		classList.add(tClass);
-		
+		tClass.setTableTitle(courseTableTitle);
+		System.out.print(dataBase.get(2).get(0).ID);
 		System.out.print("\nSuccessfully created a class");
 	}
 	
@@ -273,7 +276,14 @@ public  class Model <T extends PopulatedData>{
 				accountList= createObjectList(s, Account.class, accountTableTitle);
 				dataBase.add((List<T>) accountList);
 				classList= createObjectList(s, CDClass.class, courseTableTitle);
+				if(classList==null) {
+					classList = new LinkedList<CDClass>();
+				}
 				dataBase.add((List<T>) classList);
+				
+				for(List<T> l : dataBase) {
+					System.out.println(l);
+				}
 //				for(List<String> a : accountTable) {
 //					Account tem = new Account(a);
 //					Model.this.accountList.add(tem);
@@ -324,7 +334,10 @@ public  class Model <T extends PopulatedData>{
 		}
 
 		private <T extends PopulatedData> List<T> createObjectList(Scanner s, Class<T> T, String key) throws Exception {
-			
+			if(!s.hasNext()) {
+				System.out.println("Can't find the "+key+" table");
+				return null;
+			}
 			//load data
 			String line = s.nextLine();
 			List<List<String>> table = new ArrayList<List<String>>() ;
