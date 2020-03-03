@@ -26,6 +26,7 @@ public class LoginController implements ActionListener{
 		
 	public void initilise() {
 		view.initialise();
+		controller=null;
 		view.login.buildLoginPanel();
 		view.login.displayLoginPanel();
 		view.loginBN.addActionListener(this);

@@ -77,10 +77,9 @@ import java.util.HashMap;
 public class View extends JFrame  implements ActionListener{
 //	JLabel title,courseDirctor; 
 	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,myClassListBN,requestListBN,createCourse,createClassOKBN,createClassCBN;
-	public List<JButton> barBNs ;
 	
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
-	public Color blue = new Color(87, 87, 87);
+	public Color themeGrey = new Color(30, 40, 80);
 	public Color red = new Color(238, 73, 87);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
 					classListPanel, rootPanel, classDetailPanel, selectTeacherPanel;
@@ -120,7 +119,6 @@ public class View extends JFrame  implements ActionListener{
 		barPanel=null;
 		rootPanel = new JPanel();
 		page = new CardLayout();
-		barBNs= new LinkedList<JButton>();
 		rootPanel.setLayout(page);
 		this.add(rootPanel);
 		this.setVisible(true);
@@ -169,17 +167,19 @@ public class View extends JFrame  implements ActionListener{
 //			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, " Username"));
 			usernameTF.setBounds(288,194,195,41); 
 			usernameTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+			
+			usernameTF.setForeground(new Color(30, 45, 85));
 			JLabel lblPassword = new JLabel("Password");
 			lblPassword.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblPassword.setForeground(new Color(114, 114, 114));
+			lblPassword.setForeground(new Color(30, 45, 85));
 			lblPassword.setBounds(288, 240, 61, 16);
 			
 			passwordTF = new JTextField(16);
 //			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, " Password"));
 			passwordTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 			passwordTF.setBounds(288,258,195,41);
-			
-			loginBN = buildBlueButton("OK");
+			passwordTF.setForeground(new Color(30, 45, 85));
+			loginBN = buildThemeButton("OK");
 			
 			loginBN.setBounds(288,320,195,35);
 	
@@ -214,8 +214,11 @@ public class View extends JFrame  implements ActionListener{
 					"System info", JOptionPane.ERROR_MESSAGE); 
 		}
 		
+		
+		
+		//get users'selection from the dialog box to check if they want to log out
 		public int logOutCheck() {
-			UIManager.put("Button.background", new Color(150,150,150));
+			UIManager.put("Button.background", themeGrey);
 			UIManager.put("Button.FocusPainted",false);
 			UIManager.put("Button.foreground", Color.white);
 			UIManager.put("Panel.background", Color.white);
@@ -232,6 +235,9 @@ public class View extends JFrame  implements ActionListener{
 		}
 	}
 	
+	
+	
+	// for users to choose a specific semester 
 	public class Semester{
 		private int latestSemester = 0;
 		public void buildSemesterPanel(int num) {
@@ -249,11 +255,11 @@ public class View extends JFrame  implements ActionListener{
 			
 			semesterTF = new JTextField(4);
 	
-//			semesterTF.setBorder(BorderFactory.createLineBorder(blue)); 
+//			semesterTF.setBorder(BorderFactory.createLineBorder(themeGrey)); 
 			semesterTF.setBounds(293,183,195,41);
 
 			
-			semesterBN = buildBlueButton("Select");
+			semesterBN = buildThemeButton("Select");
 			semesterBN.setBounds(293,250,195,35);
 	
 			semesterPanel.add(title);
@@ -264,6 +270,8 @@ public class View extends JFrame  implements ActionListener{
 
 		}
 		
+		
+		//display a hint semester number in the text field
 		public void displayLatestSemester() {
 			
 			semesterTF.addFocusListener(new JTextFieldHintListener(semesterTF, ""+latestSemester));
@@ -282,6 +290,9 @@ public class View extends JFrame  implements ActionListener{
 	}
 	
 	
+	
+	
+	//frame panel of main operator interface
 	public class Frame{
 		public void buildFramePanel(JPanel bar) {
 			framePanel = new JPanel(new BorderLayout());
@@ -297,6 +308,8 @@ public class View extends JFrame  implements ActionListener{
 		}
 	}
 	
+	
+	//represent the main content block
 	public class Main{
 		String defaultClassName = "  Please enter a class name, max length 20.";
 		String defaultClassRequirement = "  Please enter a requirement, max length 200 words.";
@@ -328,9 +341,9 @@ public class View extends JFrame  implements ActionListener{
 //					buttonPanel.setBackground(Color.white);
 //					textAreaPanel.setBackground(Color.white);
 					
-					JLabel createClassTitleL = new JLabel("Create a new class", SwingConstants.CENTER);
-					createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 18));
-					createClassTitleL.setBounds(200, 50, 200, 62);
+					JLabel createClassTitleL = new JLabel("Create a new Course", SwingConstants.CENTER);
+					createClassTitleL.setFont(new Font("Arial", Font.PLAIN, 24));
+					createClassTitleL.setBounds(150, 50, 300, 62);
 					centerP.add(createClassTitleL);
 					
 					
@@ -338,36 +351,36 @@ public class View extends JFrame  implements ActionListener{
 					JLabel classNameL = new JLabel("Class name:     ");
 					classNameL.setForeground(new Color(114, 114, 114));
 					classNameL.setFont(new Font("Arial", Font.PLAIN, 14));
-					classNameL.setBounds(148, 164, 112, 21);
+					classNameL.setBounds(148, 149, 112, 21);
 					centerP.add(classNameL);
 					
 					JLabel reqLTitle1 = new JLabel("Requirement:  ");		
 					reqLTitle1.setForeground(new Color(114, 114, 114));
 					reqLTitle1.setFont(new Font("Arial", Font.PLAIN, 14));
-					reqLTitle1.setBounds(148, 230, 112, 21);
+					reqLTitle1.setBounds(148, 215, 112, 21);
 					centerP.add(reqLTitle1);
 					
 					JLabel classIDTitle=new JLabel("ID:");
 					classIDTitle.setForeground(new Color(114, 114, 114));
 					classIDTitle.setFont(new Font("Arial", Font.PLAIN, 14));
-					classIDTitle.setBounds(148, 124, 112, 21);
+					classIDTitle.setBounds(148, 119, 112, 21);
 					centerP.add(classIDTitle);
 					
 					classIDL=new JLabel();
 					classIDL.setFont(new Font("Arial", Font.PLAIN, 14));
-					classIDL.setBounds(170, 124, 112, 21);
+					classIDL.setBounds(170, 119, 112, 21);
 					centerP.add(classIDL);
 					
 					
 					JLabel timeTitle=new JLabel("Date:");
 					timeTitle.setForeground(new Color(114, 114, 114));
 					timeTitle.setFont(new Font("Arial", Font.PLAIN, 14));
-					timeTitle.setBounds(258, 124, 112, 21);
+					timeTitle.setBounds(258, 119, 112, 21);
 					centerP.add(timeTitle);
 					
 					timeL=new JLabel();
 					timeL.setFont(new Font("Arial", Font.PLAIN, 14));
-					timeL.setBounds(298, 124, 112, 21);
+					timeL.setBounds(298, 119, 112, 21);
 					centerP.add(timeL);
 					
 					
@@ -376,7 +389,7 @@ public class View extends JFrame  implements ActionListener{
 				
 					courseNameTF.setFont(new Font("Arial", Font.PLAIN, 12));
 					courseNameTF.setForeground(new Color(20,20,20));
-					courseNameTF.setBounds(148, 185, 319, 36);
+					courseNameTF.setBounds(148, 170, 319, 36);
 
 					courseNameTF.setColumns(10);
 //					courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
@@ -401,70 +414,73 @@ public class View extends JFrame  implements ActionListener{
 					reqScrollPanel.setViewportView(requirementTA);
 					reqScrollPanel.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 					requirementTA.setEditable(true);
-					reqScrollPanel.setBounds(148, 253, 319, 160);
+					reqScrollPanel.setBounds(148, 238, 319, 160);
 
 //					reqScrollPanel.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
 					
 					centerP.add(reqScrollPanel);
 					
 					
-					createClassOKBN = buildBlueButton("Ok");
-					createClassOKBN.setBounds(375, 431, 90, 30);
+					createClassOKBN = buildThemeButton("Ok");
+					createClassOKBN.setBounds(375, 426, 90, 30);
 					
 					centerP.add(createClassOKBN);
 					
 					
 					createClassCBN = buildBlackButton("Cancel");
-					createClassCBN.setBounds(148, 431, 90, 30);
+					createClassCBN.setBounds(148, 426, 90, 30);
 					
 					centerP.add(createClassCBN);
 					
 					createClassPanel = centerP;
 					centerPanel.add(createClassPanel, "createClassPanel");
 			
-		}
-		
-		public void displayCreateClassPanel() {
-			bar.switchMainPage(createClassBN);
-			centerPage.show(centerPanel, "createClassPanel");
-			View.this.refresh();
-		}
-		
-		public void updatePage(String [] data) {
-			classIDL.setText(data[0] );
-			timeL.setText(data[1]  );
-		}
-		
-		
-		public String getCreateClassString() {
-			String s = "";
-			s+= encodeString(classIDL.getText());
-			if(courseNameTF.getText().equals(defaultClassName)|| courseNameTF.getText().equals("")) {
-				return null;
 			}
-			s += encodeString(courseNameTF.getText());
-			String req ="";
-			if(requirementTA.getText().equals(" ")|| requirementTA.getText().equals("")) {
-				return null;
-			}
-			req += requirementTA.getText();
 			
-			s += encodeString(req);
+			public void displayCreateClassPanel() {
+				bar.switchMainPage(createClassBN);
+				centerPage.show(centerPanel, "createClassPanel");
+				View.this.refresh();
+			}
+		
+			//set the class ID and time
+			public void updatePage(String [] data) {
+				classIDL.setText(data[0] );
+				timeL.setText(data[1]  );
+			}
+		
+		
+			public String getCreateClassString() {
+				String s = "";
+				s+= encodeString(classIDL.getText());
+				if(courseNameTF.getText().equals(defaultClassName)|| courseNameTF.getText().equals("")) {
+					return null;
+				}
+				s += encodeString(courseNameTF.getText());
+				String req ="";
+				if(requirementTA.getText().equals(" ")|| requirementTA.getText().equals("")) {
+					return null;
+				}
+				req += requirementTA.getText();
+				
+				s += encodeString(req);
+		
+				return s;
+			}
+		
+		
+			//show the warning message if users input nothing before they submit
+			public void emptyTextWarning() {
+				courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
+				requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
 	
-			return s;
-		}
-		
-		public void emptyTextWarning() {
-			courseNameTF.addFocusListener(new JTextFieldHintListener(courseNameTF, defaultClassName));
-			requirementTA.addFocusListener(new JTextFieldHintListener(requirementTA, defaultClassRequirement));
-
-		}
-		
-		public void cleanText() {
-			courseNameTF.setText("");
-			requirementTA.setText("");
+			}
 			
-		}
+			public void cleanText() {
+				courseNameTF.setText("");
+				requirementTA.setText("");
+				
+			}
 	
 		}
 		
@@ -509,7 +525,7 @@ public class View extends JFrame  implements ActionListener{
 		            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
 		            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
 		   
-//		            button.setBackground(blue);
+//		            button.setBackground(themeGrey);
 		            statusList.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
 		            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
 		            button.setBorderPainted(true);
@@ -520,9 +536,9 @@ public class View extends JFrame  implements ActionListener{
 		    		    public void stateChanged(ChangeEvent e) {
 		    		        ButtonModel model = (ButtonModel) e.getSource();
 		    		        if (model.isRollover()) {
-		    		        	button.setBackground(new Color(140,140,140));
+		    		        	button.setBackground(new Color(200,200,205));
 		    		        } else if (model.isPressed()) {
-		    		        	button.setBackground(new Color(140,140,140));
+		    		        	button.setBackground(new Color(200,200,205));
 		    		        } else {
 		    		        	button.setBackground(new Color(230,230,230));
 		    		        	
@@ -610,7 +626,9 @@ public class View extends JFrame  implements ActionListener{
 			     }
 
 			});
-		
+			
+			
+			//set a sorter for table header
 			JTableHeader listHeader = classListTable.getTableHeader();
 			listHeader.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -642,11 +660,12 @@ public class View extends JFrame  implements ActionListener{
 		
 	
 		
-
+		
 		public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
 			DefaultTableModel  m = new DefaultTableModel(null, header) ;
 			View.this.classListTable.setModel(m);
 			int key = -1;
+			//find the entries that need to be added to the request list
 			for(int i = 0 ; i<header.length; i++) {
 				if(header[i].equals("TeachingStatus")) {
 					key=i;
@@ -874,7 +893,7 @@ public class View extends JFrame  implements ActionListener{
 				
 				courseDetailWBN = buildRedButton("");
 				courseDetailCBN = buildBlackButton("");						
-				courseDetailSBN = buildBlueButton("");
+				courseDetailSBN = buildThemeButton("");
 				
 						
 				
@@ -910,7 +929,7 @@ public class View extends JFrame  implements ActionListener{
 	
 				operateP.add(submitButtonsPanel);
 				
-				assignTeacherBN = buildBlueButton("Assign");
+				assignTeacherBN = buildThemeButton("Assign");
 				assignTeacherBN.setBounds(75, 13, 40, 16);
 				assignTeacherBN.setFont(new Font("Arial", Font.BOLD, 8));
 				assignTeacherBN.setVisible(false);
@@ -1170,7 +1189,7 @@ public class View extends JFrame  implements ActionListener{
 				buttonP.setPreferredSize(new Dimension(50, 80));
 				buttonP.setBackground(Color.white);
 				JPanel subbuttonP = new JPanel(null);
-				selectTeacherSubmitBN = buildBlueButton("Select");
+				selectTeacherSubmitBN = buildThemeButton("Select");
 				selectTeacherSubmitBN.addActionListener(View.this);
 				selectTeacherSubmitBN.setBounds(240, 10, 60, 30);
 				
@@ -1324,10 +1343,10 @@ public class View extends JFrame  implements ActionListener{
 			
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
-			northPanel.setBackground(blue);
+			northPanel.setBackground(themeGrey);
 			JLabel titleL = new JLabel("Class Dirctor");
 			JLabel nameL = new JLabel("Hi, "+name);
-			list.setBackground(blue);
+			list.setBackground(themeGrey);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
 			titleL.setFont(new Font("Arial",Font.BOLD,15));
 			nameL.setFont(new Font("Arial",Font.BOLD,15));
@@ -1339,11 +1358,11 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			createClassBN = buildBlueBorderlessButton(createClassBNName);
-			myClassListBN = buildBlueBorderlessButton(myClassListBNName);
-			classListBN = buildBlueBorderlessButton(classListBNName);
-			requestListBN = buildBlueBorderlessButton(requestListBNName);
-			logoutBN = buildBlueBorderlessButton(logoutBNName);
+			createClassBN = buildThemeBorderlessButton(createClassBNName);
+			myClassListBN = buildThemeBorderlessButton(myClassListBNName);
+			classListBN = buildThemeBorderlessButton(classListBNName);
+			requestListBN = buildThemeBorderlessButton(requestListBNName);
+			logoutBN = buildThemeBorderlessButton(logoutBNName);
 			listPS.add(createClassBN);
 			listPS.add(myClassListBN);
 			listPS.add(classListBN);
@@ -1371,10 +1390,10 @@ public class View extends JFrame  implements ActionListener{
 			
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
-			northPanel.setBackground(blue);
+			northPanel.setBackground(themeGrey);
 			JLabel titleL = new JLabel("Administrator");
 			JLabel nameL = new JLabel("Hi, "+name);
-			list.setBackground(blue);
+			list.setBackground(themeGrey);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
 			titleL.setFont(new Font("Arial",Font.BOLD,15));
 			nameL.setFont(new Font("Arial",Font.BOLD,15));
@@ -1386,9 +1405,9 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton(classListBNName);
-			requestListBN = buildBlueBorderlessButton(requestListBNName);
-			logoutBN = buildBlueBorderlessButton(logoutBNName);
+			classListBN = buildThemeBorderlessButton(classListBNName);
+			requestListBN = buildThemeBorderlessButton(requestListBNName);
+			logoutBN = buildThemeBorderlessButton(logoutBNName);
 			listPS.add(classListBN);
 			listPS.add(requestListBN);
 			listPS.add(logoutBN);
@@ -1415,10 +1434,10 @@ public class View extends JFrame  implements ActionListener{
 			
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
-			northPanel.setBackground(blue);
+			northPanel.setBackground(themeGrey);
 			JLabel titleL = new JLabel("PTT Dirctor");
 			JLabel nameL = new JLabel("Hi, "+name);
-			list.setBackground(blue);
+			list.setBackground(themeGrey);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
 			titleL.setFont(new Font("Arial",Font.BOLD,15));
 			nameL.setFont(new Font("Arial",Font.BOLD,15));
@@ -1430,9 +1449,9 @@ public class View extends JFrame  implements ActionListener{
 			westPanel.add(northPanel, BorderLayout.NORTH);
 			
 			List<JButton> listPS = new LinkedList<JButton>();
-			classListBN = buildBlueBorderlessButton(classListBNName);
-			requestListBN = buildBlueBorderlessButton(requestListBNName);
-			logoutBN = buildBlueBorderlessButton(logoutBNName);
+			classListBN = buildThemeBorderlessButton(classListBNName);
+			requestListBN = buildThemeBorderlessButton(requestListBNName);
+			logoutBN = buildThemeBorderlessButton(logoutBNName);
 			listPS.add(classListBN);
 			listPS.add(requestListBN);
 			listPS.add(logoutBN);
@@ -1449,10 +1468,10 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		
-		private JButton buildBlueBorderlessButton(String name) {
+		private JButton buildThemeBorderlessButton(String name) {
 			JButton btn = new JButton(name);
 			btn.setOpaque(true);
-			btn.setBackground(new Color(56, 151, 240));
+			btn.setBackground(themeGrey);
 			btn.setForeground(Color.white);
 			btn.setBorder(BorderFactory.createEmptyBorder());
 			btn.setFocusPainted(false);
@@ -1506,7 +1525,7 @@ public class View extends JFrame  implements ActionListener{
 				System.out.println(main.listPage.order+"22");
 				selectedButton= btn;
 				btn.setBackground(Color.white);
-			    btn.setForeground(blue);
+			    btn.setForeground(themeGrey);
 				for(HashMap.Entry<String, BarListener> entry : bar.BNListenerList.entrySet()) {
 					if(entry.getKey().equals(btn.getText())) {
 						entry.getValue().press=true;
@@ -1532,17 +1551,17 @@ public class View extends JFrame  implements ActionListener{
 		        if(press==false) {
 		        	if (model.isPressed()) {
 				       btn.setBackground(Color.white);
-				       btn.setForeground(blue);
+				       btn.setForeground(themeGrey);
 				       btn.setBorder(BorderFactory.createEmptyBorder());
 				       btn.setFont(new Font("Arial", Font.PLAIN, 12));
 				      
 				        press = true;		        
 				    } else if (model.isRollover()) {
 				       btn.setBackground(Color.white);
-					   btn.setForeground(blue);
+					   btn.setForeground(themeGrey);
 					   btn.setBorder(BorderFactory.createEmptyBorder());		
 				     } else {
-				       btn.setBackground(blue);
+				       btn.setBackground(themeGrey);
 					   btn.setForeground(Color.white);
 					   btn.setBorder(BorderFactory.createEmptyBorder());
 				    }
@@ -1550,7 +1569,7 @@ public class View extends JFrame  implements ActionListener{
 		    }
 		    
 		    public void setDefault() {
-		    	 btn.setBackground(blue);
+		    	 btn.setBackground(themeGrey);
 				 btn.setForeground(Color.white);
 				 btn.setBorder(BorderFactory.createEmptyBorder());
 				 press=false;
@@ -1562,9 +1581,8 @@ public class View extends JFrame  implements ActionListener{
 	
 	private JButton buildBlackButton(String name) {
 		JButton btn = new JButton(name);
-		Color darkGrey = new Color(150,150,150);
-		Color lightGrey = new Color(150,150,150);
-		btn.setBackground(darkGrey);
+		Color lightGrey = new Color(200,200,200);
+		btn.setBackground(lightGrey);
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setForeground(Color.WHITE);
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -1576,14 +1594,14 @@ public class View extends JFrame  implements ActionListener{
 			        ButtonModel model = (ButtonModel) e.getSource();
 			        if (model.isRollover()) {
 			        	btn.setBackground(Color.white);
-				    	btn.setForeground(darkGrey);
-				    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
+				    	btn.setForeground(lightGrey);
+				    	btn.setBorder(BorderFactory.createLineBorder(lightGrey, 1));
 			        } else if (model.isPressed()) {
 			        	btn.setBackground(Color.white);
-				    	btn.setForeground(darkGrey);
+				    	btn.setForeground(lightGrey);
 				    	btn.setBorder(BorderFactory.createEmptyBorder());
 			        } else {
-			        	btn.setBackground(darkGrey);
+			        	btn.setBackground(lightGrey);
 				    	btn.setForeground(Color.white);
 				    	btn.setBorder(BorderFactory.createEmptyBorder());
 			        }
@@ -1595,9 +1613,9 @@ public class View extends JFrame  implements ActionListener{
 	
 	private JButton buildRedButton(String name) {
 		JButton btn = new JButton(name);
-		Color darkGrey = new Color(238,73,87);
+		Color red = new Color(227, 23, 13);
 		Color lightGrey = new Color(150,150,150);
-		btn.setBackground(darkGrey);
+		btn.setBackground(red);
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setForeground(Color.WHITE);
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -1609,14 +1627,14 @@ public class View extends JFrame  implements ActionListener{
 			        ButtonModel model = (ButtonModel) e.getSource();
 			        if (model.isRollover()) {
 			        	btn.setBackground(Color.white);
-				    	btn.setForeground(darkGrey);
-				    	btn.setBorder(BorderFactory.createLineBorder(darkGrey, 1));
+				    	btn.setForeground(red);
+				    	btn.setBorder(BorderFactory.createLineBorder(red, 1));
 			        } else if (model.isPressed()) {
 			        	btn.setBackground(Color.white);
-				    	btn.setForeground(darkGrey);
+				    	btn.setForeground(red);
 				    	btn.setBorder(BorderFactory.createEmptyBorder());
 			        } else {
-			        	btn.setBackground(darkGrey);
+			        	btn.setBackground(red);
 				    	btn.setForeground(Color.white);
 				    	btn.setBorder(BorderFactory.createEmptyBorder());
 			        }
@@ -1626,10 +1644,10 @@ public class View extends JFrame  implements ActionListener{
 		return btn;
 	}
 	
-	private JButton buildBlueButton(String name) {
+	private JButton buildThemeButton(String name) {
 		JButton btn = new JButton(name);
 		
-		btn.setBackground(new Color(56, 151, 240));
+		btn.setBackground(themeGrey);
 		btn.setForeground(Color.white);
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -1641,12 +1659,12 @@ public class View extends JFrame  implements ActionListener{
 		        ButtonModel model = (ButtonModel) e.getSource();
 		        if (model.isRollover()) {
 		        	btn.setBackground(Color.white);
-			    	btn.setForeground(blue);
-			    	btn.setBorder(BorderFactory.createLineBorder(blue, 1));
+			    	btn.setForeground(themeGrey);
+			    	btn.setBorder(BorderFactory.createLineBorder(themeGrey, 1));
 		        } else if (model.isPressed()) {
 		        	
 		        } else {
-		        	btn.setBackground(blue);
+		        	btn.setBackground(themeGrey);
 			    	btn.setForeground(Color.white);
 			    	btn.setBorder(BorderFactory.createEmptyBorder());
 		        }
@@ -1705,9 +1723,9 @@ public class View extends JFrame  implements ActionListener{
 	        if(!sb.isEnabled() || r.width>r.height) {
 	          return;
 	        }else if(isDragging) {
-	          color = new Color(114,114,114,200);
+	          color = new Color(200,200,205,200);
 	        }else if(isThumbRollover()) {
-	          color = new Color(114,114,114,200);
+	          color = new Color(200,200,205,200);
 	        }else {
 	          color = new Color(220,220,220,200);
 	        }
@@ -1787,9 +1805,9 @@ public class View extends JFrame  implements ActionListener{
 	 	        if(!sb.isEnabled() || r.width>r.height) {
 	 	          return;
 	 	        }else if(isDragging) {
-	 	          color = new Color(30,30,30,200);
+	 	          color = themeGrey;
 	 	        }else if(isThumbRollover()) {
-	 	          color = new Color(30,30,30,200);
+	 	          color = themeGrey;
 	 	        }else {
 	 	          color = new Color(114,114,114,200);
 	 	        }

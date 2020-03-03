@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import ModelPackage.Model;
-public class Controller implements ActionListener{
+public abstract class Controller implements ActionListener{
 	protected View view;
 	protected Model model;
 	protected LoginController logC;

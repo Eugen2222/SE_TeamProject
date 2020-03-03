@@ -44,12 +44,12 @@ public class CDController extends Controller implements ActionListener{
 	
 	
 	public void defaultPage(){
-		myCourseListPage();
+		displayMyCourseListPage();
 		
 	}
 	
 	
-	public void myCourseListPage() {
+	public void displayMyCourseListPage() {
 		view.main.listPage.displayMyCourseListPanel(view.main.listPage.getHeader(), 
 				model.getClassListTable(classListTableQuery,model.getUser()[0]));
 		this.displayPage = "myCourseListPage";
@@ -65,7 +65,7 @@ public class CDController extends Controller implements ActionListener{
 	public void back() {
 		super.back();
 		if(this.displayPage.equals("myCourseListPage")) {
-			myCourseListPage();
+			displayMyCourseListPage();
 
 		}
 	}
@@ -99,7 +99,7 @@ public class CDController extends Controller implements ActionListener{
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailSBN) {
 			model.submitTeachingRequest(view.main.courseDetailPage.getClassInform());
 
-			myCourseListPage();
+			displayMyCourseListPage();
 		}
 		
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailCBN) {
@@ -107,7 +107,7 @@ public class CDController extends Controller implements ActionListener{
 			back();
 		}
 		else if(e.getSource()==view.myClassListBN) {
-			myCourseListPage();
+			displayMyCourseListPage();
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
 			if(view.main.courseDetailPage.withdrawCheck()==0) {
