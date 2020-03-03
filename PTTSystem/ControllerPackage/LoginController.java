@@ -11,6 +11,7 @@ import ViewPackage.View;
 public class LoginController implements ActionListener{
 	View view;
 	Model model;
+	Controller controller;
 	public LoginController(){	
 		view = new View();
 		model = new Model();
@@ -38,13 +39,13 @@ public class LoginController implements ActionListener{
 				int usertype = model.verify(testUser); //for testing only return 1 Class director
 				
 				if(usertype == 1) {
-					CDController controller = new CDController(model, view, this);
+					controller = new CDController(model, view, this);
 				}
 				else if(usertype == 2) {
-					AController controller = new AController(model, view, this);
+					controller = new AController(model, view, this);
 				}
 				else if(usertype == 3) {
-					PDController controller = new PDController(model, view, this);
+					controller = new PDController(model, view, this);
 				}else {
 					view.login.cleanLogin();
 				}

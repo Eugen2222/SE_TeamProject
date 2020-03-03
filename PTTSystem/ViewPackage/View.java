@@ -80,7 +80,7 @@ public class View extends JFrame  implements ActionListener{
 	public List<JButton> barBNs ;
 	
 	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
-	public Color blue = new Color(56, 151, 240);
+	public Color blue = new Color(87, 87, 87);
 	public Color red = new Color(238, 73, 87);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
 					classListPanel, rootPanel, classDetailPanel, selectTeacherPanel;
@@ -162,7 +162,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			JLabel lblUsername = new JLabel("Username");
 			lblUsername.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblUsername.setForeground(new Color(114, 114, 114));
+			lblUsername.setForeground(new Color(30, 45, 85));
 			lblUsername.setBounds(288, 176, 61, 16);
 			
 			usernameTF = new JTextField(16);

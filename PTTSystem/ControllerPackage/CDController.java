@@ -75,6 +75,7 @@ public class CDController extends Controller implements ActionListener{
 		if(e.getSource()==view.createClassBN) {
 			view.main.createClassPage.updatePage(model.getCreateClassInfom());
 			view.main.createClassPage.displayCreateClassPanel();
+			view.main.createClassPage.cleanText();
 
 		}
 		
