@@ -133,11 +133,11 @@ public class CDClass extends PopulatedData{
 		updateDataList();
 	}
 	
-	public void withdrawAssignedTeacher() {	
+	public void declineAssignedTeacher() {	
 		this.setTeacherStatus("Pending");
 	}
 	
-	public void withdrawTeachingRequest() {	
+	public void declineTeachingRequest() {	
 		this.setTeacherStatus("Assigned");
 	}
 	

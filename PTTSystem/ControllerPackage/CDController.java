@@ -110,8 +110,8 @@ public class CDController extends Controller implements ActionListener{
 			displayMyCourseListPage();
 		}
 		else if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
-			if(view.main.courseDetailPage.withdrawCheck()==0) {
-				model.withdrawAssignedTeacher(view.main.courseDetailPage.getClassInform());
+			if(view.main.courseDetailPage.declineCheck()==0) {
+				model.declineAssignedTeacher(view.main.courseDetailPage.getClassInform());
 				back();
 			}
 		}

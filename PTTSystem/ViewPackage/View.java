@@ -233,7 +233,7 @@ public class View extends JFrame  implements ActionListener{
 			UIManager.put("Button.foreground", Color.white);
 			UIManager.put("Panel.background", Color.white);
 			UIManager.put("OptionPane.background", Color.white);
-			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "wanring",JOptionPane.YES_NO_OPTION);
+			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "Warning",JOptionPane.YES_NO_OPTION);
 			IDTF.setText("");
 			passwordPF.setText("");
 			return n;
@@ -966,12 +966,12 @@ public class View extends JFrame  implements ActionListener{
 			
 			
 			
-			public int withdrawCheck() {
+			public int declineCheck() {
 				UIManager.put("Button.background", red);
 				UIManager.put("Button.foreground", Color.white);
 				UIManager.put("Panel.background", Color.white);
 				UIManager.put("OptionPane.background", Color.white);
-				int n = JOptionPane.showConfirmDialog(null, "Are you sure to withdraw?", "wanring",JOptionPane.YES_NO_OPTION);
+				int n = JOptionPane.showConfirmDialog(null, "Are you sure to decline?", "wanring",JOptionPane.YES_NO_OPTION);
 				return n;
 			}
 			
@@ -1069,7 +1069,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			public void displayCDMode(String[] data, String DCID) {
 				updateData(data);
-				courseDetailWBN.setText("Withdraw");
+				courseDetailWBN.setText("Decline");
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Submit");
 				defualtTextArea();
@@ -1124,7 +1124,7 @@ public class View extends JFrame  implements ActionListener{
 			
 			public void displayPDMode(String[] data) {
 				updateData(data);
-				courseDetailWBN.setText("Withdraw");
+				courseDetailWBN.setText("Decline");
 				courseDetailCBN.setText("Cancel");				
 				courseDetailSBN.setText("Approve");
 				courseDetailWBN.setVisible(true);

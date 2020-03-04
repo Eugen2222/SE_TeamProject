@@ -60,8 +60,8 @@ public class PDController extends Controller {
 			back();
 		}
 		if(e.getSource()==view.main.courseDetailPage.courseDetailWBN) {
-			if(view.main.courseDetailPage.withdrawCheck()==0) {
-				model.withdrawTeachingRequest(view.main.courseDetailPage.getClassInform());
+			if(view.main.courseDetailPage.declineCheck()==0) {
+				model.declineTeachingRequest(view.main.courseDetailPage.getClassInform());
 				back();
 			}
 			

@@ -21,27 +21,26 @@ import java.lang.reflect.InvocationTargetException;
 
 public  class Model <T extends PopulatedData>{
 	
-	//Semester
 	private int selectedSem = 0;
 	private int newClassID = 0;
-	protected List<CDClass> classList;
+	protected List<CDClass> classList; 
 	protected List<Account> accountList;
 	protected List<Semester> semesterList;
-	private final String semesterTableTitle = "<SEMESTER TABLE>";
+	
+	 //the defined name to search and write table in the text file.
+	private final String semesterTableTitle = "<SEMESTER TABLE>"; 
 	private final String accountTableTitle = "<USER ACCOUNT TABLE>";
 	private final String courseTableTitle = "<CD CLASS TABLE>";
+	
+	
 	private String currentUserID = "";
 	private String currentUserName = "";
-	private ManageFile mf;
+	private ManageFile mf;	//inner class to deal with text file
+	//the list store all the queries instruction regarding to foreign keys in the class table.
 	private HashMap<String, String[]> classListFKDataHeader = new HashMap<String, String[]>();
-	private List<List<T>> dataBase;
+	private List<List<T>> dataBase; // a database contains three type of object list 
 	
-	public String[] getUser() {
-		String [] s = new String[2];
-		s[0] = currentUserID;
-		s[1] = currentUserName;
-		return s;
-	}
+	
 	
 	
 	public Model() {
@@ -69,6 +68,14 @@ public  class Model <T extends PopulatedData>{
 	}
 	
 	
+	//provide current user to view
+		public String[] getUser() {
+			String [] s = new String[2];
+			s[0] = currentUserID;
+			s[1] = currentUserName;
+			return s;
+		}
+	
 	//verify user and return the user's type
 	public int verify(String [] input) {
 		String id = input[0];
@@ -77,7 +84,7 @@ public  class Model <T extends PopulatedData>{
 		for(Account a : accountList) {
 			if(id.equals(a.getID())){
 				if(pw.equals(a.getPW())) {
-					
+
 					this.currentUserID = id;
 					this.currentUserName = a.getName();
 					return a.getType();
@@ -135,12 +142,12 @@ public  class Model <T extends PopulatedData>{
 		findCourse(s[0]).approveTeachingRequest(this.currentUserID);
 	}
 	
-	public void withdrawAssignedTeacher(String[]s) {
-		findCourse(s[0]).withdrawAssignedTeacher();
+	public void declineAssignedTeacher(String[]s) {
+		findCourse(s[0]).declineAssignedTeacher();
 	}
 	
-	public void withdrawTeachingRequest(String[]s) {
-		findCourse(s[0]).withdrawTeachingRequest();
+	public void declineTeachingRequest(String[]s) {
+		findCourse(s[0]).declineTeachingRequest();
 	}
 	
 	
