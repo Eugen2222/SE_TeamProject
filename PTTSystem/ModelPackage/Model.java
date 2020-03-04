@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 public  class Model <T extends PopulatedData>{
 	
 	//Semester
-	private int latestSem = 0;
 	private int selectedSem = 0;
 	private int newClassID = 0;
 	protected List<CDClass> classList;
@@ -62,9 +61,7 @@ public  class Model <T extends PopulatedData>{
 			newClassID = (this.classList.isEmpty()) ?  1 : 
 				(Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 			
-			for(Semester sems : semesterList) {
-				latestSem=sems.getSemester();
-			}
+	
 
 		}catch(ClassCastException e) {
 			e.printStackTrace();
@@ -93,17 +90,19 @@ public  class Model <T extends PopulatedData>{
 
 	
 	public boolean selectSemester(int num) {
-		if(num>this.latestSem||num<1) {
-			return false;
-		}else {
-			this.selectedSem=num;
-
-			return true;
-		}
+		this.selectedSem=num;
+		return true;
 	}
 	
-	public int getlatestSem() {
-		return this.latestSem;
+	public int[] getSemester() {
+		int [] sem = new int [semesterList.size()];
+		int i = 0;
+		for(Semester s :semesterList)
+		{
+			sem[i] = s.getSemester();
+			i++;
+		}
+		return sem;
 	}
 	
 	public String getSelectedSem() {
@@ -360,7 +359,7 @@ public  class Model <T extends PopulatedData>{
 				
 				}
 			}
-			if(table.isEmpty()) throw new Exception("Can't find any data of the "+ key +" table");
+			if(table.isEmpty())System.out.println("Can't find any data of the "+ key +" table");
 			//Create object
 			List<T> list = new LinkedList<>();
 			for(List<String> a : table) {
@@ -402,16 +401,18 @@ public  class Model <T extends PopulatedData>{
 		public <T extends PopulatedData> String produceTable(List<List<T>> dataList) {
 			String database = "";
 			for(List<T> subList : dataList) {
-				database += "-------------------------------------------------"+"\n";
-				database += subList.get(0).getTableTitle()+"\n";
-				database += subList.get(0).getTableHeader()+"\n";
-				database += "-------------------------------------------------"+"\n";
-				for(T e : subList) {
-					String row =  "";
-					for (String s : e.getRawData()) {
-						row += encodeString(s) + ", ";
+				if(subList!=null&&!subList.isEmpty()) {
+					database += "-------------------------------------------------"+"\n";
+					database += subList.get(0).getTableTitle()+"\n";
+					database += subList.get(0).getTableHeader()+"\n";
+					database += "-------------------------------------------------"+"\n";
+					for(T e : subList) {
+						String row =  "";
+						for (String s : e.getRawData()) {
+							row += encodeString(s) + ", ";
+						}
+						database += row +"\n";
 					}
-					database += row +"\n";
 				}
 			}
 			return database;

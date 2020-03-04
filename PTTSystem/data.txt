@@ -11,7 +11,7 @@ Semester, BeginningDate, EndDate,
 <USER ACCOUNT TABLE>
 ID, Password, Type, Name
 -------------------------------------------------
-"0001", "1", "CD", "John Wick John Wick", 
+"0001", "1", "CD", "John Wick", 
 "0002", "6666", "A", "PoPo", 
 "0003", "888", "PD", "Cat", 
 "0004", "1", "CD", "James LEE", 

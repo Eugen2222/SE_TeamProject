@@ -28,9 +28,8 @@ public abstract class Controller implements ActionListener{
 	}
 	
 	public void selectSemesterPage() {
-		view.semester.buildSemesterPanel(model.getlatestSem());
+		view.semester.buildSemesterPanel(model.getSemester());
 		view.semesterBN.addActionListener(this);
-		view.semester.displayLatestSemester();
 		view.semester.displaySemesterPanel();
 	}
 	
@@ -88,11 +87,8 @@ public abstract class Controller implements ActionListener{
 
 		if(e.getSource() == view.semesterBN) {
 			int semester = view.semester.getSelecetedSemester();
-			if(model.selectSemester(semester)) {
-				this.initialise();
-			}else {
-				view.semester.displayLatestSemester();
-			}
+			model.selectSemester(semester);
+			this.initialise();
 		}
 		
 		if(e.getSource() == view.classListBN) {

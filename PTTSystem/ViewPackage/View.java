@@ -240,7 +240,9 @@ public class View extends JFrame  implements ActionListener{
 	// for users to choose a specific semester 
 	public class Semester{
 		private int latestSemester = 0;
-		public void buildSemesterPanel(int num) {
+		public JComboBox semesterBox;
+
+		public void buildSemesterPanel(int [] num) {
 			semesterPanel = new JPanel(new GridLayout(4,1,0,12));
 			semesterPanel.setBackground(Color.white);
 			semesterPanel.setFocusable(true);
@@ -252,35 +254,37 @@ public class View extends JFrame  implements ActionListener{
 			Font f = new Font("Arial",Font.PLAIN,18);
 			title.setFont(f);
 			title.setBounds(315,122,250,60);
-			
-			semesterTF = new JTextField(4);
-	
+			String [] semesterList = new String[num.length];
+			for(int i =0; i< num.length ; i++) {
+				semesterList[i] = Integer.toString(num[i]);			
+			}
+			DefaultComboBoxModel semesterListModel = new DefaultComboBoxModel(semesterList)  ;
+			semesterBox = themeStylishComboBox();
+			semesterBox.setModel(semesterListModel);
+			semesterBox.setSelectedIndex(semesterList.length-1);
 //			semesterTF.setBorder(BorderFactory.createLineBorder(themeGrey)); 
-			semesterTF.setBounds(293,183,195,41);
+			semesterBox.setBounds(293,200,195,30);
 
 			
 			semesterBN = buildThemeButton("Select");
 			semesterBN.setBounds(293,250,195,35);
 	
 			semesterPanel.add(title);
-			semesterPanel.add(semesterTF);
+			semesterPanel.add(semesterBox);
 			semesterPanel.add(semesterBN);
-			latestSemester =num;
+//			latestSemester =num;
 			View.this.rootPanel.add(semesterPanel,"SemesterPage");
 
 		}
 		
 		
-		//display a hint semester number in the text field
-		public void displayLatestSemester() {
-			
-			semesterTF.addFocusListener(new JTextFieldHintListener(semesterTF, ""+latestSemester));
-		}
+	
 		
 		
-		public int getSelecetedSemester() {
-			return Integer.parseInt(semesterTF.getText());
+		public int getSelecetedSemester() {  
+			return Integer.parseInt(semesterBox.getSelectedItem().toString());
 		}
+	
 		
 		public void displaySemesterPanel() {
 			View.this.page.show(rootPanel, "SemesterPage");
@@ -516,56 +520,10 @@ public class View extends JFrame  implements ActionListener{
 				classListTable = buildModelListTable(header, list);
 				JPanel centerP = new JPanel(new BorderLayout());
 	
-				statusList = new JComboBox(courseListModel);
+				statusList = stylishComboBox();
+				statusList.setModel(courseListModel);
 				statusList.setSelectedIndex(0);
-				statusList.setBackground(Color.white);
-				statusList.setForeground(new Color(70,70,70));
-				statusList.setUI(new BasicComboBoxUI() {
-				    @Override
-				    protected JButton createArrowButton() {
-				        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
-			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
-			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
-			            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
-			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
-			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
-			   
-	//		            button.setBackground(themeGrey);
-			            statusList.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
-			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
-			            button.setBorderPainted(true);
-			            button.setContentAreaFilled(false);
-			            
-			            button.getModel().addChangeListener(new ChangeListener() {
-			    		    @Override
-			    		    public void stateChanged(ChangeEvent e) {
-			    		        ButtonModel model = (ButtonModel) e.getSource();
-			    		        if (model.isRollover()) {
-			    		        	button.setBackground(new Color(200,200,205));
-			    		        } else if (model.isPressed()) {
-			    		        	button.setBackground(new Color(200,200,205));
-			    		        } else {
-			    		        	button.setBackground(new Color(230,230,230));
-			    		        	
-			    		        }
-			    		    }
-	
-			            });		
-	//		            button.setFocusPainted(false);
-	//		            button.setFocusable(false);
-			            return button; 
-				    }
-				    
-				    protected ComboPopup createPopup() {
-				        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
-				        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
-				        return basicComboPopup;
-				    }
-	
-				});
-			    statusList.setFocusable(false);		
-				statusList.setBorder(BorderFactory.createLineBorder( new Color(230,230,230)));
-				statusList.setFont(new Font("Arial",Font.PLAIN,12));
+				
 				statusList.setBounds(405, 0, 80, 20);
 				
 				JPanel boxP = new JPanel(null);
@@ -629,23 +587,26 @@ public class View extends JFrame  implements ActionListener{
 			
 			public void displayTeachingRequestListPanel(String[] header, String[][] list) {	
 				DefaultTableModel  m = new DefaultTableModel(null, header) ;
-				View.this.classListTable.setModel(m);
+				
 				int key = -1;
-				//find the entries that need to be added to the request list
-				for(int i = 0 ; i<header.length; i++) {
-					if(header[i].equals("TeachingStatus")) {
-						key=i;
+				
+				if(list != null) {
+					//find the entries that need to be added to the request list
+					for(int i = 0 ; i<header.length; i++) {
+						if(header[i].equals("TeachingStatus")) {
+							key=i;
+						}
 					}
-				}
-	
-				for(int i =0 ; i< list.length ; i++) {
-	
-					if(list[i][key].equals("Submitted")||list[i][key].equals("Approved")) {		
-						m.addRow(list[i]);
-					}else {
+		
+					for(int i =0 ; i< list.length ; i++) {
+		
+						if(list[i][key].equals("Submitted")||list[i][key].equals("Approved")) {		
+							m.addRow(list[i]);
+						}else {
+						}
 					}
+					View.this.classListTable.setModel(m);
 				}
-	
 				classListTable.setAutoCreateRowSorter(true);
 				classListTable = main.setMainTableColSize(classListTable);
 				listTitleL.setText("Teaching request list");
@@ -1872,6 +1833,114 @@ public class View extends JFrame  implements ActionListener{
 	 	        scrollbar.repaint();
 	 	      
 	 	      }
+	      }
+	      
+	      public JComboBox stylishComboBox() {
+	    	  JComboBox box = new JComboBox();
+	    	  box.setBackground(Color.white);
+	    	  box.setForeground(new Color(70,70,70));
+	    	  box.setUI(new BasicComboBoxUI() {
+				    @Override
+				    protected JButton createArrowButton() {
+				        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
+			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
+			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+			            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
+			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
+			   
+	//		            button.setBackground(themeGrey);
+			            box.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
+			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
+			            button.setBorderPainted(true);
+			            button.setContentAreaFilled(false);
+			            
+			            button.getModel().addChangeListener(new ChangeListener() {
+			    		    @Override
+			    		    public void stateChanged(ChangeEvent e) {
+			    		        ButtonModel model = (ButtonModel) e.getSource();
+			    		        if (model.isRollover()) {
+			    		        	button.setBackground(new Color(200,200,205));
+			    		        } else if (model.isPressed()) {
+			    		        	button.setBackground(new Color(200,200,205));
+			    		        } else {
+			    		        	button.setBackground(new Color(230,230,230));
+			    		        	
+			    		        }
+			    		    }
+	
+			            });		
+	//		            button.setFocusPainted(false);
+	//		            button.setFocusable(false);
+			            return button; 
+				    }
+				    
+				    protected ComboPopup createPopup() {
+				        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
+				        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
+				        return basicComboPopup;
+				    }
+	
+				});
+	    	  box.setFocusable(false);		
+	    	  box.setBorder(BorderFactory.createLineBorder( new Color(230,230,230)));
+	    	  box.setFont(new Font("Arial",Font.PLAIN,12));
+	    	  return box;
+	      }
+	      
+	      
+	      
+	      public JComboBox themeStylishComboBox() {
+	    	  JComboBox box = new JComboBox();
+	    	  box.setBackground(Color.white);
+	    	  box.setForeground(new Color(70,70,70));
+	    	  box.setUI(new BasicComboBoxUI() {
+				    @Override
+				    protected JButton createArrowButton() {
+				        final Color background = themeGrey;     //Default is UIManager.getColor("ComboBox.buttonBackground").
+			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
+			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+			            final Color highlight = themeGrey;              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
+			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
+			   
+	//		            button.setBackground(themeGrey);
+			            box.setBorder(BorderFactory.createLineBorder(themeGrey));
+			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
+			            button.setBorderPainted(true);
+			            button.setContentAreaFilled(false);
+			            
+			            button.getModel().addChangeListener(new ChangeListener() {
+			    		    @Override
+			    		    public void stateChanged(ChangeEvent e) {
+			    		        ButtonModel model = (ButtonModel) e.getSource();
+			    		        if (model.isRollover()) {
+			    		        	button.setBackground(new Color(200, 200, 200,200));
+			    		        } else if (model.isPressed()) {
+			    		        	button.setBackground(new Color(200, 200, 200,200));
+			    		        } else {
+			    		        	button.setBackground(themeGrey);
+			    		        	
+			    		        }
+			    		    }
+	
+			            });		
+	//		            button.setFocusPainted(false);
+	//		            button.setFocusable(false);
+			            return button; 
+				    }
+				    
+				    protected ComboPopup createPopup() {
+				        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
+				        basicComboPopup.setBorder(new LineBorder(new Color(114, 114, 114,200)));
+				        return basicComboPopup;
+				    }
+	
+				});
+	    	  box.setFocusable(false);		
+	    	  box.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+	    	  box.setFont(new Font("Arial",Font.PLAIN,12));
+	    	  return box;
 	      }
 }
 
