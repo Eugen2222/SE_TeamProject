@@ -16,6 +16,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -45,6 +47,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -75,10 +78,11 @@ import java.util.HashMap;
 
 
 public class View extends JFrame  implements ActionListener{
-//	JLabel title,courseDirctor; 
+//	JLabel title,courseDirector; 
 	public JButton loginBN,logoutBN,semesterBN,createClassBN,classListBN,myClassListBN,requestListBN,createCourse,createClassOKBN,createClassCBN;
 	
-	public JTextField usernameTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
+	public JTextField IDTF,passwordTF, semesterTF,courseNameTF,requirment1TF,requirment2TF;
+	public JPasswordField passwordPF;
 	public Color themeGrey = new Color(30, 40, 80);
 	public Color red = new Color(238, 73, 87);
 	public JPanel barPanel, loginPanel, semesterPanel, framePanel, centerPanel, createClassPanel, 
@@ -158,36 +162,37 @@ public class View extends JFrame  implements ActionListener{
 			title.setFont(f);
 			title.setBounds(359,122,61,49);
 			
-			JLabel lblUsername = new JLabel("Username");
-			lblUsername.setFont(new Font("Arial", Font.PLAIN, 12));
-			lblUsername.setForeground(new Color(30, 45, 85));
-			lblUsername.setBounds(288, 176, 61, 16);
+			JLabel IDL = new JLabel("ID");
+			IDL.setFont(new Font("Arial", Font.PLAIN, 12));
+			IDL.setForeground(new Color(30, 45, 85));
+			IDL.setBounds(288, 176, 61, 16);
 			
-			usernameTF = new JTextField(16);
-//			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, " Username"));
-			usernameTF.setBounds(288,194,195,41); 
-			usernameTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+			IDTF = new JTextField(16);
+//			IDTF.addFocusListener(new JTextFieldHintListener(IDTF, " Username"));
+			IDTF.setBounds(288,194,195,41); 
+			IDTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 			
-			usernameTF.setForeground(new Color(30, 45, 85));
+			IDTF.setForeground(new Color(30, 45, 85));
 			JLabel lblPassword = new JLabel("Password");
 			lblPassword.setFont(new Font("Arial", Font.PLAIN, 12));
 			lblPassword.setForeground(new Color(30, 45, 85));
 			lblPassword.setBounds(288, 240, 61, 16);
 			
-			passwordTF = new JTextField(16);
+			passwordPF = new JPasswordField(16);
 //			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, " Password"));
-			passwordTF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-			passwordTF.setBounds(288,258,195,41);
-			passwordTF.setForeground(new Color(30, 45, 85));
+			passwordPF.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+			passwordPF.setBounds(288,258,195,41);
+			passwordPF.setForeground(new Color(30, 45, 85));
+			passwordPF.setFont(new Font("Arial", Font.PLAIN, 12));
 			loginBN = buildThemeButton("OK");
 			
 			loginBN.setBounds(288,320,195,35);
 	
 			loginPanel.add(title);
-			loginPanel.add(lblUsername);
-			loginPanel.add(usernameTF);
+			loginPanel.add(IDL);
+			loginPanel.add(IDTF);
 			loginPanel.add(lblPassword);
-			loginPanel.add(passwordTF);
+			loginPanel.add(passwordPF);
 			loginPanel.add(loginBN);
 			View.this.rootPanel.add(loginPanel,"LoginPage");
 		}
@@ -196,15 +201,20 @@ public class View extends JFrame  implements ActionListener{
 		//get login input
 		public String[] getAccount() {
 			String[] s = new String[2];
-			s[0]= usernameTF.getText();
-			s[1]= passwordTF.getText();	
+			s[0]= IDTF.getText();
+			char [] c = passwordPF.getPassword();
+			String password = "";
+			for(int i = 0 ; i< c.length ; i++) {
+				password+= c[i];
+			}
+			s[1]= password;	
 			return s;
 		}
 		
 		//when user type wrong
 		public void cleanLogin() {
-			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
-			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
+			IDTF.setText("");
+			passwordPF.setText("");
 			UIManager.put("Button.background", new Color(150,150,150));
 			UIManager.put("Button.FocusPainted",false);
 			UIManager.put("Button.foreground", Color.white);
@@ -224,8 +234,8 @@ public class View extends JFrame  implements ActionListener{
 			UIManager.put("Panel.background", Color.white);
 			UIManager.put("OptionPane.background", Color.white);
 			int n = JOptionPane.showConfirmDialog(null, "Are you sure to log out?", "wanring",JOptionPane.YES_NO_OPTION);
-			usernameTF.addFocusListener(new JTextFieldHintListener(usernameTF, ""));
-			passwordTF.addFocusListener(new JTextFieldHintListener(passwordTF, ""));
+			IDTF.setText("");
+			passwordPF.setText("");
 			return n;
 		}
 		
@@ -425,7 +435,7 @@ public class View extends JFrame  implements ActionListener{
 					centerP.add(reqScrollPanel);
 					
 					
-					createClassOKBN = buildThemeButton("Ok");
+					createClassOKBN = buildThemeButton("OK");
 					createClassOKBN.setBounds(375, 426, 90, 30);
 					
 					centerP.add(createClassOKBN);
@@ -1193,7 +1203,7 @@ public class View extends JFrame  implements ActionListener{
 
 				scrollPane.setViewportView(staffListTable);	
 				scrollPane.getVerticalScrollBar().setUI(new stylishScrollBar());
-				
+				scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 				ListP.add(scrollPane, BorderLayout.CENTER);
 				JPanel buttonP = new JPanel(new GridLayout(1,1));
 				buttonP.setPreferredSize(new Dimension(50, 80));
@@ -1201,7 +1211,7 @@ public class View extends JFrame  implements ActionListener{
 				JPanel subbuttonP = new JPanel(null);
 				selectTeacherSubmitBN = buildThemeButton("Select");
 				selectTeacherSubmitBN.addActionListener(View.this);
-				selectTeacherSubmitBN.setBounds(240, 10, 60, 30);
+				selectTeacherSubmitBN.setBounds(220, 10, 60, 30);
 				
 				
 				subbuttonP.setBorder(new EmptyBorder(30, 180, 0, 180));
@@ -1354,7 +1364,7 @@ public class View extends JFrame  implements ActionListener{
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
 			northPanel.setBackground(themeGrey);
-			JLabel titleL = new JLabel("Class Dirctor");
+			JLabel titleL = new JLabel("Class Director");
 			JLabel nameL = new JLabel("Hi, "+name);
 			list.setBackground(themeGrey);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
@@ -1445,7 +1455,7 @@ public class View extends JFrame  implements ActionListener{
 			northPanel.setBorder(BorderFactory.createEmptyBorder(50,30,30,20));
 			list.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
 			northPanel.setBackground(themeGrey);
-			JLabel titleL = new JLabel("PTT Dirctor");
+			JLabel titleL = new JLabel("PTT Director");
 			JLabel nameL = new JLabel("Hi, "+name);
 			list.setBackground(themeGrey);
 			list.setAlignmentX(Component.LEFT_ALIGNMENT);			
@@ -1842,15 +1852,16 @@ public class View extends JFrame  implements ActionListener{
 	    	  box.setUI(new BasicComboBoxUI() {
 				    @Override
 				    protected JButton createArrowButton() {
-				        final Color background = new Color(230,230,230);     //Default is UIManager.getColor("ComboBox.buttonBackground").
+				    	final Color background = new Color(230,230,230);      //Default is UIManager.getColor("ComboBox.buttonBackground").
 			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
-			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
-			            final Color highlight = new Color(140,140,140);              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+			            final Color triangle = new Color(140,140,140);               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+			            final Color highlight = new Color(140,140,140);                //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
 			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
 			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
 			   
 	//		            button.setBackground(themeGrey);
 			            box.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230,200)));
+			          
 			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
 			            button.setBorderPainted(true);
 			            button.setContentAreaFilled(false);
@@ -1878,6 +1889,7 @@ public class View extends JFrame  implements ActionListener{
 				    protected ComboPopup createPopup() {
 				        BasicComboPopup basicComboPopup = new BasicComboPopup(comboBox);
 				        basicComboPopup.setBorder(new LineBorder(new Color(230,230,230,200)));
+				       
 				        return basicComboPopup;
 				    }
 	
@@ -1897,13 +1909,12 @@ public class View extends JFrame  implements ActionListener{
 	    	  box.setUI(new BasicComboBoxUI() {
 				    @Override
 				    protected JButton createArrowButton() {
-				        final Color background = themeGrey;     //Default is UIManager.getColor("ComboBox.buttonBackground").
+				        final Color background = Color.WHITE;     //Default is UIManager.getColor("ComboBox.buttonBackground").
 			            final Color pressedButtonBorderColor = new Color(140,140,140); //Default is UIManager.getColor("ComboBox.buttonShadow"). The color of the border of the button, while it is pressed.
-			            final Color triangle = Color.WHITE;               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
-			            final Color highlight = themeGrey;              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
+			            final Color triangle = new Color(80,80,80);               //Default is UIManager.getColor("ComboBox.buttonDarkShadow"). The color of the triangle.
+			            final Color highlight = Color.WHITE;              //Default is UIManager.getColor("ComboBox.buttonHighlight"). Another color to show the button as highlighted.
 			            final JButton button = new BasicArrowButton(BasicArrowButton.SOUTH, background, pressedButtonBorderColor, triangle, highlight);
 			            button.setName("ComboBox.arrowButton"); //Mandatory, as	 per BasicComboBoxUI#createArrowButton().
-			   
 	//		            button.setBackground(themeGrey);
 			            box.setBorder(BorderFactory.createLineBorder(themeGrey));
 			            button.setBorder(new EmptyBorder(0, 0, 0, 0)) ;
@@ -1915,11 +1926,11 @@ public class View extends JFrame  implements ActionListener{
 			    		    public void stateChanged(ChangeEvent e) {
 			    		        ButtonModel model = (ButtonModel) e.getSource();
 			    		        if (model.isRollover()) {
-			    		        	button.setBackground(new Color(200, 200, 200,200));
+			    		        	button.setBackground(Color.white);
 			    		        } else if (model.isPressed()) {
-			    		        	button.setBackground(new Color(200, 200, 200,200));
+			    		        	button.setBackground(Color.white);
 			    		        } else {
-			    		        	button.setBackground(themeGrey);
+			    		        	button.setBackground(Color.WHITE);
 			    		        	
 			    		        }
 			    		    }
@@ -1942,6 +1953,69 @@ public class View extends JFrame  implements ActionListener{
 	    	  box.setFont(new Font("Arial",Font.PLAIN,12));
 	    	  return box;
 	      }
+	      
+	      
+	      
+	      
+	      public class JTextFieldHintListener implements FocusListener{	
+	    		private String hintText;	
+	    		private JTextField textField=null;	
+	    		private JTextArea TA=null;
+	    		
+	    		public JTextFieldHintListener(JTextField jTextField,String hintText) {		
+	    			this.textField = jTextField;		
+	    			this.hintText = hintText;		
+	    			this.textField.setText(hintText);  
+	    		} 	
+	    		
+
+	    		
+	    		
+	    		public JTextFieldHintListener(JTextArea TA,String hintText) {		
+	    			this.TA = TA;		
+	    			this.hintText = hintText;
+	    			TA.setText(hintText);  
+	    		} 	
+	    		
+	    		
+	    		
+	    		
+	    		@Override	
+	    		public void focusGained(FocusEvent e) {		
+	    			if(textField==null) {
+	    				String temp = TA.getText();
+	    				if(temp.equals(hintText)) {			
+	    					TA.setText("");			
+	    					TA.setForeground(new Color (20,20,20));		
+	    				}		
+	    			}else {
+	    				String temp = textField.getText();
+	    				if(temp.equals(hintText)) {			
+	    					textField.setText("");			
+	    					textField.setForeground(new Color (20,20,20));		
+	    				}	
+	    			}
+	    		} 	
+	    		
+	    		@Override	
+	    		public void focusLost(FocusEvent e) {	
+	    			if(textField==null&&TA!=null) {
+	    				String temp = TA.getText();		
+	    				if(temp.equals("")) {			
+	    					TA.setForeground(new Color (20,20,20));			
+	    					TA.setText(hintText);
+	    				}
+	    			}else {
+	    				String temp = textField.getText();		
+	    				if(temp.equals("")) {			
+	    				textField.setForeground(new Color (20,20,20));			
+	    				textField.setText(hintText);		
+	    				}			
+	    			}		
+	    		} 
+	    		
+	    		
+	    	}
 }
 
 	
