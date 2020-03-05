@@ -38,16 +38,6 @@ public class PDController extends Controller {
 	}
 	
 	
-//	public void displayTeachingRequestListPage() {
-//		view.main.displayTeachingRequestListPanel(classListTableQuery, 
-//				model.getClassListTable(classListTableQuery,null));
-//		
-//	}
-//	
-	
-	
-	
-	
 	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);

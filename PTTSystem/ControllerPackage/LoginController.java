@@ -35,7 +35,6 @@ public class LoginController implements ActionListener{
 	}
 		
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("controller");
 		if(e.getSource() == view.loginBN) {
 			String [] account = view.login.getAccount();
 			if(account!=null) {
@@ -59,7 +58,7 @@ public class LoginController implements ActionListener{
 				initilise();
 				model.save();
 			}else {
-				//default the button style when user do not want to log out
+				//refresh the button style when user do not want to log out
 				view.bar.BNListenerList.get(view.logoutBN.getText()).press=false;
 				view.bar.BNListenerList.get(view.logoutBN.getText()).setDefault();
 			}

@@ -65,7 +65,6 @@ public class CDClass extends PopulatedData{
 		for(List<T> list : database) {
 			if(list.get(0) instanceof Account) {
 				setDC(list);
-				System.out.println(this.classDirector.getName());
 				if(this.teacherID!=""||this.teacherID!=null) {
 					setTeacher(list);
 				}
@@ -121,7 +120,6 @@ public class CDClass extends PopulatedData{
 	
 	public void submitTeachingRequest() {
 		this.setTeacherStatus("Submitted");	
-		System.out.println("yoyo");
 	}
 	
 	public void approveTeachingRequest(String PDID) {

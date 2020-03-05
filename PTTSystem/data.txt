@@ -30,7 +30,7 @@ Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID
 "5", "0004", "Math", "Need one teacher", "Approved", "0001", "0004", "Law", "2020/02/20", "", "", 
 "5", "0005", "Statistic", "Should count", "Assigned", "0004", "0004", "Can count very quickly.", "2020/02/20", "", "", 
 "5", "0006", "Finance", "Need to know money.", "Assigned", "0004", "0004", "Have a lots$n$of$n$money$n$in$n$his$n$bag.", "2020/02/20", "", "", 
-"5", "0007", "hello", "you$n$are$n$good", "Submitted", "0001", "0007", "you$n$ar$n$", "2020/02/20", "", "", 
+"5", "0007", "hello", "you$n$are$n$good", "Assigned", "0001", "0007", "you$n$ar$n$", "2020/02/20", "", "", 
 "5", "0008", "Sleep", "Like to sleep", "Pending", "0004", "", "", "2020/02/20", "", "", 
 "5", "0009", "Sleep a lot", "no$n$n$n$in", "Submitted", "0001", "0007", "yo$n$l$n$l$n$l$n$l", "2020/02/20", "", "", 
 "5", "0010", "asd", "ad", "Pending", "0001", "", "", "2020/02/29", "", "", 

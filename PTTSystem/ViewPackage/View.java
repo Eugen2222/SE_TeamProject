@@ -658,7 +658,6 @@ public class View extends JFrame  implements ActionListener{
 						classListClickedHeader = (listHeader.columnAtPoint(e.getPoint()));
 						RowSorter.SortKey key = classListTable.getRowSorter().getSortKeys().get(0);
 						order= key.getSortOrder();
-						System.out.print(order);
 					}
 					
 				});
@@ -971,7 +970,7 @@ public class View extends JFrame  implements ActionListener{
 				UIManager.put("Button.foreground", Color.white);
 				UIManager.put("Panel.background", Color.white);
 				UIManager.put("OptionPane.background", Color.white);
-				int n = JOptionPane.showConfirmDialog(null, "Are you sure to decline?", "wanring",JOptionPane.YES_NO_OPTION);
+				int n = JOptionPane.showConfirmDialog(null, "Are you sure to decline?", "Warning",JOptionPane.YES_NO_OPTION);
 				return n;
 			}
 			
@@ -1504,14 +1503,7 @@ public class View extends JFrame  implements ActionListener{
 		}
 		
 		public void switchMainPage(JButton btn) {
-			System.out.println("yo");
-			System.out.println(btn.getText());
-			if(selectedButton!=null) {
-				System.out.println(selectedButton.getText());
-			}
 			if(selectedButton!=null&&selectedButton.equals(btn)) {
-				System.out.println("yo");
-				System.out.println(main.listPage.courseClickedFilter+"2");
 				RowFilter<DefaultTableModel, Object> rf = null;
 				try {					
 				    if(main.listPage.courseClickedFilter.equals("All")) {}
@@ -1530,7 +1522,6 @@ public class View extends JFrame  implements ActionListener{
 		    	classListTable.setRowSorter(sorter);
 
 		    	List<RowSorter.SortKey> sortKeys = new ArrayList<>(1);
-		    	System.out.println(main.listPage.order+"1");
 		    	sortKeys.add(new RowSorter.SortKey(main.listPage.classListClickedHeader, main.listPage.order));
 		    	sorter.setSortKeys(sortKeys);
 		    	classListTable.setRowSorter(sorter);
@@ -1541,8 +1532,6 @@ public class View extends JFrame  implements ActionListener{
 				View.this.main.listPage.classListClickedHeader=0;
 				View.this.main.listPage.buildSorter();
 				main.listPage.order = SortOrder.ASCENDING;
-				System.out.println(main.listPage.courseClickedFilter+"22");
-				System.out.println(main.listPage.order+"22");
 				selectedButton= btn;
 				btn.setBackground(Color.white);
 			    btn.setForeground(themeGrey);

@@ -77,7 +77,6 @@ public  class Model <T extends PopulatedData>{
 	public int verify(String [] input) {
 		String id = input[0];
 		String pw = input[1];
-		System.out.println(id+", ");
 		
 		//loop for account list to search account
 		for(Account a : accountList) {
@@ -186,7 +185,6 @@ public  class Model <T extends PopulatedData>{
 		CDClass tClass = new CDClass(cls, dataBase);
 		classList.add(tClass);
 		tClass.setTableTitle(courseTableTitle);
-		System.out.print(dataBase.get(2).get(0).ID);
 		System.out.print("\nSuccessfully created a class");
 	}
 	
@@ -401,7 +399,6 @@ public  class Model <T extends PopulatedData>{
 					list.add(object);
 					//set up the table title for each object for saving data.
 					object.setTableTitle(key);
-					System.out.println(object);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException e) {
 					// TODO Auto-generated catch block
