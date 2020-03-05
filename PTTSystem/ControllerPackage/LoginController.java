@@ -15,10 +15,11 @@ public class LoginController implements ActionListener{
 	public LoginController(){	
 		view = new View();
 		model = new Model();
+		//if window closed the model should save data
 		view.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                model.save();
-               System.exit(0);//cierra aplicacion
+               System.exit(0);
             }
         });
 		initilise();
@@ -26,6 +27,7 @@ public class LoginController implements ActionListener{
 		
 	public void initilise() {
 		view.initialise();
+		//reset the controller
 		controller=null;	
 		view.login.buildLoginPanel();
 		view.login.displayLoginPanel();
@@ -35,10 +37,10 @@ public class LoginController implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("controller");
 		if(e.getSource() == view.loginBN) {
-			String [] testUser = view.login.getAccount();
-			if(testUser!=null) {
-				int usertype = model.verify(testUser); //for testing only return 1 Class director
-				
+			String [] account = view.login.getAccount();
+			if(account!=null) {
+				int usertype = model.verify(account);
+				//start different controllers according to the type of account
 				if(usertype == 1) {
 					controller = new CDController(model, view, this);
 				}
@@ -57,6 +59,7 @@ public class LoginController implements ActionListener{
 				initilise();
 				model.save();
 			}else {
+				//default the button style when user do not want to log out
 				view.bar.BNListenerList.get(view.logoutBN.getText()).press=false;
 				view.bar.BNListenerList.get(view.logoutBN.getText()).setDefault();
 			}

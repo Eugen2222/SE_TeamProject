@@ -47,24 +47,21 @@ public  class Model <T extends PopulatedData>{
 		semesterList = new LinkedList<Semester>();
 		accountList =  new LinkedList<Account>();
 		classList = new LinkedList<CDClass>();
-
+		
+		//Set up queries name and the related foreign keys in CDClass.
+		//This tells model to reach foreign key data in CDClass.  
 		String[] s = new String[] {"teacher", "Name"};
 		String[] s1 = new String[] {"classDirector", "Name"};
 		classListFKDataHeader.put("ClassDirectorName", s1);
 		classListFKDataHeader.put("TeacherName", s);
 		dataBase = new LinkedList<List<T>>();
 		mf = new ManageFile();
+		//inner class read text file
 		mf.readFile();
-		try {
+		// initialise classID for creating a course.
+		newClassID = (this.classList.isEmpty()) ?  1 : 
+		(Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
 
-			newClassID = (this.classList.isEmpty()) ?  1 : 
-				(Integer.parseInt(classList.get(classList.size()-1).getID()) + 1);
-			
-	
-
-		}catch(ClassCastException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	
@@ -81,10 +78,11 @@ public  class Model <T extends PopulatedData>{
 		String id = input[0];
 		String pw = input[1];
 		System.out.println(id+", ");
+		
+		//loop for account list to search account
 		for(Account a : accountList) {
 			if(id.equals(a.getID())){
 				if(pw.equals(a.getPW())) {
-
 					this.currentUserID = id;
 					this.currentUserName = a.getName();
 					return a.getType();
@@ -101,6 +99,7 @@ public  class Model <T extends PopulatedData>{
 		return true;
 	}
 	
+	//provide all available semester in database
 	public int[] getSemester() {
 		int [] sem = new int [semesterList.size()];
 		int i = 0;
@@ -112,10 +111,10 @@ public  class Model <T extends PopulatedData>{
 		return sem;
 	}
 	
+	
 	public String getSelectedSem() {
 		return Integer.toString(this.selectedSem);
 	}
-	
 	
 	
 	public CDClass findCourse(String CourseID) {
@@ -128,7 +127,7 @@ public  class Model <T extends PopulatedData>{
 	}
 	
 	
-	
+	//set up teacher variable in CDClass and point to the account 
 	public void assignCourseTeacher(String[]s) {
 		findCourse(s[0]).assignTeacher(s, accountList, this.currentUserID);
 	}
@@ -151,7 +150,7 @@ public  class Model <T extends PopulatedData>{
 	}
 	
 	
-	
+	//provide system data to view if user want to create a course
 	public String[] getCreateClassInfom() {
 		String []s =new String[2]; 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
@@ -162,6 +161,8 @@ public  class Model <T extends PopulatedData>{
 		return s;
 	}
 	
+	//receive class data from view and
+	//set up class direction pointing to Account in CDClass
 	public <T extends PopulatedData>  void createClass(String s) {
 		List<String> tem = this.getWordInQuotes(s);
 		String classID = tem.get(0);
@@ -189,6 +190,8 @@ public  class Model <T extends PopulatedData>{
 		System.out.print("\nSuccessfully created a class");
 	}
 	
+	
+	//filter course in the selective semester
 	public List<CDClass> getSelectedSemesterClass(){
 		List<CDClass> table1 = new LinkedList<>();
 		for(CDClass c : classList) {
@@ -199,13 +202,14 @@ public  class Model <T extends PopulatedData>{
 		return table1;
 	}
 
-	
+	//provide staff table to view
 	public String[][] getStaffListTable(String [] query) {
 		if(this.accountList.isEmpty()) {
 			return null;
 		}else {
 			List<String[]> table1 = new LinkedList<String[]>();
 			for(int i=0 ; i < accountList.size() ; i++) {
+				//get the query data of each account in the list 
 				table1.add(getRowData(query,(T)this.accountList.get(i)));				
 			}
 			String [][] table2 = table1.toArray(new String[ table1.size()][]);
@@ -213,7 +217,8 @@ public  class Model <T extends PopulatedData>{
 		}
 	}
 	
-	
+	//provide course table to view
+	//if input a director id, filter the courses created by this class director.
 	public String[][] getClassListTable(String [] query, String DirectorID) {	
 		if(this.classList.isEmpty()) {
 			return null;
@@ -221,6 +226,7 @@ public  class Model <T extends PopulatedData>{
 			List<String[]> table1 = new LinkedList<String[]>();
 			List<CDClass> list = getSelectedSemesterClass();
 			for(CDClass c : list) {
+				//get the query data of each CDClass in the list 
 				if(DirectorID == null) {
 					table1.add(getRowData(query,c));
 				}else if(c.getElement("ClassDirectorID").equals(DirectorID)) {
@@ -232,21 +238,27 @@ public  class Model <T extends PopulatedData>{
 		}
 	}
 	
-
+	// provide the data of a single class 
 	public  String[] getClass(String id,String [] query) {
 		return getRowData(query, findCourse(id)) ;
 	}
 	
 	
-	
+	//a method frequently used in model
+	//receive a query String array from view,
+	//and get the corresponding data in the object by a hashmap
 	public String[] getRowData(String []query, PopulatedData a) {
 		List<String> row = new LinkedList<String>();
 		for(int j = 0 ; j< query.length ; j ++) {	
 			if(a.getTableHeaderList().containsKey(query[j])){
 				row.add(a.getElement(query[j]));
+				
+				//if it is a query for a data in the foreign key data
+				//reach the foreign key data
 			}else if(classListFKDataHeader.containsKey(query[j])){
 				row.add(getFKData(query[j],a));
 			}else {
+				//if a unknown query is inputed
 				row.add(null);
 				System.out.println("error query: "+ query[j]);
 			}
@@ -255,10 +267,18 @@ public  class Model <T extends PopulatedData>{
 		return row2;
 	}
 	
+	
+	//a method frequently used in model
+	//receive a query String from view,
+	//and get the corresponding data via hashmaps in the Model class and data classes
 	public String getFKData(String fkWord, PopulatedData OData) {
 		String fkObjectKey = classListFKDataHeader.get(fkWord)[0];
+		// if the data contains a foreign key header
 		if(OData.getFKList().containsKey(fkObjectKey)) {
+			//get the foreign key object
 			PopulatedData FKData = OData.getFKList().get(fkObjectKey);
+			//if the foreign key object exists 
+			//(maybe a class has not been assigned a teacher)
 			if(FKData!=null) {
 				String data = FKData.getElement(classListFKDataHeader.get(fkWord)[1]);
 				return data;
@@ -277,30 +297,26 @@ public  class Model <T extends PopulatedData>{
 				String fN = "data.txt";
 				fr = new FileReader(fN);
 				Scanner s = new Scanner(fr);
+				
+				//read the SQL tables in a line order and create an object list
 				semesterList= createObjectList(s, Semester.class, semesterTableTitle);
+				//put the list into the database. 
 				dataBase.add((List<T>) semesterList);
 				accountList= createObjectList(s, Account.class, accountTableTitle);
 				dataBase.add((List<T>) accountList);
+				//the class list need to use account list in the dataBase to set up 
+				//its foreign keys' references
 				classList= createObjectList(s, CDClass.class, courseTableTitle);
+				//at the beginning of the semester, there maybe have no course in database
 				if(classList==null) {
 					classList = new LinkedList<CDClass>();
 				}
 				dataBase.add((List<T>) classList);
 				
+				//print out data loaded in the database
 				for(List<T> l : dataBase) {
 					System.out.println(l);
 				}
-//				for(List<String> a : accountTable) {
-//					Account tem = new Account(a);
-//					Model.this.accountList.add(tem);
-//				}
-				
-				
-//				for(List<String> a : classList) {
-//					CDClass tem = new CDClass(a);
-//					tem.setClassDirectorName(Model.this.accountList.get(Integer.parseInt(a.get(4))).getName());
-//					Model.this.classList.add(tem);
-//				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -312,6 +328,7 @@ public  class Model <T extends PopulatedData>{
 				e.printStackTrace();
 			}
 		}
+		
 		
 		public <T extends PopulatedData>void save() {
 			try {
@@ -325,10 +342,7 @@ public  class Model <T extends PopulatedData>{
 				}
 				FileWriter fw = new FileWriter(file, true);
 				BufferedWriter bw = new BufferedWriter(fw);
-//				List<List<T>> dataList = new ArrayList<List<T>>();
-//				dataList.add((List<T>)Model.this.semesterList);
-//				dataList.add((List<T>)Model.this.accountList);
-//				dataList.add((List<T>)Model.this.classList);
+				//transfer all data lists into a string
 				String data = produceTable(dataBase);
 				bw.write(data);
 				bw.close();
@@ -339,23 +353,28 @@ public  class Model <T extends PopulatedData>{
 			}
 		}
 
+		// build an data list according to a given class
 		private <T extends PopulatedData> List<T> createObjectList(Scanner s, Class<T> T, String key) throws Exception {
+			//if there is no line
 			if(!s.hasNext()) {
 				System.out.println("Can't find the "+key+" table");
 				return null;
 			}
 			//load data
 			String line = s.nextLine();
+			//a table stores a lists of parameters for each object from the file 
 			List<List<String>> table = new ArrayList<List<String>>() ;
-
+			//find the data table's title
 			while (!line.contentEquals(key)&&s.hasNextLine()) {
 				line = s.nextLine();
 			}
+			//if below table's title there is no line
 			if(!s.hasNextLine()) {
 				throw new Exception("Can't find the "+key+" table");
 			}
 			line = s.nextLine(); //below headers
 			line = s.nextLine(); //below line
+			//get the row data with "," and capture the data between each pair of quotes
 			while (s.hasNextLine()) {
 				line = s.nextLine();
 				if (!line.contains(",")) {
@@ -369,13 +388,18 @@ public  class Model <T extends PopulatedData>{
 			if(table.isEmpty())System.out.println("Can't find any data of the "+ key +" table");
 			//Create object
 			List<T> list = new LinkedList<>();
+			
+			//loop all the parameters in the list
 			for(List<String> a : table) {
 				Constructor<T> constructor;
 				try {
-
+					//find the constructor with (list, list) parameters
 					constructor = (Constructor<T>) T.getConstructor(new Class[]{List.class, List.class});
+					//create an object by input the parameters
 					T object = constructor.newInstance(new Object[]{a, dataBase});
+					//add the new object to the list
 					list.add(object);
+					//set up the table title for each object for saving data.
 					object.setTableTitle(key);
 					System.out.println(object);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -397,27 +421,25 @@ public  class Model <T extends PopulatedData>{
 			
 		}
 		
-		private String encodeString(String s) {
-			return  "\""+ s + "\"";
-		}
-		
-	
-		
-		
-		
+		//save lists of data into one string
 		public <T extends PopulatedData> String produceTable(List<List<T>> dataList) {
 			String database = "";
 			for(List<T> subList : dataList) {
 				if(subList!=null&&!subList.isEmpty()) {
+					
+					//the table tile area
 					database += "-------------------------------------------------"+"\n";
 					database += subList.get(0).getTableTitle()+"\n";
 					database += subList.get(0).getTableHeader()+"\n";
 					database += "-------------------------------------------------"+"\n";
+					//the data area
 					for(T e : subList) {
 						String row =  "";
 						for (String s : e.getRawData()) {
+							//each element in a row will be separated by "" and,
 							row += encodeString(s) + ", ";
 						}
+						//move to next line
 						database += row +"\n";
 					}
 				}
@@ -426,11 +448,16 @@ public  class Model <T extends PopulatedData>{
 		}
 	}
 	
+	// put a pair of quote between a element
+	private String encodeString(String s) {
+		return  "\""+ s + "\"";
+	}
+	
 	public void save() {
 		this.mf.save();
 	}
 	
-	
+
 	private List<String> getWordInQuotes(String s) {
 		Pattern p = Pattern.compile("\"([^\"]*)\"");
 		Matcher m = p.matcher(s);

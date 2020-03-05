@@ -4,8 +4,6 @@ import java.util.*;
 public class CDClass extends PopulatedData{
 	private String classID;
 	private String name;
-//	private List<String> requirementList = new ArrayList<String>(); 
-//	//for easy to add an edit function, we use an arraylist
 	
 	private String requirement = "";
 	
@@ -18,14 +16,13 @@ public class CDClass extends PopulatedData{
 	private String adminID;
 	private String PDID;
 	
-	
-	
-	
-//	private List<Integer> teachingRequestListID = new LinkedList<Integer>();
+
 
 	private Account classDirector;
 	private Account teacher;
 	
+	//in order to store data in a row the next line symbol should be transfered to other symbol
+	//when read data from a row, the special symbol should be recovered to \n
 	public <T extends PopulatedData> CDClass(List<String> rowData, List<List<T>> database) {
 		super(rowData, database);
 		this.semester = rowData.get(0);
@@ -40,7 +37,7 @@ public class CDClass extends PopulatedData{
 		this.adminID = rowData.get(9);
 		this.PDID = rowData.get(10);
 		
-		
+		//put each element with a key for query data
 		tableHeaderList.put("Semester",0);
 		tableHeaderList.put("ClassID",1);
 		tableHeaderList.put("Name",2);
@@ -245,6 +242,7 @@ public class CDClass extends PopulatedData{
 		s.add(this.teachingStatus);
 		s.add(this.classDirectorID);
 		s.add(""+this.teacherID);
+		//in order to store data in a row the next line symbol should be transfered to other symbol
 		s.add(this.training.replaceAll("\\n", "\\$n\\$"));
 		s.add(this.date);
 		s.add(this.adminID);
