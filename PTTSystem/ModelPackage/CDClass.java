@@ -92,6 +92,7 @@ public class CDClass extends PopulatedData{
 		for(T a : list) {
 			if(a.getPKID().equals(this.teacherID)) {
 				this.teacher = (Account) a;
+				this.FKList.put("teacher",  this.teacher);
 				break;
 			}
 		}

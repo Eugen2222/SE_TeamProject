@@ -25,15 +25,4 @@ ID, Password, Type, Name
 <CD CLASS TABLE>
 Semester, ClassID, Name, Requirements, TeacherStatus, ClassDirectorID, TeacherID, Trainning, Date, AdminID, PDID
 -------------------------------------------------
-"5", "0001", "programming", "one teacher, two labs.", "Approved", "0001", "0006", "Java training, two weeks.", "2020/03/04", "0002", "0003", 
-"5", "0002", "database", "one TA", "Pending", "0001", "", "", "2020/03/04", "", "", 
-"5", "0003", "ECS", "two teachers .a classroom.", "Pending", "0001", "0005", "English training,one week", "2020/03/04", "0002", "", 
-"5", "0004", "internet technology", "two teacher, one lab", "Pending", "0001", "", "", "2020/03/04", "", "", 
-"5", "0005", "Math", "one teacher.$n$can teach calculus.", "Submitted", "0001", "0008", "calculus training, one week", "2020/03/04", "0002", "", 
-"5", "0006", "history", "two teachers. can teach European history.", "Assigned", "0001", "0007", "English training ,one week", "2020/03/04", "0002", "", 
-"5", "0007", "philosophy", "one teacher. can teach philosophy of life.", "Pending", "0001", "", "", "2020/03/04", "", "", 
-"5", "0008", "tennis", "one teacher. can play tennis", "Approved", "0001", "0010", "lose weight", "2020/03/04", "0002", "0003", 
-"5", "0009", "arts", "one teacher, can painting.", "Assigned", "0001", "0009", "painting training.$n$two weeks.", "2020/03/04", "0002", "", 
-"5", "0010", "photography", "one teacher, can drive.", "Pending", "0001", "", "", "2020/03/04", "", "", 
-"5", "0011", "Antarctica", "one teacher.$n$loves penguin", "Assigned", "0001", "0005", "physical training.1 month.", "2020/03/04", "0002", "", 
-"5", "0012", "penguin research", "one teacher. love penguin", "Pending", "0001", "", "", "2020/03/04", "", "", 
+"5", "0001", "ffdafaf", "asfasfsfa", "Submitted", "0001", "0005", "afafsafsaf", "2020/03/06", "0002", "", 
